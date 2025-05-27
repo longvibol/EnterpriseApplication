@@ -1,0 +1,149 @@
+* Room Service:
+Database Design: MongoDB
+
+Location,
+Price,
+Size,
+HasBed,
+HasFan,
+HasParking,
+HasAC,
+
+----- នៅមានតទៀត 
+
+Type: (GuessHouse, Hotel, RentRoom,...)
+
+------------------------------------------------
+
+Database: 
+
+SQL: (Table, Row, Columns) alter table to add more fields 
+NoSQL: (Collection, Document, Field : location, price, size...) Use MongoDB 
+
+-----------------------------------------------
+
+What we will sample design in MongoDB:
+
+SOK:
+{
+	id:"abc",
+	name: "Luxury Room",
+	attributes:{
+		price: 50,
+		width:5,
+		hasFan: true
+	}
+},
+
+Som:
+{
+	id:"abc",
+	name: "Big Room",
+	attributes:{
+		price: 90,
+		width:10,
+		hasParking: true,
+		closeAt: 10pm
+	}
+},
+
+When we use mongoDB it will flexible to add the field 
+
+----------------------------------------------
+
+
+We can use mongodb partners :
+ការ Design : we use mongoDB
+
+[
+	{
+	Key: "price"
+	Value:50	
+	},
+	{
+	Key: "width"
+	Value:5	
+	}
+
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

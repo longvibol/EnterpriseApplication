@@ -1,0 +1,12 @@
+Start Code Development: (Room Service):
+
+-Model (Domain)
+-Repository 
+-Service
+-DTO
+-Mapper
+-Controller (RestController, FunctionalEndPoint)
+-exception 
+-OpenAPI(Swagger) 
+
+
