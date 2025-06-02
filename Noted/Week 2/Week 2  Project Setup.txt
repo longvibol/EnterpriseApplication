@@ -1,0 +1,341 @@
+Week 2 : Project Setup 
+
+CRUD Operation 
+1- Set up Entity or domain
+2- Set DTO
+3- Repository 
+4- Service 
+5- Mapper 
+6- Controller 
+
+1. Create domain or Entity Room 
+
+@Document
+@Data
+public class Room {
+
+	private String id;
+	private String name;
+	private Map<String, Object> attributes = new HashMap<>();
+	
+}
+
+Explain :
+
+private Map<String, Object> attributes = new HashMap<>(); ដោយសារតែយើងមិនទាន់ដឹងច្បាស់នូវអ្វីដែលម្ចាស់ផ្ទះយើងនឹង
+មាន ដូចជា ទំហំ បន្ទុប់, ទីតាំង , តម្លៃបន្ទុប់នីមួយៗ ចឹងហើយយើងដាក់វា តាមក្រោយ 
+
+Size
+Location 
+Price 
+
+hasParking 
+hasFan
+hasAC 
+
+យើងបង្កើតវានៅក្នុង Mongodb ចឹងយើងអាចដាក់វាបានតាមក្រោយបន្ថែម ដោយប្រើ Data Structure Map<String, Object>
+
+Object is the value that we want to store : hasParking ,hasFan, hasAC 
+
+
+---------------------------------------------------------------------------------------------------------
+
+2. Set DTO
+
+@Data
+public class RoomDTO {
+	private String name;
+	private Map<String, Object> attributes;
+
+}
+
+
+--------------------------------------------------
+
+3. 3 -Repository 
+
+@Repository
+//Optional @Repository we can remove it in new spring boot 
+public interface RoomRepository extends ReactiveMongoRepository<Room, String>{
+
+}
+
+
+---------------------------------
+
+4. Repository 
+
+Abstruct level :RoomService : we create interface 
+
+
+--------------------------------
+
+
+public interface RoomService {
+	
+	Mono<RoomDTO> createRoom(RoomDTO roomDTO);
+
+}
+
+
+--------------------------------------------
+
+SOLID Principles :
+
+5. Service Impl
+
+យើងយកវាមកធ្វើការ ៖ Mono<RoomDTO> createRoom(RoomDTO roomDTO);
+
+- ចឹងយើងចង់បានប្រើ Method នឹង យើង Create vir that have return Mono<RoomDTO> 
+
+First Start : យើងប្រើវាដើម្បីធ្វើការ Tranfer data from our Entity to DTO (ព្រោះ Field ខ្លះយើងអត់ត្រូវបង្ហាញគេទេចឹងបានយើងត្រូវបង្កើត DTO ) 
+
+5.1 ==> We create class Mapper To transfer our Room domain to outside 
+
+@Component
+public class RoomMapper {
+	
+	// DTO -> Entity (Purpose Save) 
+	public Room toRoom(RoomDTO roomDTO) {
+		
+		Room room = new Room();
+		room.setName(roomDTO.getName());
+		room.setAttributes(roomDTO.getAttributes());		
+		return room;
+	}
+	
+	// Entity -> DTO (Purpose show to End user) 
+		public RoomDTO toRoomDTO(Room room) {
+			
+			RoomDTO dto = new RoomDTO();
+			dto.setName(room.getName());
+			dto.setAttributes(room.getAttributes());		
+			return dto;
+		}
+
+}
+
+5.2 : In the Imple class 
+
+@Override
+	public Mono<RoomDTO> createRoom(RoomDTO roomDTO) {
+		Room room = roomMapper.toRoom(roomDTO);
+		return roomRepository.save(room)
+				.map(r -> roomMapper.toRoomDTO(r));
+
+	}
+
+Explain : 
+
+- First think in the Save Repository that we implementation from ReactiveRepostitoy MongoDb it is return Mono : ReactiveMongoRepository<Room, String> (it is return Room ) 
+
+- roomRepository.save(room).map(r -> roomMapper.toRoomDTO(r)); after we get from input we want transfter to DTO 
+
+Note : How to install Maven 
+
+https://phoenixnap.com/kb/install-maven-windows
+
+6- Controller : RestAPI 
+
+@RestController
+@RequestMapping(value = "/api/rooms")
+public class RoomController {
+	
+	@Autowired
+	RoomServiceImpl roomServiceImpl;
+	
+	
+	@PostMapping
+	public Mono<RoomDTO> createRoom(@RequestBody RoomDTO roomDTO){
+		return roomServiceImpl.createRoom(roomDTO);		
+	}
+
+}
+
+========================================================================
+
+Test In Postman: 
+
+POST: http://localhost:8080/api/rooms
+
+{
+    "name":"Luxury Room",
+    "attributes":{
+        "width": 4,
+        "lengh": 6,
+        "price": 50
+    }
+
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
