@@ -11,7 +11,7 @@ import lombok.Data;
 @Document
 @Data
 public class Room {
-
+	
 	@Id
 	private String id;
 	private String name;

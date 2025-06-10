@@ -1,0 +1,75 @@
+1-Logger 
+
+in logger we can crate many level of logger: 
+
+logger level :
+
+
+Spring Boot uses Logback as its default logging framework and provides several logging levels to control the verbosity of logs. The main logging levels are:
+
+- TRACE – Most detailed logs, useful for debugging.
+- DEBUG – Provides detailed information for development.
+- INFO – General application events.
+- WARN – Indicates potential issues.
+- ERROR – Logs errors that need attention.
+
+2. anable log level in application.yml
+
+Example:
+
+log.debug("Saving room to DB: {}",roomDTO);
+
+-- explain : {} is the object that we want to display mapping 
+
+spring:
+  application:
+    name: room-service
+  data:
+    mongodb:
+     uri: mongodb://localhost:27017/room
+logging:
+ level:
+  root: INFO
+  com.piseth.java.school: DEBUG
+
+==> Result in Console : display 
+
+2025-06-10T10:10:21.867+07:00 DEBUG 11424 --- [room-service] [ctor-http-nio-3] c.p.j.s.r.service.impl.RoomServiceImpl   : Saving room to DB: RoomDTO(name=New Room, attributes={width=6, lengh=8, price=80, hasPacking=true, HaveAC=true})
+2025-06-10T10:10:21.877+07:00  INFO 11424 --- [room-service] [tLoopGroup-13-3] c.p.j.s.r.service.impl.RoomServiceImpl   : Room Save: Room(id=6847a21d191b047eea2c6e19, name=New Room, attributes={width=6, lengh=8, price=80, hasPacking=true, HaveAC=true})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

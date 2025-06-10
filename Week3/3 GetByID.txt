@@ -1,0 +1,103 @@
+Get by Id : 
+
+We can get by one or get by list 
+
+---------------------
+
+CRUD:Room 
+
+Create 	: Post => /rooms
+Retrieve : GET => /rooms/12 or list(/rooms)
+Update : PUT => /rooms/13
+Delete : Delete  => /rooms/12
+
+
+----------------------------
+
+Step By Step 
+
+1. RoomService(interface) 
+
+Mono<RoomDTO> getRoomById(String id);
+
+2. RoomSreviceImpl
+
+@Override
+	public Mono<RoomDTO> getRoomById(String id) {
+		return roomRepository
+				.findById(id)
+				// we want to show logger the we can find the room 
+				.doOnNext(room -> log.info("Room received : {}",room))
+				.map(roomMapper::toRoomDTO);
+				
+	}
+
+3. RoomController 
+
+@GetMapping("/{roomId}")
+	public Mono<RoomDTO> getRoomById(@PathVariable String roomId){
+		return roomServiceImpl.getRoomById(roomId);
+	}
+
+
+Testing : 
+
+GET Method : http://localhost:8080/api/rooms/68479d90191b047eea2c6e10
+
+==> 
+
+{
+    "name": "Guest house One",
+    "attributes": {
+        "width": 6,
+        "lengh": 6,
+        "price": 60,
+        "Have Fan": true
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
