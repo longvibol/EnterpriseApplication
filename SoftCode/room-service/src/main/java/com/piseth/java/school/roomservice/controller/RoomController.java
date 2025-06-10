@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.service.RoomService;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/rooms")
 public class RoomController {

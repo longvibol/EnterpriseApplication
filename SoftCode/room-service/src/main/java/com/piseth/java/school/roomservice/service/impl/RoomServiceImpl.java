@@ -47,7 +47,20 @@ public class RoomServiceImpl implements RoomService {
 				.map(roomMapper::toRoomDTO);
 				
 	}
+	
+	@Override
+	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		
+	log.debug("Update room id: {} with data : {}",id,roomDTO);			
+	return	roomRepository
+				.findById(id).flatMap(existingRoom ->{							
+					roomMapper.updateRoomDTO(roomDTO, existingRoom);					
+					Mono<Room> monoRoom = roomRepository.save(existingRoom);						
+					return monoRoom;
+				}).map(roomMapper::toRoomDTO);		
+	}
+	
 
+	/*
 	@Override
 	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {
 		log.debug("Update room id: {} with data : {}",id,roomDTO);		
@@ -68,6 +81,9 @@ public class RoomServiceImpl implements RoomService {
 
 	}
 
+	 */	
+	
+	
 	
 }
 

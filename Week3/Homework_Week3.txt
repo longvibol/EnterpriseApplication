@@ -1,0 +1,81 @@
+Homework_Week3:
+
+1. Replace update property part to Mapstruct 
+
+- In RoomMapper : Add new method 
+
+@Mapping(target = "id", ignore=true)
+void updateRoomDTO(RoomDTO roomDTO, @MappingTarget Room room);
+
+- In RoomServiceImple : Use Method called "roomMapper.updateRoomDTO(roomDTO, existingRoom);"
+
+	@Override
+	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		
+	log.debug("Update room id: {} with data : {}",id,roomDTO);		
+	return	roomRepository
+			.findById(id).flatMap(existingRoom ->{		
+					
+				roomMapper.updateRoomDTO(roomDTO, existingRoom);	
+					
+				Mono<Room> monoRoom = roomRepository.save(existingRoom);						
+				return monoRoom;})
+				.map(roomMapper::toRoomDTO);		
+	}
+
+2. Log All incomming request for every method in controll 
+
+- Add dependency:
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-aop</artifactId>
+	</dependency>
+
+- create new class LoggerAspect : "com.piseth.java.school.roomservice.aspects" 
+
+@Slf4j
+@Aspect
+@Component
+public class LoggerAspect {
+
+	@Around("execution(* com.piseth.java.school.roomservice.service..*.*(..))")
+	public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
+		log.info(joinPoint.getSignature().toString() + " method execution start");
+		Instant start = Instant.now();
+		Object returnObj = joinPoint.proceed();
+		Instant finish = Instant.now();
+		long timeElapsed = Duration.between(start, finish).toMillis();
+		log.info("Time took to execute " + joinPoint.getSignature().toString() + " method is : " + timeElapsed);
+		log.info(joinPoint.getSignature().toString() + " method execution end");
+		return returnObj;
+	}
+
+	@Around("execution(* com.piseth.java.school.roomservice.service..*.*(..))")
+	public void logException(JoinPoint joinPoint, Exception ex) {
+		log.error(joinPoint.getSignature() + " An exception happened due to : " + ex.getMessage());
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
