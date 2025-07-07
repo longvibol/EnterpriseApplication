@@ -10,11 +10,12 @@ import com.piseth.java.school.roomservice.dto.RoomDTO;
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
 
+	@Mapping(target = "id", ignore=true)
 	Room toRoom(RoomDTO roomDTO);
 	
 	RoomDTO toRoomDTO(Room room);
 	
-	@Mapping(target = "id", ignore=true)
-	void updateRoomDTO(RoomDTO roomDTO, @MappingTarget Room room);
+	@Mapping(target = "id", ignore=true) // to stop create new object 
+	void updateRoomFromDTO(RoomDTO roomDTO, @MappingTarget Room room);
 
 }

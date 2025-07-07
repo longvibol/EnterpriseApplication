@@ -52,9 +52,9 @@ public class RoomServiceImpl implements RoomService {
 	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		
 	log.debug("Update room id: {} with data : {}",id,roomDTO);			
 	return	roomRepository
-				.findById(id).flatMap(existingRoom ->{							
-					roomMapper.updateRoomDTO(roomDTO, existingRoom);					
-					Mono<Room> monoRoom = roomRepository.save(existingRoom);						
+				.findById(id).flatMap(existing ->{							
+					roomMapper.updateRoomFromDTO(roomDTO, existing);					
+					Mono<Room> monoRoom = roomRepository.save(existing);						
 					return monoRoom;
 				}).map(roomMapper::toRoomDTO);		
 	}
