@@ -1,0 +1,154 @@
+Standard Respond When Validation Happened 
+
+In Spring Bood They recommend : It introduce in spring framework 6 
+
+- Exception (Problem Detail)  
+
+Step By Step 
+
+1. Crate our own Globale Exception hander អោយតែមានបញ្ហាកើតឡើងនៅក្នុង System វាជាអ្នកចាប់ទាំងអស់់
+
+1.1 Crate New calss: GlobalExceptionHandler  in package Excetion 
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(Exception.class)
+	public Mono<ProblemDetail> handleConstraintViolation(Exception ex, ServerWebExchange exchange){
+		log.warn("Constrain Violation: {}",ex.getMessage());
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+		return Mono.just(problemDetail);
+	}
+}
+
+explain :
+
+- @ExceptionHandler(Exception.class) : catach all exception in the system 
+- Mono<ProblemDetail> Ceate Reative with ProblemDetail 
+- Exception ex : parameter exception that happened 
+- ServerWebExchange exchange : by this exchange we can setup our own detail 
+- ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage()); Are what want to show on the contsole 
+- Mono.just(problemDetail) : we use .just for lazy 
+
+
+
+===============================================================================
+
+==> Result : 
+
+{
+"type": "about:blank",
+"title": "Bad Request",
+"status": 400,
+"detail": "Validation failed for argument at index 0 in method: public reactor.core.publisher.Mono<com.piseth.java.school.roomservice.dto.RoomDTO> com.piseth.java.school.roomservice.controller.RoomController.createRoom(com.piseth.java.school.roomservice.dto.RoomDTO), with 1 error(s): [Field error in object 'roomDTO' on field 'name': rejected value [null]; codes [NotBlank.roomDTO.name,NotBlank.name,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [roomDTO.name,name]; arguments []; default message [name]]; default message [Room name is required]] ",
+"instance": "/api/rooms"
+}
+
+==> Now we can see the message what is the error happen. It is come from 
+
+codes [NotBlank.roomDTO.name,NotBlank.name,NotBlank.java.lang.String,NotBlank];
+
+
+
+===================================================================================================
+
+*** Improve ***
+
+We want to catch the exception that happend according to the Exception name :
+
+So how to view it :
+
+=================================
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(Exception.class)
+	public Mono<ProblemDetail> handleConstraintViolation(Exception ex, ServerWebExchange exchange){
+		log.error(ex.getClass().getName());
+		log.warn("Constrain Violation: {}",ex.getMessage());
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+		problemDetail.setTitle("Constrain Violation");
+		return Mono.just(problemDetail);
+	}
+}
+
+log.error(ex.getClass().getName());
+
+
+==========================================
+
+By viewing the Console :
+
+2025-07-07T16:28:58.324+07:00 ERROR 6708 --- [room-service] [ctor-http-nio-2] c.p.j.s.r.e.GlobalExceptionHandler       : org.springframework.web.bind.support.2025-07-07T16:28:58.324+07:00 ERROR 6708 --- [room-service] [ctor-http-nio-2] c.p.j.s.r.e.GlobalExceptionHandler       : org.springframework.web.bind.support.WebExchangeBindException
+
+==> We can see this is "WebExchangeBindException" So we can change our Exception that hanlde the Globale by put the specifice name "WebExchangeBindException"
+
+
+=========================================
+
+Final code after we change to WebExchangeBindException: We can see this is working normaley 
+
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(WebExchangeBindException.class)
+	public Mono<ProblemDetail> handleConstraintViolation(WebExchangeBindException ex, ServerWebExchange exchange){
+		log.warn("Constrain Violation: {}",ex.getMessage());
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+		problemDetail.setTitle("Constrain Violation");
+		problemDetail.setInstance(URI.create("https://www.google.com"));
+		return Mono.just(problemDetail);
+	}
+}
+
+
+Explain: 
+
+problemDetail.setTitle("Constrain Violation");
+problemDetail.setInstance(URI.create("https://www.google.com")); 
+
+
+We can set our problemDtail to the user 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

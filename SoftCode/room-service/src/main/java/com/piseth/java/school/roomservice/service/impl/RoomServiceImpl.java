@@ -1,8 +1,6 @@
 package com.piseth.java.school.roomservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
@@ -10,18 +8,18 @@ import com.piseth.java.school.roomservice.mapper.RoomMapper;
 import com.piseth.java.school.roomservice.repository.RoomRepository;
 import com.piseth.java.school.roomservice.service.RoomService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class RoomServiceImpl implements RoomService {
 	
-	@Autowired
-	RoomRepository roomRepository;
+	private final RoomRepository roomRepository;
 
-	@Autowired
-	RoomMapper roomMapper;
+	private final RoomMapper roomMapper;
 
 	@Override
 	public Mono<RoomDTO> createRoom(RoomDTO roomDTO) {
@@ -58,32 +56,14 @@ public class RoomServiceImpl implements RoomService {
 					return monoRoom;
 				}).map(roomMapper::toRoomDTO);		
 	}
-	
 
-	/*
 	@Override
-	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {
-		log.debug("Update room id: {} with data : {}",id,roomDTO);		
-		
-	return	roomRepository
-				.findById(id).flatMap(existingRoom ->{
-					existingRoom.setName(roomDTO.getName());
-					existingRoom.setAttributes(roomDTO.getAttributes());
-					Mono<Room> monoRoom = roomRepository.save(existingRoom);	
-					return monoRoom;
-				})
-				.map(roomMapper::toRoomDTO);
-		
-		// Target: update existing object		
-		// 1-get from DB
-		// 2-update new value 
-		// 3-save back to DB		
+	public Mono<Void> deleteRoom(String id) {
+		log.info("Deleting room with ID: {}",id);
+		return roomRepository.deleteById(id)
+				.doOnSubscribe(deleted -> log.info("\"Room deleted with ID: {}",id));
 
 	}
-
-	 */	
-	
-	
 	
 }
 

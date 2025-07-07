@@ -1,0 +1,97 @@
+Week3
+
+Deleted:
+
+1. Hard Deleted : We deleted from the Database 
+2. Soft Deleted : We just change the status from active to Inactive 
+
+* Validation * 
+
+Mostly we do the validation in both side in the Database and API level 
+
+1. Validation at API Level 
+
+- Add dependency 
+
+<dependency>
+	<groupId>org.hibernate.validator</groupId>
+	<artifactId>hibernate-validator</artifactId>
+</dependency>
+
+- put validator in RoomDTO Entity 
+
+@Data
+public class RoomDTO {
+	
+	@NotBlank(message = "Room name is required")
+	@Size(max = 100, message = "Room name must be at most 100 characters")
+	private String name;
+	
+	private Map<String, Object> attributes;
+
+}
+
+- Validate on the POST request (API Validator) 
+
+@PostMapping
+	public Mono<RoomDTO> createRoom(@Valid @RequestBody RoomDTO roomDTO){
+		return roomService.createRoom(roomDTO);		
+	}
+
+Testing: 
+
+POST : http://localhost:8080/api/rooms
+
+{
+    "attributes":{
+        "width": 7,
+        "lengh": 6,
+        "price": 50,
+        "haveFan":false,
+      	"Packing" : true
+    }
+}
+
+We remove name 
+
+
+==> Result : By default it will return status 400 Bad Request 
+
+timestamp": "2025-07-07T08:29:34.157+00:00",
+"path": "/api/rooms",
+"status": 400,
+"error": "Bad Request",
+"requestId": "7e4520e9-1",
+
+============================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
