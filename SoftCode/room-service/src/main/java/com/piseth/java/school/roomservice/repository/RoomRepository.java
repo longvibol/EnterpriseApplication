@@ -5,8 +5,14 @@ import org.springframework.stereotype.Repository;
 
 import com.piseth.java.school.roomservice.domain.Room;
 
+import reactor.core.publisher.Flux;
+
 @Repository
 //Optional @Repository we can remove it in new spring boot 
 public interface RoomRepository extends ReactiveMongoRepository<Room, String>{
 
+	//Study Purpose	
+	Flux<Room> findByNameContainingIgnoreCase(String name);
+	
+	//	Flux<Room> findByName(String name);	
 }

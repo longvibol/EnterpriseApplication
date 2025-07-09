@@ -1,0 +1,282 @@
+Room Not Found Exception 
+
+In the GlobalExceptionHandler.class 
+
+------------------------------------------------------
+
+@ExceptionHandler(RuntimeException.class)
+	public Mono<ProblemDetail> handleRoomNotFound(RuntimeException ex, ServerWebExchange exchange){
+		log.warn("Room Not Found: {}",ex.getMessage());
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+		problemDetail.setTitle("Room Not Found");
+		problemDetail.setInstance(URI.create("https://www.google.com"));
+		return Mono.just(problemDetail);
+	}
+
+------------------------------------------------------
+
+{
+    "type": "about:blank",
+    "title": "Room Not Found",
+    "status": 404,
+    "detail": "Room is not found with ID : 684788cce8bf96ff11b1c2c41",
+    "instance": "https://www.google.com"
+}
+
+
+Now when the ID is not found it will handle with our global exception 
+
+
+To Improve we will create resource not found exception (អោយតែវារកនៅក្នង Data base អត់ឃើញគឺវា Not found ហើយចឹងយើងបង្កើតវា អោយវា ធ្វើការរឿងនឹង)
+
+==> RoomNotFoundException that we create to specific room service 
+
+In Jave core there are two Exception : Check Exception and Uncheck Exception 
+
+======================================================================================
+
+Custom Exception 
+
+Step by Step exception 
+
+1. Create another class and extend from RunTimeException (this run time exception : Uncheck Exception)
+
+
+package com.piseth.java.school.roomservice.exception;
+
+public class RoomNotFoundException extends RuntimeException{
+
+	private static final long serialVersionUID = 1L;
+	
+	public RoomNotFoundException(String id) {
+		super("Room is not found with ID : "+id);
+	}
+
+}
+
+
+2. GloableException 
+
+
+@ExceptionHandler(RoomNotFoundException.class)
+	public Mono<ProblemDetail> handleRoomNotFound(RoomNotFoundException ex, ServerWebExchange exchange){
+		log.warn("Room Not Found: {}",ex.getMessage());
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+		problemDetail.setTitle("Room Not Found");
+		problemDetail.setInstance(URI.create("https://www.google.com"));
+		return Mono.just(problemDetail);
+	}
+
+
+3. In the RoomServiceImpl
+
+@Override
+	public Mono<RoomDTO> getRoomById(String id) {
+		log.info("Retreiving room with ID : {}",id);		
+		return roomRepository
+				.findById(id)
+				// we want to show logger the we can find the room 
+				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+				.doOnNext(room -> log.info("Room received : {}",room))
+				.map(roomMapper::toRoomDTO);				
+	}
+
+-----------------------------------
+
+Update and Deleted NotfoundException 
+
+@Override
+	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		
+	log.debug("Update room id: {} with data : {}",id,roomDTO);			
+	return	roomRepository				
+				.findById(id)
+				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+				.flatMap(existing ->{							
+					roomMapper.updateRoomFromDTO(roomDTO, existing);					
+					Mono<Room> monoRoom = roomRepository.save(existing);						
+					return monoRoom;
+				}).map(roomMapper::toRoomDTO);		
+	}
+
+	@Override
+	public Mono<Void> deleteRoom(String id) {
+		log.info("Deleting room with ID: {}",id);
+		return roomRepository.deleteById(id)
+				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+				.doOnSubscribe(deleted -> log.info("\"Room deleted with ID: {}",id));
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,215 @@
+We build the factory that can follow our custom formal exception: 
+Problem Detail 
+
+
+-Exception to catch at the end
+-Format of Exception Problem Detail 
+-Timestamp
+-path
+-ErrorCode
+-Service 
+
+Gold : we want to create our own Global exception with our own status and custom error message
+
+Step by Step to crate : 
+
+1. Crete Interface ProblemDetailFactory
+
+public interface ProblemDetailFactory {
+	
+	ProblemDetail create(HttpStatus status, String message, ServerWebExchange exchange);
+	ProblemDetail create(HttpStatus status, String message, ServerWebExchange exchange,Map<String, Object> properties);
+	ProblemDetail create(HttpStatus status, String message,String errorCode, ServerWebExchange exchange);
+
+}
+
+2. Create implementation from ProblemDetailFactory
+
+@Component
+public class DefaultProplemDetailFactory implements ProblemDetailFactory{
+
+	@Override
+	public ProblemDetail create(HttpStatus status, String message, ServerWebExchange exchange) {
+		return create(status,message,status.name(),exchange);
+	}
+
+	@Override
+	public ProblemDetail create(HttpStatus status, String message, ServerWebExchange exchange,
+			Map<String, Object> properties) {
+		ProblemDetail pd = create(status,message,exchange);
+		if(Objects.nonNull(properties)) {
+			properties.forEach(pd::setProperty);
+		}
+		return pd;
+	}
+
+	@Override
+	public ProblemDetail create(HttpStatus status, String message, String errorCode, ServerWebExchange exchange) {
+		ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, message);		//pd = prblem Detail
+		
+		pd.setTitle(status.getReasonPhrase());
+		pd.setProperty("timestamp", Instant.now());
+		pd.setProperty("path", exchange.getRequest().getPath().value());
+		pd.setProperty("errorCode", errorCode);
+		pd.setProperty("service", "room-service");		
+		return pd;
+	}
+
+}
+
+
+3. GlobalExceptionHandler : Where we custom our Error handle 
+
+@Slf4j
+@RequiredArgsConstructor
+@RestControllerAdvice
+@Component
+public class GlobalExceptionHandler {
+	
+	private final ProblemDetailFactory problemFactory;
+	
+	@ExceptionHandler(RoomNotFoundException.class)
+	public Mono<ProblemDetail> handleRoomNotFound(RoomNotFoundException ex, ServerWebExchange exchange){
+		log.warn("Room Not Found: {}",ex.getMessage());
+		return Mono.just(problemFactory.create(
+				HttpStatus.NOT_FOUND, 
+				ex.getMessage(), 
+				"ROOM_NOT_FOUND", 
+				exchange));
+	}
+	
+	@ExceptionHandler(WebExchangeBindException.class)
+	public Mono<ProblemDetail> handleConstraintViolation(WebExchangeBindException ex, ServerWebExchange exchange){
+		log.warn("Constrain Violation: {}",ex.getMessage());		
+		return Mono.just(problemFactory.create(
+				HttpStatus.BAD_REQUEST, 
+				ex.getMessage(), 
+				"CONSTRAIN_VIOLATION", 
+				exchange));
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public Mono<ProblemDetail> handleGeneric(Exception ex, ServerWebExchange exchange){
+		log.warn("Unexpected Erro: {}",ex.getMessage());		
+		return Mono.just(problemFactory.create(
+				HttpStatus.INTERNAL_SERVER_ERROR, 
+				"Unexpected error: "+ex.getMessage(), 
+				"SYSTEM_ERROR", 
+				exchange));
+	}
+	
+}
+
+===============================================================================
+
+Testing : 
+
+GET: http://localhost:8080/api/rooms/684788cce8bf96ff11b1c2c4f
+
+==> Result : 
+
+{
+    "type": "about:blank",
+    "title": "Not Found",
+    "status": 404,
+    "detail": "Room is not found with ID : 684788cce8bf96ff11b1c2c4f",
+    "instance": "/api/rooms/684788cce8bf96ff11b1c2c4f",
+    "timestamp": "2025-07-09T06:55:16.521982300Z",
+    "path": "/api/rooms/684788cce8bf96ff11b1c2c4f",
+    "errorCode": "ROOM_NOT_FOUND",
+    "service": "room-service"
+}
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
