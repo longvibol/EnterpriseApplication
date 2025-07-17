@@ -1,0 +1,36 @@
+Customer Query 
+
+1. RoomRepository
+
+//Custom Query 
+	@Query("{'name': ?0}")
+	Flux<Room> findRoom(String name);
+
+
+2. RoomServiceImpl
+
+	@Override
+	public Flux<RoomDTO> searchRoomByName(String name) {		
+		return roomRepository.findRoom(name).map(roomMapper::toRoomDTO);
+	}
+
+3. Testing Api 
+
+http://localhost:8080/api/rooms/search?name=Small Room
+
+==> 
+
+[
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 6, "price": 50, "haveFan": false, "Packing": true,…}
+},
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+}
+]
+
+
+
+

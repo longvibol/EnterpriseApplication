@@ -1,5 +1,6 @@
 package com.piseth.java.school.roomservice.repository;
 
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,8 @@ public interface RoomRepository extends ReactiveMongoRepository<Room, String>{
 	Flux<Room> findByNameContainingIgnoreCase(String name);
 	
 	//	Flux<Room> findByName(String name);	
+	
+	//Custom Query 
+	@Query("{'name': ?0}")
+	Flux<Room> findRoom(String name);
 }

@@ -1,13 +1,17 @@
 package com.piseth.java.school.roomservice.service.impl;
 
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
+import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
 import com.piseth.java.school.roomservice.exception.RoomNotFoundException;
 import com.piseth.java.school.roomservice.mapper.RoomMapper;
+import com.piseth.java.school.roomservice.repository.RoomCustomRepository;
 import com.piseth.java.school.roomservice.repository.RoomRepository;
 import com.piseth.java.school.roomservice.service.RoomService;
+import com.piseth.java.school.roomservice.util.RoomCriteriaBuilder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +26,13 @@ public class RoomServiceImpl implements RoomService {
 	private final RoomRepository roomRepository;
 
 	private final RoomMapper roomMapper;
+	
+	private final RoomCustomRepository roomCustomRepository;
 
 	@Override
 	public Mono<RoomDTO> createRoom(RoomDTO roomDTO) {
 		
-		log.debug("Saving room to DB: {}",roomDTO);
-		
+		log.debug("Saving room to DB: {}",roomDTO);		
 		Room room = roomMapper.toRoom(roomDTO);
 		
 		return roomRepository.save(room)
@@ -82,7 +87,17 @@ public class RoomServiceImpl implements RoomService {
 
 	@Override
 	public Flux<RoomDTO> searchRoomByName(String name) {		
-		return roomRepository.findByNameContainingIgnoreCase(name)
+		
+		return roomRepository.findRoom(name).map(roomMapper::toRoomDTO);
+		
+//		return roomRepository.findByNameContainingIgnoreCase(name)
+//				.map(roomMapper::toRoomDTO);
+	}
+
+	@Override
+	public Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO) {
+		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		return roomCustomRepository.findByFilter(query)
 				.map(roomMapper::toRoomDTO);
 	}
 
