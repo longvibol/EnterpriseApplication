@@ -1,9 +1,9 @@
 package com.piseth.java.school.roomservice.controller;
 
-import java.util.Map;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.piseth.java.school.roomservice.domain.Room;
+import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
-import com.piseth.java.school.roomservice.dto.RoomFilterDTOMapper;
+import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
 import com.piseth.java.school.roomservice.service.RoomService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,11 +75,26 @@ public class RoomController {
 	
 	// Build Filter controller 	
 	@GetMapping("/search")
-	public Flux<RoomDTO> getRoomByFilter(@RequestParam Map<String, String> params){
-		
-		// Map<String, String> params : because floor=3&hasParking=true (floor is the Key, 3 is the Value) 		
-		return roomService.getRoomByFilter(RoomFilterDTOMapper.toRoomFilterDTO(params));		
+	public Flux<RoomDTO> getRoomByFilter(RoomFilterDTO roomFilterDTO ){		
+		return roomService.getRoomByFilter(roomFilterDTO);		
 	}
+	
+	@GetMapping("/search/pagination")
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO roomFilterDTO){
+		return roomService.getRoomByFilterPagination(roomFilterDTO);
+	}
+	
+	
+	@GetMapping("/search/pagination2")
+	public Mono<ResponseEntity<PageDTO<RoomDTO>>> getRoomByFilterPaginationWithHeader(RoomFilterDTO roomFilterDTO){
+		
+		return roomService.getRoomByFilterPagination(roomFilterDTO)
+					.map(page -> ResponseEntity.ok()
+							.header("X-Total-Count", String.valueOf(page.getTotalElements()))
+							.body(page)
+							);					
+	}
+	
 }
 
 

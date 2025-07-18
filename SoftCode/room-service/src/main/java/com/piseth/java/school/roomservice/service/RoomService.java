@@ -1,6 +1,7 @@
 package com.piseth.java.school.roomservice.service;
 
 import com.piseth.java.school.roomservice.domain.Room;
+import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
 
@@ -20,4 +21,9 @@ public interface RoomService {
 
 	//service with our query criteria 	
 	Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO);
+	
+	//Filter by pagination 	
+	Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
+	
+	
 }

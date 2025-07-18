@@ -1,0 +1,118 @@
+4. Add Header to Response (X-Total-Count) 
+
+From FE, 
+
+something they also need the response on header so we should know how to do it. 
+
+Example :
+
+They need Response Header with total count on pagination. 
+
+===================================================================
+
+Main point we need to Wrapper with : ResponseEntity
+
+@GetMapping("/search/pagination2")
+	public Mono<ResponseEntity<PageDTO<RoomDTO>>> getRoomByFilterPaginationWithHeader(RoomFilterDTO roomFilterDTO){
+		
+		return roomService.getRoomByFilterPagination(roomFilterDTO)
+					.map(page -> ResponseEntity.ok()
+							.header("X-Total-Count", String.valueOf(page.getTotalElements()))
+							.body(page)
+							);					
+	}
+
+
+
+------------------------------------------------
+
+Testing:
+
+http://localhost:8080/api/rooms/search/pagination2?page=1&size=1
+
+Header :
+
+
+X-Total-Count:	1
+Content-Type:	application/json
+Content-Length:	146 bytes
+
+
+Result:
+
+{
+"page": 1,
+"size": 1,
+"totalElements": 1,
+"totalPage": 1,
+"content":[
+{
+"name": "Guest One",
+"attributes":{"width": 6, "lengh": 6, "price": 60, "Have Fan": true}
+}
+]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -28,7 +28,22 @@ public class RoomCriteriaBuilder {
 			criteria.and("attributes.floor").is(filter.getFloor());			
 		}
 		
-		Query query = new Query(criteria);
+		if(Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())){
+			switch(filter.getPriceOp()) {
+			case "lt" -> criteria.and("attributes.price").lt(filter.getPrice());
+			case "lte" -> criteria.and("attributes.price").lte(filter.getPrice());
+			case "gt" -> criteria.and("attributes.price").gt(filter.getPrice());
+			case "gte" -> criteria.and("attributes.price").gte(filter.getPrice());
+			case "eq" -> criteria.and("attributes.price").is(filter.getPrice());			
+			}
+		}else if(Objects.nonNull(filter.getPriceMin()) && Objects.nonNull(filter.getPriceMax())) {
+			criteria.and("attributes.price").gte(filter.getPriceMin()).lte(filter.getPriceMax());			
+			// Max > price > min
+		}
+		
+		Query query = new Query(criteria)
+				.skip((long) filter.getPage() * filter.getSize())
+				.limit(filter.getSize());
 		
 		return query;
 	}

@@ -10,5 +10,10 @@ public class RoomFilterDTO {
 	private String name;
 	private String type;
 	private Double price;
+	private Double priceMin;
+	private Double priceMax;
 	private String priceOp;
+	
+	private int size = 10;
+	private int page = 0;
 }

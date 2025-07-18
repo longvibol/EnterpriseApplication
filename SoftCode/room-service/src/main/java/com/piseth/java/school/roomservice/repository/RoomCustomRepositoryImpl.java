@@ -8,6 +8,7 @@ import com.piseth.java.school.roomservice.domain.Room;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,5 +20,10 @@ public class RoomCustomRepositoryImpl implements RoomCustomRepository{
 	@Override
 	public Flux<Room> findByFilter(Query query) {
 		return mongoTemplate.find(query, Room.class);
+	}
+
+	@Override
+	public Mono<Long> coundByFilter(Query query) {
+		return mongoTemplate.count(query, Room.class);
 	}
 }

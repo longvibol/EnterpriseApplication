@@ -1,9 +1,12 @@
 package com.piseth.java.school.roomservice.service.impl;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.piseth.java.school.roomservice.domain.Room;
+import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
 import com.piseth.java.school.roomservice.exception.RoomNotFoundException;
@@ -12,6 +15,7 @@ import com.piseth.java.school.roomservice.repository.RoomCustomRepository;
 import com.piseth.java.school.roomservice.repository.RoomRepository;
 import com.piseth.java.school.roomservice.service.RoomService;
 import com.piseth.java.school.roomservice.util.RoomCriteriaBuilder;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,8 +105,23 @@ public class RoomServiceImpl implements RoomService {
 				.map(roomMapper::toRoomDTO);
 	}
 
+	@Override
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO) {
+		// 1 build query for our filter on pagination
+		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+		return Mono.zip(countMono, contentFlux.collectList())
+				.map(tuple ->{
+					long total = tuple.getT1();
+					List<RoomDTO> content = tuple.getT2(); 
+					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
+					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
+				});
+	}	
 	
-
 	
 	
 }

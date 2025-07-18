@@ -1,0 +1,267 @@
+Video 61: 
+
+1. Using ModelAttribute 
+
+Review : Inorder to build : RoomCriteriaBuilder from the RoomFilterDTO (our filed to filter) 
+
+We create Mapping that get the input from the : 
+
+http://localhost:8080/api/rooms/search?name=Small Room&floor=3
+
+==> We can improve by create ModelAttribute from spring MVC 
+
+-----------------------------------------------------------------
+
+Step By Step to reduce code: 
+
+1. in the RoomController 
+
+- first code: using mapper 
+
+	// Build Filter controller 	
+	@GetMapping("/search")
+	public Flux<RoomDTO> getRoomByFilter(@RequestParam Map<String, String> params){		
+		// Map<String, String> params : because floor=3&hasParking=true (floor is the Key, 3 is the Value) 		
+		return roomService.getRoomByFilter(RoomFilterDTOMapper.toRoomFilterDTO(params));		
+	}
+}
+
+-First update code : using @ModelAttribute RoomFilterDTO roomFilterDTO
+
+	@GetMapping("/search")
+	public Flux<RoomDTO> getRoomByFilter(@ModelAttribute RoomFilterDTO roomFilterDTO ){		
+		return roomService.getRoomByFilter(roomFilterDTO);		
+	}
+==> if we test code it working as normal: 
+
+the framework will bind cording to the parameter we input: 
+
+from URL : http://localhost:8080/api/rooms/search?name=Small Room (name=Small Room it will bind to he filed : private String name) 
+
+អោយតែឈ្មោះ បោះមកនឹង និងឈ្មោះ Filed ដូចគ្នាគឺវាចេញហើយ បើវាខុសគ្នា វានឹងមិនចេញអីទេ គេហៅថា silent failler 
+
+- បើយើងធ្វើការ Manual filter it is easy to customize and we can control by ourselves (គុណវិបាតគឺយើងសរសេរកូដច្រើនពេក)
+
+- Last update in the @modelAttribute we can remove it 
+
+	// Build Filter controller 	
+	@GetMapping("/search")
+	public Flux<RoomDTO> getRoomByFilter(RoomFilterDTO roomFilterDTO ){		
+		return roomService.getRoomByFilter(roomFilterDTO);		
+	}
+
+==> We can delete our RoomFilterDTOMapper
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note:
+
+single stye : mean our code to the same stye if we use mapstruct we need to use mapstract all. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
