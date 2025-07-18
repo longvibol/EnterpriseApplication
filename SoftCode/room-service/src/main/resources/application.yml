@@ -1,10 +1,15 @@
+#spring:
+#  application:
+#    name: room-service
+#  data:
+#    mongodb:
+#     uri: mongodb://localhost:27017/room
+#  com.piseth.java.school: DEBUG
+
 spring:
-  application:
-    name: room-service
   data:
     mongodb:
-     uri: mongodb://localhost:27017/room
+      uri: mongodb+srv://mongovibol:hello123@cluster-1-roomservice.20qx8qp.mongodb.net/Enterprice?retryWrites=true&w=majority
 logging:
  level:
   root: INFO
-#  com.piseth.java.school: DEBUG

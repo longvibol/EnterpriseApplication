@@ -1,0 +1,25 @@
+1. Add dependency 
+
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+2. In application.yml
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://mongovibol:hello123@cluster-1-roomservice.20qx8qp.mongodb.net/Enterprice?retryWrites=true&w=majority
+logging:
+ level:
+  root: INFO
+
+Noted: 
+
+mongodb+srv://mongovibol:hello123@cluster-1-roomservice.20qx8qp.mongodb.net/Enterprice?retryWrites=true&w=majority
+
+We get from Mongodb Altas 
+
+
+https://cloud.mongodb.com/v2/625a71ec492c287660ff3815#/clusters
