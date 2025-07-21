@@ -1,0 +1,174 @@
+sortBy=name&direction=desc
+
+desc = from Z to A
+asc = from A to Z
+
+so we need to add two field sortby and direction 
+
+1. In the RoomCriteriaBuilder
+
+we create new Method to handle sort and direction 
+
+First thinking : we create new function that have return type Query we need to call Criterial from another method. 
+
+(why we first thinking to create Query function because in Criterial that we want to do sorting and direction it need query input. )
+
+so it make another dependency with the criterial 
+
+==> Solution: We create new function that have return type Sort and for Sort method it have Sort.With 
+that can accept query inside. it is less depend from other item. 
+
+=============================================================================
+
+public static Sort sort(RoomFilterDTO filter) {
+		
+		// sort direction 
+		Sort.Direction direction = Sort.Direction.ASC;		
+		if("desc".equalsIgnoreCase(filter.getDirection())) {
+			direction =Sort.Direction.DESC;
+		}		
+		
+		// sort field 		
+		String sortField = filter.getSortBy();		
+		return Sort.by(direction, sortField);
+
+	}
+
+==========================================================================
+
+
+2. RoomFilterDTO
+
+@Data
+public class RoomFilterDTO {
+	@Schema(description = "Filter by floor number", example = "3")
+	private Integer floor;
+	private String name;
+	private String type;
+	private Double price;
+	private Double priceMin;
+	private Double priceMax;
+	private String priceOp;
+	
+	private int size = 10;
+	private int page = 0;
+	
+	@Schema(description = "Sort by field name (ex: name, floor)", example = "name")
+	private String sortBy;
+	
+	@Schema(description = "Sort direction : asc or desc", example = "asc")
+	private String direction;
+}
+
+
+3. RoomServiceImpl 
+
+
+@Override
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO) {
+		Criteria criteria = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(new Query(criteria));
+
+		Query query = new Query(criteria)
+				.skip((long) filterDTO.getPage() * filterDTO.getSize())
+				.limit(filterDTO.getSize());
+		
+		query.with(RoomCriteriaBuilder.sort(filterDTO));
+		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
+		
+		return Mono.zip(countMono, contentFlux.collectList())
+				.map(tuple ->{
+					long total = tuple.getT1();
+					List<RoomDTO> content = tuple.getT2(); 
+					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
+					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
+				});
+	}	
+
+Testing :  
+
+GET: http://localhost:8080/api/rooms/search/pagination?page=0&size=4&sortBy=attributes.price&direction=asc
+
+{
+"page": 0,
+"size": 4,
+"totalElements": 6,
+"totalPage": 2,
+"content":[
+{
+"name": "Twin Room",
+"attributes":{"width": 9, "lengh": 6, "price": 50, "haveFan": true, "packing": true…}
+},
+{
+"name": "A",
+"attributes":{"width": 6, "lengh": 6, "price": 60, "Have Fan": true}
+},
+{
+"name": "Guest house",
+"attributes":{"width": 3, "lengh": 6, "price": 60, "Have Fan": true}
+},
+{
+"name": "Luxery Room",
+"attributes":{"width": 7, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+}
+]
+}
+
+Note: when we want to search the field under : attributes we need to add attributes.price 
+
+but it is not the good solution we can improve it. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

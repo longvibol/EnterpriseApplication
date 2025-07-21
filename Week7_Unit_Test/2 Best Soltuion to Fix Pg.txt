@@ -1,12 +1,27 @@
-package com.piseth.java.school.roomservice.util;
+in the criterial : we return the query that why if we want to change the object query that instance we need to 
+create two different object. 
 
-import java.util.Objects;
+But it is the not solution because we need to write the code again. 
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+Ex: in the code :
 
-import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+
+Query query = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+Query query2 = RoomCriteriaBuilder.build(filterDTO);	
+		
+		query2.skip((long) filterDTO.getPage() * filterDTO.getSize())
+		.limit(filterDTO.getSize());
+
+It have two query and query 2
+
+================================================================
+
+Good solution we can return Criterial from the class then we can create object inside the instance Method called. 
+
+1. RoomCriteriaBuilder
 
 public class RoomCriteriaBuilder {
 
@@ -39,28 +54,35 @@ public class RoomCriteriaBuilder {
 
 		return criteria;
 	}
-	
-	
-	public static Sort sort(RoomFilterDTO filter) {
-		
-		// sort direction 
-		Sort.Direction direction = Sort.Direction.ASC;		
-		if("desc".equalsIgnoreCase(filter.getDirection())) {
-			direction =Sort.Direction.DESC;
-		}		
-		
-		// sort field 		
-		String sortField = filter.getSortBy();	
-		
-		if(!sortField.contains(".")) {
-			if(!sortField.equals("name")) {
-				sortField = "attributes."+ sortField;
-			}
-		}
-		
-		return Sort.by(direction, sortField);
-
-	}
-	
-		
 }
+
+2. RoomServiceImpl
+
+Criteria criteria = RoomCriteriaBuilder.build(filterDTO);		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

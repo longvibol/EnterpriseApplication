@@ -2,6 +2,7 @@ package com.piseth.java.school.roomservice.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class RoomServiceImpl implements RoomService {
 	
-	private final RoomRepository roomRepository;
+	private final RoomRepository roomRepository; 
 
 	private final RoomMapper roomMapper;
 	
@@ -42,7 +43,6 @@ public class RoomServiceImpl implements RoomService {
 		return roomRepository.save(room)
 				.doOnSuccess(saved -> log.info("Room Save: {}",saved))
 				.map(roomMapper::toRoomDTO);
-
 	}
 
 	@Override
@@ -100,25 +100,24 @@ public class RoomServiceImpl implements RoomService {
 
 	@Override
 	public Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO) {
-		Query query = RoomCriteriaBuilder.build(filterDTO);		
-		return roomCustomRepository.findByFilter(query)
+		Criteria criteria = RoomCriteriaBuilder.build(filterDTO);		
+		return roomCustomRepository.findByFilter(new Query(criteria))
 				.map(roomMapper::toRoomDTO);
 	}
 
 	@Override
 	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO) {
-		// 1 build query for our filter on pagination
-		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		Criteria criteria = RoomCriteriaBuilder.build(filterDTO);		
 		
-		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(new Query(criteria));
+
+		Query query = new Query(criteria)
+				.skip((long) filterDTO.getPage() * filterDTO.getSize())
+				.limit(filterDTO.getSize());
 		
-		Query query2 = RoomCriteriaBuilder.build(filterDTO);	
+		query.with(RoomCriteriaBuilder.sort(filterDTO));
 		
-		query2.skip((long) filterDTO.getPage() * filterDTO.getSize())
-		.limit(filterDTO.getSize());
-		
-		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query2).map(roomMapper::toRoomDTO);
-		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
 		
 		return Mono.zip(countMono, contentFlux.collectList())
 				.map(tuple ->{
@@ -127,9 +126,7 @@ public class RoomServiceImpl implements RoomService {
 					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
 					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
 				});
-	}	
-	
-	
+	}		
 	
 }
 

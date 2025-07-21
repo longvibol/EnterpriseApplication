@@ -1,4 +1,4 @@
-package com.piseth.java.school.room_service;
+package com.piseth.java.school.roomservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

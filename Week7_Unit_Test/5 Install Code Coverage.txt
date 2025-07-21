@@ -1,0 +1,67 @@
+Go to Help --> find Eclipse Marketplace : "Code Coverage" 
+
+- ជាទូរទៅយើងត្រូវមាន Unit test (ជាពិសេសត្រូវធ្វើការ តេស្ត លើ Service តែម្តង)
+- យើងអាចធ្វើជា Integration teat (តេស្តដាក់ Data ចូលគ្នាតែម្តង់)
+- in general for the depenancy 
+
+	private final RoomRepository roomRepository;
+
+	private final RoomMapper roomMapper;
+	
+	private final RoomCustomRepository roomCustomRepository;
+
+គេប្រើ MOK ​it support this dependency it working no need to be care in testing 
+
+1. Add Dependency 
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+		</dependency>
+
+
+2. Create testing 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+​
