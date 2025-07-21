@@ -41,9 +41,8 @@ public class RoomCriteriaBuilder {
 			// Max > price > min
 		}
 		
-		Query query = new Query(criteria)
-				.skip((long) filter.getPage() * filter.getSize())
-				.limit(filter.getSize());
+		Query query = new Query(criteria);
+				
 		
 		return query;
 	}

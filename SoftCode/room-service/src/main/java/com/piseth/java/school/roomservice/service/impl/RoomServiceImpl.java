@@ -110,8 +110,15 @@ public class RoomServiceImpl implements RoomService {
 		// 1 build query for our filter on pagination
 		Query query = RoomCriteriaBuilder.build(filterDTO);		
 		
-		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
 		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+		Query query2 = RoomCriteriaBuilder.build(filterDTO);	
+		
+		query2.skip((long) filterDTO.getPage() * filterDTO.getSize())
+		.limit(filterDTO.getSize());
+		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query2).map(roomMapper::toRoomDTO);
+		
 		
 		return Mono.zip(countMono, contentFlux.collectList())
 				.map(tuple ->{
