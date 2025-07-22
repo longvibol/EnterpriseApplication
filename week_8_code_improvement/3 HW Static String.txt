@@ -1,0 +1,62 @@
+** Put static string in the correct way **
+
+Example: in the RoomCriaterialBuilder 
+
+
+		if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			switch (filter.getPriceOp()) {
+			case "lt" -> criteria.and("attributes.price").lt(filter.getPrice());
+			case "lte" -> criteria.and("attributes.price").lte(filter.getPrice());
+			case "gt" -> criteria.and("attributes.price").gt(filter.getPrice());
+			case "gte" -> criteria.and("attributes.price").gte(filter.getPrice());
+			case "eq" -> criteria.and("attributes.price").is(filter.getPrice());
+			}
+
+
+=====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
