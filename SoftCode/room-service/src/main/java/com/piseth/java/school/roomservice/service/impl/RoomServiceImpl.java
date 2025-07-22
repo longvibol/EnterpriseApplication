@@ -43,6 +43,7 @@ public class RoomServiceImpl implements RoomService {
 		return roomRepository.save(room)
 				.doOnSuccess(saved -> log.info("Room Save: {}",saved))
 				.map(roomMapper::toRoomDTO);
+				
 	}
 
 	@Override
