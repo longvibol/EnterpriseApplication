@@ -37,7 +37,7 @@ public class RoomServiceImplTest {
 		// Given : parameter input to the function that make this function work 
 		
 		RoomDTO roomDTO = new RoomDTO();
-		roomDTO.setName("Luxury");
+		roomDTO.setName("Luxury"); 
 		
 		Room room = new Room();
 		room.setName("Luxury");

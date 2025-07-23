@@ -16,7 +16,105 @@ Example: in the RoomCriaterialBuilder
 =====================================
 
 
+1. Create class constant 
 
+package com.piseth.java.school.roomservice.util;
+
+public final class RoomConstants {
+	
+	// class final can not extends 
+	// close contractor : can not create object  
+	
+	private RoomConstants() {}
+	
+	public static final String ATT = "attributes.";
+	
+	public static final String FIELD_NAME = "name";
+	public static final String FIELD_FLOOR = ATT+"floor";
+	public static final String FIELD_PRICE = ATT+"price";
+	
+	//Price Operator 
+	
+	public static final String OP_LT = "lt";
+	public static final String OP_LTE = "lte";
+	public static final String OP_GT = "gt";
+	public static final String OP_GTE = "gte";
+	public static final String OP_EQ = "eq";
+	
+
+}
+
+
+2. Edit in the RoomCriteriaBuilder
+
+When we write constant we call the class : RoomContant. So it is difficult to put the same thing. 
+
+==> we can reduce by import static: 
+
+import static com.piseth.java.school.roomservice.util.RoomConstants.*;
+
+Issue :
+
+criteria.and(RoomConstants.FIELD_NAME).is(filter.getName());
+
++ To replace copy text: 
+
+Ctlt + V => Replace All (Ctlt + F) 
+
+===========================================
+
+
+public static Criteria build(RoomFilterDTO filter) {
+		Criteria criteria = new Criteria();
+
+		if (Objects.nonNull(filter.getName())) {
+			criteria.and(FIELD_NAME).is(filter.getName());
+		}
+
+		if (filter.getFloor() != null) {
+			criteria.and(FIELD_FLOOR).is(filter.getFloor());
+		}
+
+		if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			switch (filter.getPriceOp()) {
+			case OP_LT -> criteria.and(FIELD_PRICE).lt(filter.getPrice());
+			case OP_LTE -> criteria.and(FIELD_PRICE).lte(filter.getPrice());
+			case OP_GT -> criteria.and(FIELD_PRICE).gt(filter.getPrice());
+			case OP_GTE -> criteria.and(FIELD_PRICE).gte(filter.getPrice());
+			case OP_EQ -> criteria.and(FIELD_PRICE).is(filter.getPrice());
+			}
+		} else if (Objects.nonNull(filter.getPriceMin()) && Objects.nonNull(filter.getPriceMax())) {
+			criteria.and(FIELD_PRICE).gte(filter.getPriceMin()).lte(filter.getPriceMax());
+		}
+
+		return criteria;
+	}
+	
+	
+	public static Sort sort(RoomFilterDTO filter) {
+		
+		// sort direction 
+		Sort.Direction direction = Sort.Direction.ASC;		
+		if("desc".equalsIgnoreCase(filter.getDirection())) {
+			direction =Sort.Direction.DESC;
+		}		
+		
+		// sort field 		
+		String sortField = filter.getSortBy();	
+		
+		if(!sortField.contains(".")) {
+			if(!sortField.equals("name")) {
+				sortField = "attributes."+ sortField;
+			}
+		}
+		
+		return Sort.by(direction, sortField);
+
+	}
+
+TEST: 
+
+http://localhost:8080/api/rooms/search/pagination?page=0&size=6&sortBy=price&direction=asc
 
 
 

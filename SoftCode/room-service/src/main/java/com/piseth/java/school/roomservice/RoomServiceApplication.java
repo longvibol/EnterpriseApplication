@@ -10,4 +10,4 @@ public class RoomServiceApplication {
 		SpringApplication.run(RoomServiceApplication.class, args);
 	}
 
-}
+} 

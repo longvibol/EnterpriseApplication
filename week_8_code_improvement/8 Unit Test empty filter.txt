@@ -1,0 +1,50 @@
+Video 87:
+
+
+1. Testing on each function and condition (build in RoomCriteriaBuilder)
+
+We want to do testing in class Build and in side it have function: Criterial build 
+
+- Test on input empty : RoomFilterDTO filter
+
+
+1. Crete class for testing 
+
+com.piseth.java.school.roomservice.service.util
+
+==> create class : RoomCriterialBuilderTest
+
+package com.piseth.java.school.roomservice.service.util;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.data.mongodb.core.query.Criteria;
+
+import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+import com.piseth.java.school.roomservice.util.RoomCriteriaBuilder;
+
+public class RoomCriterialBuilderTest {
+	
+	@Test
+	void shouldReturnEmptyCriteria_whenNoFilterProvided() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		
+		// Then
+		assertThat(criteria.getCriteriaObject()).isEmpty();
+		
+	}
+
+}
+
+
+
+
+
+ 
+
+ 

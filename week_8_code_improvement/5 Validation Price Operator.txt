@@ -1,0 +1,94 @@
+If we add extra text it will not show any error: 
+
+GET:  http://localhost:8080/api/rooms/search/pagination?page=0&size=4&sortBy=name&direction=asc&price=60&priceOp=ltyy
+
+Ex:priceOp =ltyy
+
+
+if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			switch (filter.getPriceOp()) {
+			case OP_LT -> criteria.add(Criteria.where(FIELD_PRICE).lt(filter.getPrice()));
+			case OP_LTE -> criteria.add(Criteria.where(FIELD_PRICE).lte(filter.getPrice()));
+			case OP_GT -> criteria.add(Criteria.where(FIELD_PRICE).gt(filter.getPrice()));
+			case OP_GTE -> criteria.add(Criteria.where(FIELD_PRICE).gte(filter.getPrice()));
+			case OP_EQ -> criteria.add(Criteria.where(FIELD_PRICE).is(filter.getPrice()));
+			}
+
+----------------------------------------------- Improve 
+
+if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			
+			switch (filter.getPriceOp()) {
+			case OP_LT -> criteria.add(Criteria.where(FIELD_PRICE).lt(filter.getPrice()));
+			case OP_LTE -> criteria.add(Criteria.where(FIELD_PRICE).lte(filter.getPrice()));
+			case OP_GT -> criteria.add(Criteria.where(FIELD_PRICE).gt(filter.getPrice()));
+			case OP_GTE -> criteria.add(Criteria.where(FIELD_PRICE).gte(filter.getPrice()));
+			case OP_EQ -> criteria.add(Criteria.where(FIELD_PRICE).is(filter.getPrice()));
+			default -> log.warn("Invalid price operator: {}", filter.getPriceOp());
+			
+			}
+
+Testing :  
+
+GET: http://localhost:8080/api/rooms/search/pagination?page=0&size=4&sortBy=name&direction=asc&price=60&priceOp=ltyy
+
+Solution :
+
+default -> log.warn("Invalid price operator: {}", filter.getPriceOp());
+
+------------------------------------
+Wrong input priceOp =ltyy
+
+
+Show log : 
+
+2025-07-23T11:46:23.990+07:00  WARN 16324 --- [ctor-http-nio-2] c.p.j.s.r.util.RoomCriteriaBuilder       : Invalid price operator: ltyy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
