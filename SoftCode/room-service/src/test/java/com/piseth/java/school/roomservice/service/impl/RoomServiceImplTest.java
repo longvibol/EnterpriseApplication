@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @ExtendWith(MockitoExtension.class)
-public class RoomServiceImplTest {
+class RoomServiceImplTest {
 	
 	@Mock
 	private RoomRepository roomRepository; 
@@ -48,8 +48,6 @@ public class RoomServiceImplTest {
 		when(roomMapper.toRoom(roomDTO)).thenReturn(room);		
 		when(roomMapper.toRoomDTO(room)).thenReturn(roomDTO); 
 		
-		
-		//.map(r -> roomMapper.toRoomDTO(r));
 		
 		// Then : What we expected the result 
 		

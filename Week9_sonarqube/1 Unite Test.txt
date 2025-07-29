@@ -1,0 +1,151 @@
+@Test
+	void shouldAddPriceCriteria_withOperationLTE() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setPrice(60d);
+		filter.setPriceOp("lte");
+		 
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		String jsonConvert = criteria.getCriteriaObject().toJson();
+		
+		// Then
+		// We check Key and Value from Map 
+		assertThat(jsonConvert).contains("price").contains("$lte");		
+	}
+	
+	@Test
+	void shouldAddPriceCriteria_withOperationGT() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setPrice(60d);
+		filter.setPriceOp("gt");
+		 
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		String jsonConvert = criteria.getCriteriaObject().toJson();
+		
+		// Then
+		// We check Key and Value from Map 
+		assertThat(jsonConvert).contains("price").contains("$gt");		
+	}
+	
+	@Test
+	void shouldAddPriceCriteria_withOperationGTE() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setPrice(60d);
+		filter.setPriceOp("gte");
+		 
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		String jsonConvert = criteria.getCriteriaObject().toJson();
+		
+		// Then
+		// We check Key and Value from Map 
+		assertThat(jsonConvert).contains("price").contains("$gte");		
+	}
+	
+	@Test
+	void shouldAddPriceCriteria_withOperationEQ() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setPrice(60d);
+		filter.setPriceOp("eq");
+		 
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		String jsonConvert = criteria.getCriteriaObject().toJson();
+		
+		// Then
+		// We check Key and Value from Map 
+		assertThat(jsonConvert).contains("price").contains("60");		
+	}
+	
+	@Test
+    void testInvalidPriceOperatorLogsWarning() {
+        LogCaptor logCaptor = LogCaptor.forClass(RoomCriteriaBuilder.class);
+
+        RoomFilterDTO filter = new RoomFilterDTO(); 
+        filter.setPrice(150.0);
+        filter.setPriceOp("INVALID_OP");
+
+        Criteria result = RoomCriteriaBuilder.build(filter);
+
+        assertTrue(logCaptor.getWarnLogs()
+            .stream()
+            .anyMatch(log -> log.contains("Invalid price operator: INVALID_OP")));
+    }
+
+	@Test
+	void shouldAddPriceMin_PriceMax() {
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setPriceMin(60d);
+		filter.setPriceMax(80d);
+		 
+		// When 		
+		Criteria criteria = RoomCriteriaBuilder.build(filter);
+		String jsonConvert = criteria.getCriteriaObject().toJson();
+
+		assertThat(jsonConvert).contains("price").contains("$gte").contains("$lte");		
+	}
+	
+	// Sort function testing 
+	
+	@Test
+	public void sort_withValidFieldASC() {		
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setDirection("asc");
+		filter.setSortBy("price"); // sort by asc
+		 
+		// When 		
+		Sort sort = RoomCriteriaBuilder.sort(filter);
+		// When
+		assertThat(sort.getOrderFor("attributes.price")).isNotNull();
+		assertThat(sort.getOrderFor("attributes.price")
+				.getDirection()).isEqualTo(Sort.Direction.ASC);
+	}	
+	
+	
+	@Test
+	public void sort_withDefaultValue() {		
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+				 
+		// When 		
+		Sort sort = RoomCriteriaBuilder.sort(filter);
+		// When
+		assertThat(sort.getOrderFor("name")).isNotNull();
+		assertThat(sort.getOrderFor("name")
+				.getDirection()).isEqualTo(Sort.Direction.ASC);
+	}
+	
+	
+	@Test
+	void sort_withInvalidField_throwException() {		
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setDirection("asc");
+		filter.setSortBy("type"); // type is invalid field
+		 
+		// When 		
+		assertThatThrownBy(()-> RoomCriteriaBuilder.sort(filter))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("Invalid sort fiels:");		
+	}
+	
+	@Test
+	public void sort_withValidFieldDESC() {		
+		// Given 		
+		RoomFilterDTO filter = new RoomFilterDTO();
+		filter.setDirection("desc");
+		 
+		// When 		
+		Sort sort = RoomCriteriaBuilder.sort(filter);
+		// When
+		assertThat(sort.getOrderFor("name")).isNotNull();
+		assertThat(sort.getOrderFor("name")
+				.getDirection()).isEqualTo(Sort.Direction.DESC);
+	}

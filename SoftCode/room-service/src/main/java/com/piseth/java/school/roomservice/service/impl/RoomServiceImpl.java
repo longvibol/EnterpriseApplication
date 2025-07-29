@@ -69,15 +69,14 @@ public class RoomServiceImpl implements RoomService {
 
 	
 	@Override
-	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		
+	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {		 
 	log.debug("Update room id: {} with data : {}",id,roomDTO);			
 	return	roomRepository				
 				.findById(id)
 				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
 				.flatMap(existing ->{							
 					roomMapper.updateRoomFromDTO(roomDTO, existing);					
-					Mono<Room> monoRoom = roomRepository.save(existing);						
-					return monoRoom;
+					return roomRepository.save(existing);						
 				}).map(roomMapper::toRoomDTO);		
 	}
 
@@ -87,7 +86,6 @@ public class RoomServiceImpl implements RoomService {
 		return roomRepository.deleteById(id)
 				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
 				.doOnSubscribe(deleted -> log.info("\"Room deleted with ID: {}",id));
-
 	}
 
 	@Override
@@ -95,8 +93,6 @@ public class RoomServiceImpl implements RoomService {
 		
 		return roomRepository.findRoom(name).map(roomMapper::toRoomDTO);
 		
-//		return roomRepository.findByNameContainingIgnoreCase(name)
-//				.map(roomMapper::toRoomDTO);
 	}
 
 	@Override

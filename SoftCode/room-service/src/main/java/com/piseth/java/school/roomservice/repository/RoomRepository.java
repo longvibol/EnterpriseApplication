@@ -14,9 +14,7 @@ public interface RoomRepository extends ReactiveMongoRepository<Room, String>{
 
 	//Study Purpose	
 	Flux<Room> findByNameContainingIgnoreCase(String name);
-	
-	//	Flux<Room> findByName(String name);	
-	
+		
 	//Custom Query 
 	@Query("{'name': ?0}")
 	Flux<Room> findRoom(String name);
