@@ -1,0 +1,97 @@
+Upload excel 
+
+We have many recode so to make it easy we can upload from excel.
+
+Ex: we have 20 row 
+
+Name, floor, price, type 
+==> Big room, 2 , 60, rent room 
+
+We have two option: 
+
+Option 1:  
+
+- If have one recode error then we ask them to do it again and tell with row is error 
+
+Option 2:
+
+- If have one recode is error then we can input all after that we show witch recode and with error point
+
+Ex: row 
+
+2-miss room type
+3-missed price 
+
+
+================Hightlight what that is error 
+
+Issue :
+
+Update again will have Duplicate 
+
+and our system also need Duplicate Validation 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

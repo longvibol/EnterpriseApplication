@@ -1,0 +1,114 @@
+<!-- For working with .xlsx files -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>5.2.3</version>
+		</dependency>
+
+
+--------------------------------
+
+1. create class : that we want to report to the user what is the summary 
+What we respond 
+
+- បើអត់ដើរ អត់ដើរអាណាខ្លះ : it is the list of row that we skip 
+
+==> private List<Integer> skippedRow; // what row we skip
+
+- row ខ្លះវា error name, row ខ្លះវា Error price (relationship Integer and String)  
+==> Map<Integer, String > - Integer : row error and String = reason error 
+
+ការបង្កើត field នឹងហើយគេហៅថា Business logic 
+
+public class RoomImportSummary {
+
+	private int inserted; // how many recode that we insert to the database 
+	private int skipped; // how many fail recode can not upload 
+	private List<Integer> skippedRow; // what row we skip 
+	private Map<Integer, String> reasons; // witch row and reason 
+	
+}
+
+
+
+
+
+2. create class for save what we have upload (save row that have problems) 
+
+
+	@Id
+	private String id;
+	
+	private int rowNumber; // wich row it error 
+	
+	private Map<String, Object> rowData; 
+
+	Ex: name : RoomA ; price :200
+
+-------------------------------------------------------
+
+
+
+@Data
+@Document(collation = "skipped_rooms")
+public class SkippedRoomDocument {
+	
+	@Id
+	private String id;
+	
+	private int rowNumber; // wich row it error 
+	
+	private Map<String, Object> rowData; // we capture 
+	
+	private String reason; // what is the reason 
+	private LocalDateTime uploadDate;
+	private String uploadBatchId; // number of batch that we upload 
+	
+
+}
+
+---------------------------------
+
+
+ដោយសារតែយើងប្រើ Jpa : 1 domain = 1 repository 
+
+
+=================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
