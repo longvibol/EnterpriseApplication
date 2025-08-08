@@ -4,6 +4,7 @@ import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+import com.piseth.java.school.roomservice.dto.RoomImportSummary;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,5 +26,6 @@ public interface RoomService {
 	//Filter by pagination 	
 	Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
 	
-	
+	Mono<RoomImportSummary> updateRoomSuccess();
+	Mono<RoomImportSummary> updateRoomError();
 }

@@ -1,21 +1,25 @@
 package com.piseth.java.school.roomservice.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+import com.piseth.java.school.roomservice.dto.RoomImportSummary;
+import com.piseth.java.school.roomservice.service.RoomImportService;
 import com.piseth.java.school.roomservice.service.RoomService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +39,8 @@ import reactor.core.publisher.Mono;
 public class RoomController {
 		
 	private final RoomService roomService;
+	private final RoomImportService romImportService;
+	
 		
 	@PostMapping
 	@Operation(summary = "Create Room")
@@ -93,6 +99,16 @@ public class RoomController {
 							.header("X-Total-Count", String.valueOf(page.getTotalElements()))
 							.body(page)
 							);					
+	}
+	
+	@PostMapping(value = "/upload-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Mono<RoomImportSummary> uploadExcel(@RequestPart("file") FilePart filePart){
+		return romImportService.importRooms(filePart);
+	}
+	
+	@GetMapping(value = "/room_upload")
+	public Mono<RoomImportSummary> uploadRoom(){
+		return null;
 	}
 	
 }

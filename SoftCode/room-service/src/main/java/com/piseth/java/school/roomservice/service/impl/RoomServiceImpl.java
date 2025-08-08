@@ -10,6 +10,7 @@ import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+import com.piseth.java.school.roomservice.dto.RoomImportSummary;
 import com.piseth.java.school.roomservice.exception.RoomNotFoundException;
 import com.piseth.java.school.roomservice.mapper.RoomMapper;
 import com.piseth.java.school.roomservice.repository.RoomCustomRepository;
@@ -123,6 +124,18 @@ public class RoomServiceImpl implements RoomService {
 					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
 					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
 				});
+	}
+
+	@Override
+	public Mono<RoomImportSummary> updateRoomSuccess() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Mono<RoomImportSummary> updateRoomError() {
+		// TODO Auto-generated method stub
+		return null;
 	}		
 	
 }

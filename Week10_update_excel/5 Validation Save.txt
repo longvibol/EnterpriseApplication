@@ -1,0 +1,218 @@
+1. Check the row is empty 
+
+// case empty row 
+				
+				if(row ==null) {
+					skippedRow.add(displayRow);
+					reasons.put(displayRow, "Empty Row");
+					skippedRoomDocuments.add(buildSkippedRoomDocument(displayRow, Collections.EMPTY_MAP, "Empty Row", bathId));
+					continue; // after we add then we continue to next row 
+				}		
+
+2. Get cell 
+
+ដោយសារតែនៅក្នុង Excel វាប្រកាន់បើ if the row it String we need to get from string, if the row is double we 
+need to create function double
+
+private String getString(Cell cell) {
+		return cell == null ? null : cell.getStringCellValue();
+	}
+	
+	private Double getDouble(Cell cell) {
+		// if the input string we need to do try catch 		
+		try {
+			return cell ==null ? null : cell.getNumericCellValue();
+		} catch (Exception e) {
+			return null;
+		}		
+	}
+3. យើងចាប់ cell មួយ
+
+Name  
+RoomA 
+
+Cell cell = row.getCell(0);				
+String name = getString(cell);
+
+------------------------------------------
+
+// get cell 	
+				String name = getString(row.getCell(0)); // RoomA 
+				Double price = getDouble(row.getCell(1)); // 100$
+				Double floorValue = getDouble(row.getCell(2));
+				Integer floor = (floorValue != null) ? floorValue.intValue() : null; // Floor-integer 
+				String type = getString(row.getCell(3)); // type 
+
+Note on the floor វាត្រូវតែជា integer floor can not have 1.5 floor that why we convert from double to integer 
+
+4. Check valid in each row or not 
+
+		// validaton name, price, floor and type it valid or not before we insert to database 
+				// want to know if they forget to put name we tell, you forget name 
+				
+				String reason = null;
+				if(!StringUtils.hasText(name)) {
+					reason = "Missing room name";
+				} 
+				else if (price == null) {
+					reason = "Missing or invalid price";
+				}
+				else if (floor == null) {
+					reason = "Missing or invalid floor";
+				}
+				else if (type == null) {
+					reason = "Missing or invalid type";
+				}
+				
+				// have problem or error 
+				if(reason != null) {
+					skippedRow.add(displayRow);
+					reasons.put(displayRow, reason);
+					skippedRoomDocuments.add(buildSkippedRoomDocument(displayRow, rowData, reason, bathId));
+					continue;  
+				}
+
+5. Inside for loop : mean we check all the valid and invalid row 
+
+Now we can save both of them to database "
+
+// Final valid data that we can save 
+				
+				Room room = new Room();
+				room.setName(name);
+				room.setAttributes(rowData);
+	
+				// We need to wait until finished checking all the row 
+				log.debug("Prepared to save room : {}",room);
+				validRoom.add(room);			
+				
+				// End loop 
+
+
+6. save the room to database 
+
+ log.info("Valid rooms to save: {}", validRoom.size());
+			 
+			 return skippedRoomDocumentRepository.saveAll(skippedRoomDocuments)
+			 	.thenMany(roomRepository.saveAll(validRoom)
+			 			.doOnNext(r -> log.info("Save room: {}",r))
+			 			.doOnError(err -> log.error("Error saving room: {}", err.getMessage(), err))
+			 )
+			 .collectList()	
+			 .map(save -> new RoomImportSummary(save.size(),skippedRoomDocuments.size(),skippedRow,reasons));	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
