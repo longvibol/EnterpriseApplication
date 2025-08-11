@@ -133,7 +133,7 @@ public class RoomServiceImpl implements RoomService {
 	}
 
 	@Override
-	public Mono<RoomImportSummary> updateRoomError() {
+	public Mono<RoomImportSummary> updateRoomFail() {
 		// TODO Auto-generated method stub
 		return null;
 	}		

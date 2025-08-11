@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Paginated responed wrapper")
+@Schema(description = "Paginated response wrapper")
 public class PageDTO<T> {
-
 	@Schema(description = "Current page number (0-based)")
 	private int page;
 	
@@ -22,11 +21,9 @@ public class PageDTO<T> {
 	@Schema(description = "Total number of records")
 	private long totalElements;
 	
-	
 	@Schema(description = "Total number of pages")
 	private int totalPage;
 	
 	@Schema(description = "Current page data list")
 	private List<T> content;
-	
 }

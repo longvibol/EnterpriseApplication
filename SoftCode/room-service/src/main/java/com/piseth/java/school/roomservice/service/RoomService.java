@@ -27,5 +27,5 @@ public interface RoomService {
 	Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
 	
 	Mono<RoomImportSummary> updateRoomSuccess();
-	Mono<RoomImportSummary> updateRoomError();
+	Mono<RoomImportSummary> updateRoomFail();
 }

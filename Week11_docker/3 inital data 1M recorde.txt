@@ -1,0 +1,100 @@
+1- When the application start it will run and import the data to the mongodb.yml file 
+2. how to generate the data 
+
+- teacher will create sample data according to our property 
+- then insert to the running database (we run only one time if the data duplicate we will skip it) 
+
+==> we will user data faker <==
+
+Add dependency : 
+
+--------------------------------------------------------------
+
+<!-- For faker generater recorde -->
+		<dependency>
+	        <groupId>com.github.javafaker</groupId>
+	        <artifactId>javafaker</artifactId>
+	        <version>1.0.2</version>
+	    </dependency>
+
+--------------------------------------------------------------
+
+Create new package : RoomDataSeeder
+
+package com.piseth.java.school.roomservice.init;
+
+@Value("${room.seed.enabled:false}") : 
+    private boolean seedEnabled;
+
+
+-------------------
+
+In the property.yml
+
+#Facker generate recorde
+room:
+  seed:
+    enabled: true
+
+បើវា false : when start up it will not insert new data; true insert 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

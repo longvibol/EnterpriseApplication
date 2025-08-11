@@ -1,30 +1,12 @@
-package com.piseth.java.school.roomservice.domain;
+Why we need to flat this property :
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+- it is faster​ របស់ដែលយើងដឹងហើយ ចឹងវាលឿន (query fast) 
+- we can index these property 
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+ 
 
-import com.piseth.java.school.roomservice.domain.enumeration.GenderPreference;
-import com.piseth.java.school.roomservice.domain.enumeration.PropertyType;
-import com.piseth.java.school.roomservice.domain.enumeration.RoomType;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Document
-public class Room {
-	
-	@Id
+@Id
 	private String id;
 	private String name;
 	
@@ -75,5 +57,3 @@ public class Room {
     private LocalDateTime lastUpdated;
 
     private Map<String, Object> extraAttributes = new HashMap<>();
-
-}

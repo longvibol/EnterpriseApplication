@@ -46,9 +46,9 @@ public class RoomImportServiceImple implements RoomImportService{
 			.map(dataBuffer -> {
 				
 				byte[] bytes = new byte[dataBuffer.readableByteCount()];
-				dataBuffer.read(bytes); // we read data from databuffer and store in byte[] 
+				dataBuffer.read(bytes); // we read data from data buffer and store in byte[] 
 				
-				// we need to have one operation to protech memory lead (clean up memory)
+				// we need to have one operation to protect memory lead (clean up memory)
 				
 				DataBufferUtils.release(dataBuffer);
 				
@@ -135,7 +135,7 @@ public class RoomImportServiceImple implements RoomImportService{
 				
 				Room room = new Room();
 				room.setName(name);
-				room.setAttributes(rowData);
+				//room.setAttributes(rowData);
 	
 				// We need to wait until finished checking all the row 
 				log.debug("Prepared to save room : {}",room);
@@ -151,9 +151,7 @@ public class RoomImportServiceImple implements RoomImportService{
 			 			.doOnError(err -> log.error("Error saving room: {}", err.getMessage(), err))
 			 )
 			 .collectList()	
-			 .map(save -> new RoomImportSummary(save.size(),skippedRoomDocuments.size(),skippedRow,reasons));	
-			 
-			 
+			 .map(save -> new RoomImportSummary(save.size(),skippedRoomDocuments.size(),skippedRow,reasons));		 
 			
 		} catch (IOException e) {
 			log.error("Fail to parse Excel", e);
@@ -188,6 +186,10 @@ public class RoomImportServiceImple implements RoomImportService{
 		}		
 	}
 	
-	
+	public Mono<RoomImportSummary> updateRoomSuccess(FilePart filePart) {
+		
+		
+		return null;
+	}
 
 }

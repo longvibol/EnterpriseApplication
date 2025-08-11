@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono;
 public class RoomController {
 		
 	private final RoomService roomService;
-	private final RoomImportService romImportService;
+	private final RoomImportService roomImportService;
 	
 		
 	@PostMapping
@@ -54,7 +54,7 @@ public class RoomController {
 		return roomService.getRoomById(roomId);
 	}
 	
-	@GetMapping
+	@GetMapping("/all")
 	@Operation(summary = "Get All Rooms")
     public Flux<Room> getAllRooms() {
         return roomService.getAllRoom();
@@ -103,7 +103,7 @@ public class RoomController {
 	
 	@PostMapping(value = "/upload-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public Mono<RoomImportSummary> uploadExcel(@RequestPart("file") FilePart filePart){
-		return romImportService.importRooms(filePart);
+		return roomImportService.importRooms(filePart);
 	}
 	
 	@GetMapping(value = "/room_upload")

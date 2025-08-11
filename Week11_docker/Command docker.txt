@@ -1,0 +1,147 @@
+How to run docker compose: 
+
+>> docker compose -f "file name" -d 
+
+Ex: go to folder then run command 
+
+====================== file : mongodb.yml 
+
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    restart: always
+
+volumes:
+  mongodb_data:
+
+
+============================================
+
+>> docker compose -f mongodb.yml -d 
+
+
+2. check service docker : 
+
+>> docker ps
+
+3. stop docker server and remove data 
+
+>> docker compose -f "file name" down -v (-v remove volume ) 
+
+4. stop docker 
+
+>> docker compose -f mongodb.yml down
+
+Ex:
+
+>> docker compose -f mongodb.yml down
+
+Note: when we have default name on the file : docker-compose.yml 
+
+We can run 
+
+>> docker compose up -d 
+
+
+-----------------------------------------------------------------------------------
+
+Command go to mongodb database :
+
+>> docker exec -it mongodb mongosh -u root -p root --authenticationDatabase admin
+
+( authentication-database: admin : កន្លែងដែលមាន - យើងប្តូរវាជាអក្សរធំវិញ)​
+
+
+>> use room
+room>> db.room.find()
+
+==> Result:
+
+[
+  {
+    _id: 'room_1001',
+    name: 'numquam Room 1001',
+    price: 111.49718056966798,
+    floor: 10,
+    roomSize: 20.021799654472737,
+    location: {
+      country: 'Cambodia',
+      city: 'Lindfort',
+      district: 'Britt Circles',
+      street: '30945 White Squares',
+      fullAddress: 'Apt. 485 50446 Pfeffer Underpass, North Gabriel, MI 16560',
+      coordinates: { type: 'Point', coordinates: [ 104.96429, 11.63572 ] }
+    },
+    hasFan: true,
+    hasAirConditioner: false,
+    hasParking: false,
+    hasPrivateBathroom: true,
+    hasBalcony: true,
+    hasKitchen: true,
+    hasFridge: false,
+
+
+>> room> db.room.count()
+DeprecationWarning: Collection.count() is deprecated. Use countDocuments or estimatedDocumentCount.
+100000
+
+
+Follow: from Spring property : 
+
+-----------------------------------
+
+spring:
+  application:
+    name: room-service    
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: room
+      username: root
+      password: root
+      authentication-database: admin        
+logging:
+  level:
+    root: INFO
+    com.piseth.java.school: DEBUG   
+
+#Facker generate recorde
+room:
+  seed:
+    enabled: true
+
+-------------------------------------------------------
+
+Testing API:
+
+http://localhost:8080/api/rooms/search?name=numquam Room 1001
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,14 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class RoomImportSummary {
+	private int inserted;
+	private int skipped;
+	private List<Integer> skippedRow; 
+	private Map<Integer, String> reasons;
 
-	private int inserted; // how many recode that we insert to the database 
-	private int skipped; // how many fail recode can not upload 
-	private List<Integer> skippedRow; // what row we skip 
-	private Map<Integer, String> reasons; // witch row and reason 
-	
 }
