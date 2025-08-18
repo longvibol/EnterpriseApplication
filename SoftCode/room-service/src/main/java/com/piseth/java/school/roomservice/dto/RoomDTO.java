@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.piseth.java.school.roomservice.domain.Location;
 import com.piseth.java.school.roomservice.domain.enumeration.GenderPreference;
 import com.piseth.java.school.roomservice.domain.enumeration.PropertyType;
 import com.piseth.java.school.roomservice.domain.enumeration.RoomType;
@@ -21,7 +20,7 @@ public class RoomDTO {
     private Integer floor;
     private Double roomSize;              // square meters
 
-    private Location location;
+    private LocationDTO location;
 
     private Boolean hasFan;
     private Boolean hasAirConditioner;
@@ -39,10 +38,10 @@ public class RoomDTO {
     private Boolean isPetFriendly;
     private Boolean isSmokingAllowed;
     private Boolean isSharedRoom;
-    private GenderPreference genderPreference;
+    private String genderPreference;
 
-    private RoomType roomType;
-    private PropertyType propertyType;
+    private String roomType;
+    private String propertyType;
 
     private Double distanceToCenter;        // optional
     private List<String> nearbyLandmarks;   // ["university", "mall"]

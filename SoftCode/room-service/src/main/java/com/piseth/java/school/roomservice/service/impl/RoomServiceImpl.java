@@ -38,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
 	@Override
 	public Mono<RoomDTO> createRoom(RoomDTO roomDTO) {
 		
-		log.debug("Saving room to DB: {}",roomDTO);		
+		log.info("Saving room to DB: {}",roomDTO);		
 		Room room = roomMapper.toRoom(roomDTO);
 		
 		return roomRepository.save(room)

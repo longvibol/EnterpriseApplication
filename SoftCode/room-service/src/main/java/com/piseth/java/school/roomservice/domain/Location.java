@@ -17,5 +17,5 @@ public class Location {
     private String district;
     private String street;
     private String fullAddress;
-    private GeoJsonPoint coordinates; // GeoJSON format for geospatial queries
+   // private GeoJsonPoint coordinates; // GeoJSON format for geospatial queries
 }
