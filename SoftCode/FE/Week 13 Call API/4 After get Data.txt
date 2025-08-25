@@ -1,0 +1,139 @@
+check in the console : 
+
+{page: 0, size: 2, totalElements: 100002, totalPage: 50001, content: Array(2)}
+
+It return page (data) : so we need to redirect to the source data in the content 
+
+---------------------------------------
+
+In the property.component.TS
+
+------------------------- this place where we get the data from the single : 
+
+
+loadData(){
+  this.roomService.list(this.params).subscribe(data =>{
+    console.log(data);
+  });
+}
+
+
+--------------------------
+
+Step by step "
+
+1. PropertiesComponent.TS
+
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Room } from '../../models/room';
+import { RoomService } from '../../services/room.service';
+import { RoomListParams } from '../../models/room-list-params';
+import { PropertiesListComponent } from '../properties-list/properties-list.component';
+
+@Component({
+  selector: 'app-properties',
+  imports: [PropertiesListComponent],
+  templateUrl: './properties.component.html',
+  styleUrl: './properties.component.css'
+})
+export class PropertiesComponent{
+// we inject roomService to use 
+private roomService = inject(RoomService);
+rooms = signal<Room[]>([]);
+
+// rooms: Room[] =[];  // this is old style Zone 
+
+//our custom params 
+params: RoomListParams ={page:0, size:10};
+
+// Life cycle when start up reload the data 
+
+ngOnInit(){
+  this.loadData();
+}
+
+//crete function to use room service 
+loadData(){
+  this.roomService.list(this.params).subscribe(data =>{
+    console.log(data);
+    this.rooms.set(data.content);
+    //this.rooms = data.content; this is Zone old style 
+
+  });
+}
+
+}
+
+
+2. in the PropertiesComponent.HTML
+
+We use @for in the angular 19 up 
+
+
+@for(room of rooms(); track room.id){ 
+
+put what we want to do display data : 
+
+<div class"col-lg-6 col-md-6"> --- </div>
+
+}
+
+
+Whole code : 
+
+
+                @for(room of rooms(); track room.id){
+                <div class="col-lg-6 col-md-6">
+                  <div class="property-card">
+                    <div class="property-image">
+                      <img src="assets/img/real-estate/property-exterior-1.webp" alt="Modern Family Home" class="img-fluid">
+                      <div class="property-badges">
+                        <span class="badge featured">Featured</span>
+                        <span class="badge for-sale">For Sale</span>
+                      </div>
+                      <div class="property-overlay">
+                        <button class="favorite-btn"><i class="bi bi-heart"></i></button>
+                        <button class="gallery-btn" data-count="12"><i class="bi bi-images"></i></button>
+                      </div>
+                    </div>
+                    <div class="property-content">
+                      <div class="property-price">$875,000</div>
+                      <h4 class="property-title">Modern Family Home with Garden</h4>
+                      <p class="property-location"><i class="bi bi-geo-alt"></i> 2847 Oak Street, Beverly Hills, CA 90210</p>
+                      <div class="property-features">
+                        <span><i class="bi bi-house"></i> 4 Bed</span>
+                        <span><i class="bi bi-water"></i> 3 Bath</span>
+                        <span><i class="bi bi-arrows-angle-expand"></i> 2,400 sqft</span>
+                      </div>
+                      <div class="property-agent">
+                        <img src="assets/img/real-estate/agent-1.webp" alt="Agent" class="agent-avatar">
+                        <div class="agent-info">
+                          <strong>Sarah Johnson</strong>
+                          <div class="agent-contact">
+                            <small><i class="bi bi-telephone"></i> +1 (555) 123-4567</small>
+                          </div>
+                        </div>
+                      </div>
+                      <a href="#" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                  </div>
+                </div><!-- End Property Item -->
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Room } from '../../models/room';
 
 @Component({
   selector: 'app-property-card',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './property-card.component.css'
 })
 export class PropertyCardComponent {
+
+@Input({required :true})  room !: Room
 
 }

@@ -1,0 +1,372 @@
+Create Room server : to get the api from the BE 
+
+
+>> ng g s services/room
+
+Then it will create file : TS
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RoomService {
+
+  constructor() { }
+}
+
+Think : to get the service we check from the API the BE provide 
+URL: http://localhost:8080/api/rooms/search/pagination?page=0&size=1
+
+Importance on GET Method :
+
+- api end point URL 
+- request param 
+
+------------------------------------
+
+1. Create request param (to get all the filter) 
+
+>> ng g i models/room-list-params
+
+export interface RoomListParams {
+    page?: number;
+    size?: number;
+    sort?: string;
+    roomType?: string;
+    properType?: string;
+    price?: number;
+}
+
+these is all the fiels that we can search : page; size ; sort; … 
+
+
+
+2. Create environment : create our own url get api from BE 
+
+where we store the base url : 
+
+- the same level from the src 
+- right click create folder : environment ==> then create file environment.ts
+
+
+export const environment = {
+    production: false,
+    apiUrl:'http://localhost:8080/api'
+}
+
+--------------------------
+
+3. Create service to called the API 
+
+>> ng g s services/room 
+
+---------------------------------------------------------
+
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../environment/environment';
+import { RoomListParams } from '../models/room-list-params';
+import { Observable } from 'rxjs';
+import { Page } from '../models/page';
+import { Room } from '../models/room';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { buildParams } from '../core/http/utils';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RoomService {
+
+  // api_url
+  // request param
+  private http = inject(HttpClient);
+  private base = `${environment.apiUrl}`;
+
+  ///room/search/pagination
+
+  constructor() { }
+
+  list(params?: RoomListParams ) : Observable<Page<Room>>{
+    return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
+  }
+}
+
+-----------------------------------
+
+*** Create function to convert from our param to http ***
+
+
+We create normal export function te but we don't want to create buy ourselves that why we use command then change to export function: 
+
+>> ng g i core/http/utils
+
+What we get :
+
+------------------------------------
+
+export interface Utils {
+
+
+}
+
+-----------------------------
+
+First Explain: 
+
+create buildParam that have generice type : T and have return type : HttpParams (in TS) 
+
+export function buildParams<T extends object>(input?: T): HttpParams{}
+
+
+whole code :
+
+import { HttpParams } from "@angular/common/http";
+
+export function buildParams<T extends object>(input?: T): HttpParams{
+    let params = new HttpParams();
+
+    if(!input){
+        return params;
+    }
+
+    for( const [key, value] of Object.entries(input)){
+        if(value == null || value === ''){
+            continue;
+        }
+        if(Array.isArray(input)){
+            for(const item of value){
+                params = params.append(key, String(item));
+            }
+        } else{
+            params = params.set(key, String(value));
+        }
+    }
+    return params;
+}
+
+================
+
+Note : 
+
+
+ if(value == null || value === ''){
+
+- value == null : refer to Object 
+- value === '' : ទទេ មិនមានតម្លៃ
+
+
+=============================== បើវាមានករណី search for the single value or arrays 
+
+Check url : 
+
+http://localhost:8080/api/rooms/search/pagination?page=0&size=5&name=smallroom&roomType=single&roomType=studio
+
+ចំណាំ :
+- name=smallroom = single value 
+- roomType=single&roomType=studio  យើងឃើញវាដាក់ពាក្យថា roomType វាពីរដង់ទេ ចឹងវាជា Array 
+
+ចឹងបានយើងត្រូវពិនិត្យមួយតង់ទៀត បើវាមមាន  roomTyple ដូចគ្នា​ if(Array.isArray(input)){
+
+
+Code : 
+
+ // it have condition : can be single value or Array 
+        if(Array.isArray(input)){
+            for(const item of value){
+                params = params.append(key, String(item));
+            }
+        } else{
+            params = params.set(key, String(value));
+        }
+    }
+
+-----------------------------------
+
+params = params.append(key, String(item)); យើង convert value they input to the string 
+
+យើងចាំគេប្រើ append វាត្រូវគ្នា (​roomType=single&roomType=studio)​
+
+បើវាមិនមែនជា Arrays: ចឹងវាជាតម្លៃ មួយៗ
+
+	else{
+            params = params.set(key, String(value));
+        }
+
+យើងប្រើ Set វិញព្រោះវាជា single value 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+In our loop : 
+
+We do string manipulation : {{}}
+
+@for(room of rooms(); track room.id){
+
+    <div class="property-price">{{room.price}}</div>
+    <h4 class="property-title">{{room.name}}</h4>
+    <p class="property-location"><i class="bi bi-geo-alt"></i> {{room.location?.fullAddress}}</p>
+
+}
