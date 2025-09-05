@@ -1,0 +1,29 @@
+<section id="properties" class="properties section">
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+        <app-properties-header></app-properties-header>
+
+       <app-properties-grid [filter] = "filter()"></app-properties-grid>
+
+        <app-properties-list></app-properties-list>
+
+        <app-pagination></app-pagination>
+
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+
+        <app-properties-sidebar (filterChange)="onFilterChanged($event)"></app-properties-sidebar>
+
+        </div>
+
+    </div>
+
+    </div>
+
+</section>

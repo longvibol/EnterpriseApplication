@@ -5,4 +5,6 @@ export interface RoomListParams {
     roomType?: string;
     properType?: string;
     price?: number;
+    priceMin: number | null;
+    priceMax: number | null;
 }

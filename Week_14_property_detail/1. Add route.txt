@@ -1,0 +1,72 @@
+what we will 
+
+- Add Property Detail Page
+- Add Route 
+- Implement Filter
+
+
+Client side routing: 
+
+/properties => properties page
+/properties/roomid => property detail 
+
+
+We do it in the app.routes.ts
+
+
+WE will using Angular 19 
+
+-----------------------------------------------------------------------------------
+
+1. add route in the app.routes.ts 
+
+import { Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { PropertyDetailsComponent } from './components/property-details/property-details.component';
+
+export const routes: Routes = [
+    {
+        path:'properties', component: AppComponent, pathMatch:'full'
+    },
+     {
+        path:'properties/:id', component: PropertyDetailsComponent
+    }
+
+];
+
+យើងដាក់ចឹងវាដើរ តែ Page វាត គ្នា ពេលដែល route to url : http://localhost:4200/properties/1
+វាអត់ Replay page ទេ 
+
+==> Solution: 
+
+we check the router outlet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

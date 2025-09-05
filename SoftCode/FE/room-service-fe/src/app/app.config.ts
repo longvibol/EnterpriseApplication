@@ -9,6 +9,6 @@ export const appConfig: ApplicationConfig = {
     { eventCoalescing: true }), 
     provideRouter(routes),
     provideHttpClient()
-    
+  
   ]
 };
