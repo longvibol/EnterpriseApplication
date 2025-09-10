@@ -1,0 +1,199 @@
+3-Pagination 
+
+ In the ReactiveMongo DB the pagination it not support so we need to build by ourselves 
+
+3.1 Build PageDTO for the Generice so for another Entity we can use it 
+
+មូលហេតុ៖
+
+ថីបានប្រើអត់បាន ពីព្រោះថា នៅក្នុង RoomCustomRepositoryImpl
+RoomCustomRepositoryImpl វាមានតែជា Flux តែសម្រាប់ Framework it need List បោះចូលបានកើត 
+
+	@Override
+	public Flux<Room> findByFilter(Query query) {
+		return mongoTemplate.find(query, Room.class);
+	}
+
+
+ចឹងវាប្រើអត់បានទេយើងត្រូវ Build custom ដោយខ្លួនឯង 
+
+--------------------------------------------------------------------------
+
+Step By Step to do it: 
+
+1. In the RoomService
+
+
+//Filter by pagination 	
+	Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
+
+
+2. RoomServiceImpl
+
+
+@Override
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO) {
+		// 1 build query for our filter on pagination
+		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+		return Mono.zip(countMono, contentFlux.collectList())
+				.map(tuple ->{
+					long total = tuple.getT1();
+					List<RoomDTO> content = tuple.getT2(); 
+					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
+					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
+				});
+
+	}	
+
+
+3. RoomCriteriaBuilder
+
+public class RoomCriteriaBuilder {
+	
+	public static Query build(RoomFilterDTO filter) {
+		
+		Criteria criteria = new Criteria();		
+		if(Objects.nonNull(filter.getName())) {
+			criteria.and("name").is(filter.getName());
+		}				
+		if(filter.getFloor()!=null) {
+			//we check if it have value mean they want to filter by floor 
+			criteria.and("attributes.floor").is(filter.getFloor());			
+		}		
+		if(Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())){
+			switch(filter.getPriceOp()) {
+			case "lt" -> criteria.and("attributes.price").lt(filter.getPrice());
+			case "lte" -> criteria.and("attributes.price").lte(filter.getPrice());
+			case "gt" -> criteria.and("attributes.price").gt(filter.getPrice());
+			case "gte" -> criteria.and("attributes.price").gte(filter.getPrice());
+			case "eq" -> criteria.and("attributes.price").is(filter.getPrice());			
+			}
+		}else if(Objects.nonNull(filter.getPriceMin()) && Objects.nonNull(filter.getPriceMax())) {
+			criteria.and("attributes.price").gte(filter.getPriceMin()).lte(filter.getPriceMax());			
+			// Max > price > min
+		}
+		
+		Query query = new Query(criteria)
+				.skip((long) filter.getPage() * filter.getSize())
+				.limit(filter.getSize());
+		
+		return query;
+	}
+}
+
+5. RoomFilterDTO
+
+@Data
+public class RoomFilterDTO {
+	@Schema(description = "Filter by floor number", example = "3")
+	private Integer floor;
+	private String name;
+	private String type;
+	private Double price;
+	private Double priceMin;
+	private Double priceMax;
+	private String priceOp;
+	
+	private int size = 10;
+	private int page = 0;
+}
+
+
+6. RoomCustomRepository
+
+
+public interface RoomCustomRepository {
+	
+	Flux<Room> findByFilter(Query query);
+	Mono<Long> coundByFilter(Query query);
+
+}
+
+****
+
+7. RoomServiceImpl
+
+	@Override
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO) {
+		// 1 build query for our filter on pagination
+		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+		return Mono.zip(countMono, contentFlux.collectList())
+				.map(tuple ->{
+					long total = tuple.getT1();
+					List<RoomDTO> content = tuple.getT2(); 
+					int totalPages = (int) Math.ceil((double)total/ filterDTO.getSize());
+					return new PageDTO<>(filterDTO.getPage(), filterDTO.getSize(),total,totalPages, content);
+				});
+	}	
+
+
+8. RoomController
+
+	@GetMapping("/search/pagination")
+	public Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO roomFilterDTO){
+		return roomService.getRoomByFilterPagination(roomFilterDTO);
+	}
+
+-------------------------------------
+
+Testing : 
+
+GET: http://localhost:8080/api/rooms/search/pagination?page=2&size=2
+
+{
+"page": 2,
+"size": 2,
+"totalElements": 2,
+"totalPage": 1,
+"content":[
+{
+"name": "New Room",
+"attributes":{"width": 6, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+},
+{
+"name": "New Room log level",
+"attributes":{"width": 6, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+}
+]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

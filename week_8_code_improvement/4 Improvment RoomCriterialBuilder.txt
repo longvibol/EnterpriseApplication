@@ -1,0 +1,282 @@
+* Find problem in class RoomCirterialBuilder 
+
+Video : 83 
+
+1. Not so flexible 
+Ex: Can not use or condition : search/pagination?page=0&size=6&sortBy=price&direction=asc
+
+- This Use & (and) operator for all filter 
+
+2. អោយគេដាក់បានច្រើនពេកសម្រាប់ពេល Sort. Need to put condition if it not meet our condition cancel 
+
+- គេអាចធ្វើ Inject field ពីក្រៅបាន
+
+==> solution : Allowed list for sort fields only  
+
+3. fail silently if we put the wrong filter 
+- Validation for price operator 
+
+if we use switching case it should have default search on price operator. 
+
+4. Error null pointer at shortby 
+
+- Handle null sort (it the put shortBy then we provide the default sort by desc or asc) 
+
+Example: 
+
+
+if(!sortField.contains(".")) {
+			if(!sortField.equals("name")) {
+				sortField = "attributes."+ sortField;
+			}
+		}
+
+----------------------------------------------------------------------------------------
+
+1. Solution one : Not so flexible because we can use only AND operation 
+
+- Create List of criterial 
+
+What we have and need to improve: 
+
+Criteria criteria = new Criteria();
+
+		if (Objects.nonNull(filter.getName())) {
+			criteria.and(FIELD_NAME).is(filter.getName());
+		}
+
+		if (filter.getFloor() != null) {
+			criteria.and(FIELD_FLOOR).is(filter.getFloor());
+		}
+
+==> improve when it have one case we can add to the list<criterial>
+
+--------------------------------------------------------------------------------------------
+
+public static Criteria build(RoomFilterDTO filter) {
+
+		List<Criteria> criteria = new ArrayList<>();
+
+		if (Objects.nonNull(filter.getName())) {
+
+			criteria.add(Criteria.where(FIELD_NAME).is(filter.getName()));
+		}
+
+		if (filter.getFloor() != null) {
+
+			criteria.add(Criteria.where(FIELD_FLOOR).is(filter.getFloor()));
+		}
+
+		if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			switch (filter.getPriceOp()) {
+			case OP_LT -> criteria.add(Criteria.where(FIELD_PRICE).lt(filter.getPrice()));
+			case OP_LTE -> criteria.add(Criteria.where(FIELD_PRICE).lte(filter.getPrice()));
+			case OP_GT -> criteria.add(Criteria.where(FIELD_PRICE).gt(filter.getPrice()));
+			case OP_GTE -> criteria.add(Criteria.where(FIELD_PRICE).gte(filter.getPrice()));
+			case OP_EQ -> criteria.add(Criteria.where(FIELD_PRICE).is(filter.getPrice()));
+			}
+			
+		} else if (Objects.nonNull(filter.getPriceMin()) && Objects.nonNull(filter.getPriceMax())) {
+			criteria.add(Criteria.where(FIELD_PRICE).gte(filter.getPriceMin()).lte(filter.getPriceMax()));
+		}
+
+		return criteria.isEmpty() ? new Criteria() : new Criteria().andOperator(criteria.toArray(new Criteria[0]));
+	}
+
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Convert List to Array : 
+
+Testing :
+
+GET: http://localhost:8080/api/rooms/search/pagination?page=0&size=4&sortBy=name&direction=asc&price=60&priceOp=lt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

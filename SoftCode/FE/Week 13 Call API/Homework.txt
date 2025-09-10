@@ -1,0 +1,4 @@
+Homework: 
+
+- Display a room detail 
+- click on favorite icon => display room id on web console 

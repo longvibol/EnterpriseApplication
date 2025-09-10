@@ -1,0 +1,17 @@
+Link :
+
+https://cloud.mongodb.com/v2/625a71ec492c287660ff3815#/clusters
+
+Create Cluster M0 for free 
+
+===================================
+
+The key fingerprint is:
+SHA256:WcBG5NByfrvk0z82PcOnGg8Fnq8eNgioG60PMGGghFE vibollong@gmail.com
+
+
+
+Your identification has been saved in C:\Users\home/.ssh/id_ed25519.
+Your public key has been saved in C:\Users\home/.ssh/id_ed25519.pub.
+The key fingerprint is:
+SHA256:WcBG5NByfrvk0z82PcOnGg8Fnq8eNgioG60PMGGghFE vibollong@gmail.com

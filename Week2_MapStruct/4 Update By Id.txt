@@ -1,0 +1,69 @@
+1. roomservice.service
+
+Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO);
+
+2. roomservice.service.impl
+
+@Override
+	public Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO) {
+		log.debug("Update room id: {} with data : {}",id,roomDTO);		
+		
+	return	roomRepository
+				.findById(id).flatMap(existingRoom ->{
+					existingRoom.setName(roomDTO.getName());
+					existingRoom.setAttributes(roomDTO.getAttributes());
+					Mono<Room> monoRoom = roomRepository.save(existingRoom);	
+					return monoRoom;
+				})
+				.map(roomMapper::toRoomDTO);
+		
+		// Target: update existing object		
+		// 1-get from DB
+		// 2-update new value 
+		// 3-save back to DB		
+
+	}
+
+
+3. Controller 
+
+@PutMapping("/{roomId}")
+	public Mono<RoomDTO> updateRoom(@PathVariable String roomId,@RequestBody RoomDTO roomDTO){
+		return roomService.updateRoom(roomId, roomDTO);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

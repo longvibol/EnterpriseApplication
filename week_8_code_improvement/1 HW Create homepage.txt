@@ -1,0 +1,101 @@
+1. Edit home page for port 8080: 
+
+http://localhost:8080/
+
+==> 
+
+type
+:
+"about:blank"
+title
+:
+"Internal Server Error"
+status
+:
+500
+detail
+:
+"Unexpected error: 404 NOT_FOUND \"No static resource .\""
+instance
+:
+"/"
+timestamp
+:
+"2025-07-22T09:30:53.347408200Z"
+path
+:
+"/"
+errorCode
+:
+"SYSTEM_ERROR"
+service
+:
+"room-service"
+
+We want home page that they can click and go the to swager 
+
+=====================================================================================
+
+1. Create index.html 
+
+==> src/main/resources/static/index.html
+
+<!DOCTYPE html>
+
+<head>
+	<style>
+		body {
+		            font-family: Arial, sans-serif;
+		            background: #f7f8fa;
+		            margin: 0;
+		            padding: 0;
+		            display: flex;
+		            justify-content: center;
+		            align-items: center;
+		            height: 100vh;
+		        }
+		        .container {
+		            text-align: center;
+		            background: white;
+		            padding: 30px;
+		            border-radius: 8px;
+		            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+		        }
+		        a {
+		            display: inline-block;
+		            margin-top: 15px;
+		            text-decoration: none;
+		            color: #ffffff;
+		            background: #007bff;
+		            padding: 10px 20px;
+		            border-radius: 4px;
+		            font-weight: bold;
+		        }
+		        a:hover {
+		            background: #0056b3;
+		        }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Welcome to Room Service API</h1>
+		<p>Access API Documentation using the link below</p>
+		<a href="/swagger-ui.html">Go to Swagger</a>
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

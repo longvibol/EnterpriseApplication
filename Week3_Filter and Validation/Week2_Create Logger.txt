@@ -1,0 +1,168 @@
+Create Logger 
+
+1. Normally what the web server working 
+
+Controller -> Service -> Repository 
+
+2. In order to create logger it need to have another layer 
+and this layer is working first 
+
+Filter -> Controller -> Service -> Repository
+
+- And this Filter we can us as Interceptor (កាក់យកពាក់កណ្តាលគេ)​
+- ពេលយើងចាប់របស់នឹងហើយយើងអាចកែវាបានហើយ 
+- Filter it have many purpose it can be : Security , Logger , Interceptor then forward to another 
+Example:
+
+We have three kind of customer : in the web service it have three kinds of Token 
+
+1. Token one for normal customer 
+2. Token two for Primuam 
+3. Token three for pro 
+
+So according to their token we can for ward there user to Normal, Primum or Pro 
+
+
+--------------------------------------------------------
+
+Filter is the Interface 
+
+* public class ReactiveLoggingFilter implements WebFilter
+
+in java also have filter and spring also have Filter it called : WebFilter 
+
+- Filter we can have many filter as we want 
+Example : 
+
+- Logging Filter 
+- Authentication Filter 
+
+And we also can config which filter need to be working first 
+
+In the Method it need to forward to another chain 
+
++ WebFilterChain chain That why we need to have it "return chain.filter(exchange);"
+
+
+=================================================================================================
+
+Gold : Method / Path  
+
+==> GET /api/rooms
+<== GET /api/rooms - 200 (81 ms)
+
+So first from the 
+
+public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain)
+
+តាមរយៈ ServerWebExchange exchange​ from exchange we can get request and responde 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

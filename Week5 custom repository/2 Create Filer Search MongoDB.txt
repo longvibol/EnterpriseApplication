@@ -1,0 +1,301 @@
+Room Filter:
+
+-floor
+-type
+-hasParking?
+-price
+-priceOperation(less than, greater than, equal, between)
+-priceMax
+-priceMin
+
+/api/rooms?floor=3
+
+or 
+
+/api/rooms?floor=3&hasParking=true 
+
+
+======================================================
+
+1. Create Filter model 
+
+Class : RoomFilterDTO
+
+@Data
+public class RoomFilterDTO {
+	@Schema(description = "Filter by floor number", example = "3")
+	private Integer floor;
+	private String name;
+	private String type;
+	private Double price;
+	private String priceOp;
+}
+
+
+2. We need to build our own Mongodb dinamix 
+
+2.1 Interface : RoomCustomRepository 
+
+package com.piseth.java.school.roomservice.repository;
+
+import org.springframework.data.mongodb.core.query.Query;
+
+import com.piseth.java.school.roomservice.domain.Room;
+
+import reactor.core.publisher.Flux;
+
+public interface RoomCustomRepository {
+	
+	Flux<Room> findByFilter(Query query);
+
+}
+
+
+2.2 Create Class RoomCustomRepositoryImpl that implements from RoomCustomRepository
+
+package com.piseth.java.school.roomservice.repository;
+
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
+
+import com.piseth.java.school.roomservice.domain.Room;
+
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
+
+@Repository
+@RequiredArgsConstructor
+public class RoomCustomRepositoryImpl implements RoomCustomRepository{
+	
+	private final ReactiveMongoTemplate mongoTemplate;
+	// in order to create dynamic we use ReactiveMongoTemplate 
+
+	@Override
+	public Flux<Room> findByFilter(Query query) {
+		return mongoTemplate.find(query, Room.class);
+	}
+}
+
+
+3. Build Criterial (លក្ខណដែលយើងចង់បាន)
+
+3.1 create RoomCriteriaBuilder (យើងកំណត់លក្ខណ search យើងដោយយក class Room mok search)
+
+Create new class : RoomCriteriaBuilder in package .util 
+
+package com.piseth.java.school.roomservice.util;
+
+import java.util.Objects;
+
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
+import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+
+public class RoomCriteriaBuilder {
+	
+	// we want to get the Query that we create 
+	// so in this class need to have Query return 
+	
+	// We thing what can we get to build Query ==> RoomFilterDTO that we just create 
+	
+	public static Query build(RoomFilterDTO filter) {
+		// criteria is our condition 
+		Criteria criteria = new Criteria();
+		
+		// we check one they input from request parameter  
+		if(Objects.nonNull(filter.getName())) {
+			criteria.and("name").is(filter.getName());
+		}		
+		
+		if(filter.getFloor()!=null) {
+			//we check if it have value mean they want to filter by floor 
+			criteria.and("attributes.floor").is(filter.getFloor());			
+		}
+		
+		Query query = new Query(criteria);
+		
+		return query;
+	}
+}
+
+
+Note: 
+
+To check non null : if(filter.getFloor()!=null) they normally use: if(Objects.nonNull(filter.getName()))
+
+
+4. បន្ទាប់ពីធ្វើការបង្កើត Query ហើយយើងប្រើវានៅក្នុង RoomService 
+
+in interface RoomService we add new method: 
+
+//service with our query criteria 	
+	Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO);
+
+----------------------
+
+package com.piseth.java.school.roomservice.service;
+
+import com.piseth.java.school.roomservice.domain.Room;
+import com.piseth.java.school.roomservice.dto.RoomDTO;
+import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface RoomService {
+	
+	Mono<RoomDTO> createRoom(RoomDTO roomDTO);
+	Mono<RoomDTO> getRoomById(String id);
+	Flux<Room> getAllRoom();
+	Mono<RoomDTO> updateRoom(String id, RoomDTO roomDTO);	
+	Mono<Void> deleteRoom(String id);
+	
+	//Study purpose only	
+	Flux<RoomDTO> searchRoomByName(String name);
+
+	//service with our query criteria 	
+	Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO);
+}
+
+--------------------
+
+4.1: RoomServiceImpl
+
+	@Override
+	public Flux<RoomDTO> getRoomByFilter(RoomFilterDTO filterDTO) {
+		Query query = RoomCriteriaBuilder.build(filterDTO);		
+		return roomCustomRepository.findByFilter(query)
+				.map(roomMapper::toRoomDTO);
+	}
+
+
+
+4.1.1 Crete Mapper (floor=3&hasParking=true): in roomService.dto
+we want to convert to Map 
+
+package com.piseth.java.school.roomservice.dto;
+
+import java.util.Map;
+
+public class RoomFilterDTOMapper {
+
+	public static RoomFilterDTO toRoomFilterDTO(Map<String, String> params) {
+		
+		RoomFilterDTO dto = new RoomFilterDTO();
+		if(params.containsKey("name")) {
+			dto.setName(params.get("name"));
+		}
+		
+		if(params.containsKey("floor")) {
+			dto.setFloor(Integer.parseInt(params.get("floor")));
+		}
+		
+		return dto;
+	}
+}
+
+
+5. Create Controller 
+
+	// Build Filter controller 	
+	@GetMapping("/search")
+	public Flux<RoomDTO> getRoomByFilter(@RequestParam Map<String, String> params){
+		
+		// Map<String, String> params : because floor=3&hasParking=true (floor is the Key, 3 is the Value) 		
+		return roomService.getRoomByFilter(RoomFilterDTOMapper.toRoomFilterDTO(params));		
+	}
+
+
+6. Testing 
+
+
+- GET: http://localhost:8080/api/rooms/search?name=Small Room&floor=3
+
+==> 
+
+[
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 6, "price": 50, "haveFan": false, "Packing": true,…}
+}
+]
+
+- GET: http://localhost:8080/api/rooms/search?name=Small Room
+
+[
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 6, "price": 50, "haveFan": false, "Packing": true,…}
+},
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

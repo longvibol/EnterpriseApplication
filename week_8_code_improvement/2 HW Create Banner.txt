@@ -1,0 +1,19 @@
+1. Create text banner from online:
+
+Go to : https://devops.datenkollektiv.de/banner.txt/index.html
+
+
+,------.                         ,---.                         ,--.              
+|  .--. ' ,---. ,---. ,--,--,--.'   .-' ,---. ,--.--.,--.  ,--.`--' ,---. ,---.  
+|  '--'.'| .-. | .-. ||        |`.  `-.| .-. :|  .--' \  `'  / ,--.| .--'| .-. : 
+|  |\  \ ' '-' ' '-' '|  |  |  |.-'    \   --.|  |     \    /  |  |\ `--.\   --. 
+`--' '--' `---' `---' `--`--`--'`-----' `----'`--'      `--'   `--' `---' `----' 
+
+
+2. in the spring application:
+
+>> src/resource/ then right click to create :banner.txt" then put what we want to put
+
+
+
+

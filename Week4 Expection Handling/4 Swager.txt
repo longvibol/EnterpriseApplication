@@ -1,0 +1,104 @@
+1. Add Dependency 
+
+<properties>
+	<java.version>21</java.version>
+	<mapstruct.version>1.5.5.Final</mapstruct.version>
+	<springdoc-openapi.version>2.5.0</springdoc-openapi.version>
+</properties>
+
+
+<dependency>
+	<groupId>org.springdoc</groupId>
+	<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+	<version>${springdoc-openapi.version}</version>
+</dependency>
+
+
+2. Web Access URI 
+
+http://localhost:8080/webjars/swagger-ui/index.html
+
+
+
+3. Testing Get Method from Swager 
+
+http://localhost:8080/webjars/swagger-ui/index.html#/room-controller/getRoomById
+
+We just input our id:  6847968ce40780c23c32a71a => Try it out 
+
+{
+  "name": "Guest house",
+  "attributes": {
+    "width": 3,
+    "lengh": 6,
+    "price": 60,
+    "Have Fan": true
+  }
+}
+
+
+In case it is not found 
+
+
+{
+  "type": "about:blank",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Room is not found with ID : 6847968ce40780c23c32a71af",
+  "instance": "/api/rooms/6847968ce40780c23c32a71af",
+  "timestamp": "2025-07-09T07:29:38.874854800Z",
+  "path": "/api/rooms/6847968ce40780c23c32a71af",
+  "errorCode": "ROOM_NOT_FOUND",
+  "service": "room-service"
+}
+
+================================================================
+
+Error Take Note: 
+
+When we can not start the Swager please check the @RestControllerAdvice
+
+Because in the Swager we can not export this for the API that why it error 
+
+==> solution we need to @Hidden in that class to make swager not scanning it 
+
+
+@Slf4j
+@Hidden
+@RequiredArgsConstructor
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

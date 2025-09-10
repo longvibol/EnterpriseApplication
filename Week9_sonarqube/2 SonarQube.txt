@@ -1,0 +1,87 @@
+SonarQube : Check quality of Unit Test
+
+
+- CICD pipe line checking also integrade with SonarQube 
+- code smells : code អាចមានបញ្ហា
+
+
+what is different between blugin and dependency 
+
+Step By Step Configure SonarQube
+
+user default : admin , admin
+
+==> change pass:  Hello12345678*
+
+1. SonarQube server
+
+http://localhost:9000/account/security
+
+crate token:
+
+squ_1bc23391f6b0b94ff4f3edcf1ed9112f8da2d4df
+
+
+2. in project
+
+
+pom.xml add plugin :
+
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.sonarsource.scanner.maven</groupId>
+      <artifactId>sonar-maven-plugin</artifactId>
+      <version>3.10.0.2594</version>
+    </plugin>
+    <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.11</version>
+      <executions>
+        <execution>
+          <goals><goal>prepare-agent</goal></goals>
+        </execution>
+        <execution>
+          <id>report</id>
+          <phase>prepare-package</phase>
+          <goals><goal>report</goal></goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+
+Go to terminal :
+
+- Command : install plugin Solar 
+
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+
+3-Command : connect to SonarQube server
+
+mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=spring-demo \
+  -Dsonar.projectName="Spring Demo" \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=YOUR_GENERATED_TOKEN
+
+==> 
+
+crate token: squ_1bc23391f6b0b94ff4f3edcf1ed9112f8da2d4df
+
+>> mvn clean verify sonar:sonar -Dsonar.projectKey=room-service -Dsonar.projectName=room-service -Dsonar.host.url=http://localhost:9000 -Dsonar.token=squ_1bc23391f6b0b94ff4f3edcf1ed9112f8da2d4df
+
+>>mvn clean verify sonar:sonar -Dsonar.projectKey=room-service -Dsonar.projectName=room-service -Dsonar.host.url=http://localhost:9000 -Dsonar.token=squ_1bc23391f6b0b94ff4f3edcf1ed9112f8da2d4df
+
+
+
+
+
+
+
+
+
+
+
+

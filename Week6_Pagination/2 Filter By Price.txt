@@ -1,0 +1,90 @@
+2. filter by price 
+
+http://localhost:8080/api/rooms/search?name=Small Room&floor=3&price=50&priceOp=lt
+
+File API : price=50&priceOp=lt
+
+priceOp: eq, lt, lte, gt, gte
+*priceOp: between(btw) [minPrice, maxPrice]
+minPrice
+maxPrice
+
+==> we add new field in the RoomFilterDTO
+
+private Double price;
+private String priceOp;
+
+----------------------------------------
+
+1. In the criterial builder 
+
+We add the criterial filter by the price 
+
+if(Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())){
+			switch(filter.getPriceOp()) {
+			case "lt" -> criteria.and("attributes.price").lt(filter.getPrice());
+			case "lte" -> criteria.and("attributes.price").lte(filter.getPrice());
+			case "gt" -> criteria.and("attributes.price").gt(filter.getPrice());
+			case "gte" -> criteria.and("attributes.price").gte(filter.getPrice());
+			case "eq" -> criteria.and("attributes.price").is(filter.getPrice());			
+			}
+		}
+
+GET: http://localhost:8080/api/rooms/search?price=50&priceOp=eq
+
+==>
+
+[
+{
+"name": "Twin Room",
+"attributes":{"width": 9, "lengh": 6, "price": 50, "haveFan": true, "packing": true…}
+},
+{
+"name": "Small Room",
+"attributes":{"width": 7, "lengh": 6, "price": 50, "haveFan": false, "Packing": true,…}
+}
+]
+
+============================================================
+
+2.2 : Price Between : Max > price > min 
+
+GET : http://localhost:8080/api/rooms/search?priceMin=60&priceMax=70
+
+[
+{
+"name": "Guest house",
+"attributes":{"width": 3, "lengh": 6, "price": 60, "Have Fan": true}
+},
+{
+"name": "Guest One",
+"attributes":{"width": 6, "lengh": 6, "price": 60, "Have Fan": true}
+}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

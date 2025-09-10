@@ -1,0 +1,261 @@
+- load content from excel file as streaming data 
+- After we get streaming data we convert into byteArray 
+
+
+filePart.content() // Flux<DataBuffer> 
+			.map(dataBuffer -> {
+				return null;
+			});
+
+==> តាមរយៈ dataBuffer នឹងយើងបង្កើត Byte Array    
+
+📦 What Is a Data Buffer?
+A data buffer is a temporary storage area in memory used to hold chunks of data while it's being transferred from one place to another—like from a user's device to a server.
+
+🧠 Why Use a Buffer for File Uploads?
+When uploading a file, especially large ones, you don't usually read the entire file into memory at once. Instead, you:
+- Read the file in small chunks (buffers)
+- Process or store each chunk
+- Repeat until the entire file is uploaded
+This approach is efficient, scalable, and prevents memory overload
+
+
+Ex:
+
+- byte[] bytes = new byte[dataBuffer.readableByteCount()]; មានន័យថាវាមានសមត្តិភាពផ្ទុកទៅតាម buffer ដែលវា Store នឹងហើយ តែវាមិនទាន់មាន Data អីមកទេ
+
+==> so we need to read the data from the databuffer (មានន័យថា យើង read ពីរ dataBuffer ចូលទៅក្នុង ​byte[] របស់យើង។​
+
+- dataBuffer.read(bytes);
+
+យើង Read បានហើយយើង clean data នឹងវិញ ហើយមួយជុំ ៗវា read data នឹងឡើងវិញ ==> then we return it to the data stream 
+
+--------------------------------
+
+We read file from excel : mean we want to convert from the excel to byte and it need to have streaming 
+
+Workbook workbook = new XSSFWorkbook(null) វាត្រូវការ Input stream ចឹងខាងលើ dataBuffer.read(bytes);
+
+We need to convert to input stream 
+
+------------------------------
+Step by Step 
+
+1. First we need to convert from byte array to input stream 
+2. after we get the inpute stream let other do it 
+
+======================
+
+1- First part : convert from byte array to input stream 
+
+@Override
+	public Mono<RoomImportSummary> importRooms(FilePart filePart) {
+		
+		return filePart.content() // Flux<DataBuffer> 
+			.map(dataBuffer -> {
+				byte[] bytes = new byte[dataBuffer.readableByteCount()];
+				dataBuffer.read(bytes); // we read data from databuffer and store in byte[] 
+				
+				// we need to have one operation to protech memory lead (clean up memory)
+				
+				DataBufferUtils.release(dataBuffer);
+				
+				return new ByteArrayInputStream(bytes);				
+				// after return we get the byte array input stream 
+			})
+			.next() // when we get one buffer we want to save to our database ==> create another to save 			
+			.flatMap(inputStream -> parseAndSaveRooms(inputStream));
+		
+		
+	}
+
+2- parseAndSaveRooms
+
+- we create batch id // to define with batch have issue 
+- create work book 
+Workbook workbook = new XSSFWorkbook(inputStream); it will have check exception 
+
+---------------------------------------------
+
+try {
+			Workbook workbook = new XSSFWorkbook(inputStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+---------------------------
+
+this is our normal try catch ==> we use try with resource to clean up the data for us 
+
+==> 
+
+- in the workbook it have sheet => we want to catch first sheet 
+
+
+			 // we want to return our roomSummary 
+			 // save have two condition : good save to room and not good save to Skip room 
+			List<Room> validRoom = new ArrayList<>();
+			List<Integer> skippedRow = new ArrayList<>();
+			Map<Integer, String> reasons = new HashMap<>();
+			
+			// error happend we keep in one list 			
+			List<SkippedRoomDocument> skippedRoomDocuments = new ArrayList<>();
+
+
+==> ពេលដែលយើងចាប់បាន sheet in excel ហើយ យើងចង់រាប់ចំនួន row ចឹងយើងអាចប្រើ looping ban 
+we want to loop each row by row : 
+
+==> Solution we want to build first with our collection : good List and bad List after that we save to database. we do this it will save database access many time. 
+
+==> if we make access to many to database it will lateancey that make our system slow. not good performance 
+
+តាមរយៈ ម៉ា Row នឹងយើងបាន ម៉ា cell 
+
+Row row = sheet.getRow(i);
+
+----------------------------------------------------------------------------------------- 
+
+- We want to build the object that save the SkippedRoomDocument :
+
+private SkippedRoomDocument buildSkippedRoomDocument(int rowNumber, 
+			Map<String, Object> rowData, String reason, String uploadBatchId) {
+		
+		
+		return null;
+	}
+
+There two ways to create objects : use New to create object and with @builder in Lombok to create object 
+
+==> 
+
+@Data
+@Builder
+@Document(collation = "skipped_rooms")
+public class SkippedRoomDocument {
+	
+	@Id
+	private String id;
+	
+	private int rowNumber; // wich row it error 
+	
+	private Map<String, Object> rowData; // we capture 
+	
+	private String reason; // what is the reason 
+	private LocalDateTime uploadDate;
+	private String uploadBatchId; // number of batch that we upload
+
+}
+
+@builder : it is easy to create object one by one field and it not thinking the order 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

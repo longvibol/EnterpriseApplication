@@ -1,0 +1,14 @@
+We want to add the description to the Swager easy to read and understand 
+
+
+@GetMapping("/{roomId}")
+	@Operation(summary = "Get room by ID", parameters = @Parameter(in = ParameterIn.PATH,name = "roomId"))
+	
+
+public Mono<RoomDTO> getRoomById(@PathVariable String roomId){
+		return roomService.getRoomById(roomId);
+	}
+
+==> We add the : @Operation from the 
+
+import io.swagger.v3.oas.annotations.Parameter;

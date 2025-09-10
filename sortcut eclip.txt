@@ -1,0 +1,6 @@
+Alt + Left : go back  
+Alt + Right : go forward 
+
+
+
+

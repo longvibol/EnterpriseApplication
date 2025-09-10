@@ -1,0 +1,6 @@
+1. End to End feature 
+
+Save room: Build UI -> connect API -> save to DB 
+
+
+

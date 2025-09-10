@@ -1,0 +1,170 @@
+1. Create call API 
+
+- inject the server from RoomSerive to called the API 
+
+private roomService = inject(RoomService);
+
+- create single mode by using single : change state 
+
+rooms = single<Room[]>();
+
+- create loadData 
+
+loadData(){
+  this.roomService.list(this.params).subscribe(data =>{
+    console.log(data);
+  });
+}
+
+
+===> Error happened :
+
+ERROR NullInjectorError: R3InjectorError(Environment Injector)[_RoomService -> _HttpClient -> _HttpClient]: 
+  NullInjectorError: No provider for _HttpClient!
+    at NullInjector.get (core.mjs:1600:21)
+    at R3Injector.get (core.mjs:2130:27)
+    at R3Injector.get (core.mjs:2130:27)
+    at injectInjectorOnly (core.mjs:1111:28)
+    at ɵɵinject (core.mjs:1117:40)
+    at inject (core.mjs:1202:10)
+    at <instance_members_initializer> (room.service.ts:18:18)
+    at new _RoomService (room.service.ts:23:3)
+    at Object.RoomService_Factory [as factory] (room.service.ts:27:3)
+
+
+------------------------ 
+
+Main error : " No provider for _HttpClient!" 
+
+==> Fix change to single state : add the provideHttpClient,
+
+============================================
+
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection(
+    { eventCoalescing: true }), 
+    provideRouter(routes),
+    provideHttpClient()
+    
+  ]
+};
+
+==============================================
+
+
+*** Call our service : life cycle when start up : implements OnInit *** 
+----------------------
+
+
+Access to XMLHttpRequest at 'http://localhost:8080/api/rooms/search/pagination?page=0&size=10' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+
+----------------------
+
+
+==> Error on the console : CORS : mean the backend not allow access to BE. need to allow from backend 
+
+Fix in Spring boot: 
+
+1. create new package : service.config 
+
+package com.piseth.java.school.roomservice.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
+@Configuration
+public class CorsConfig {
+	
+	@Bean
+	CorsWebFilter corsWebFilter() {
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedOrigin("http://localhost:4200/");
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/api/**", config);
+		
+		return new CorsWebFilter(source);
+	}
+
+}
+
+
+----
+
+Explain : in the CorsWebFilter need the source
+- config.addAllowedOrigin("http://localhost:4200/");
+this is where we allow the url to called 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

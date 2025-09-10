@@ -1,0 +1,106 @@
+Video 85
+
+Allow List and Null Pointer: 
+
+- Fail back:  if it error we create new function to handle it. 
+- Create allow list to do sorting 
+
+1. in RoomConstants
+
+We create allow list that user can input :
+
+// Sort allow- list	
+	public static final List<String> ALLOWED_SORT_FIELD = List.of("name","price","floor");
+
+
+2. RoomCriteriaBuilder
+
+We update sort function :
+
+public static Sort sort(RoomFilterDTO filter) {
+		
+		// sort direction 
+		
+		/*
+		Sort.Direction direction = Sort.Direction.ASC;		
+		if("desc".equalsIgnoreCase(filter.getDirection())) {
+			direction =Sort.Direction.DESC;
+		}		
+		*/		
+		
+		// We use Binary operator
+		Sort.Direction direction = "desc".equalsIgnoreCase(filter.getDirection()) 
+				? Sort.Direction.DESC : Sort.Direction.ASC;		
+		
+		// sort field 	
+		// this mean we get what they input String sortField = filter.getSortBy();
+		
+		// get the name input form they typing
+		String sortField = Objects.nonNull(filter.getSortBy()) ? filter.getSortBy() : FIELD_NAME;
+				
+			if(!ALLOWED_SORT_FIELD.contains(sortField)) {
+				throw new IllegalArgumentException("Invalid sort fiels: " + sortField);
+			}				
+		
+			if(!sortField.equals(FIELD_NAME)) {
+				sortField = ATT + sortField;
+			}
+		
+		return Sort.by(direction, sortField);
+
+	}
+
+
+------------------------------------------------------------
+
+TESTING : http://localhost:8080/api/rooms/search/pagination?page=0&size=4&sortBy=name2&price=60&priceOp=asc
+
+We can see the sortBy=name2 is not in the list ==> it will throw error (this is called fall back)
+
+throw new IllegalArgumentException("Invalid sort fiels: " + sortField);
+
+
+Result: 
+
+{
+"type": "about:blank",
+"title": "Internal Server Error",
+"status": 500,
+"detail": "Unexpected error: Invalid sort fiels: name2",
+"instance": "/api/rooms/search/pagination",
+"timestamp": "2025-07-23T06:51:32.660731900Z",
+"path": "/api/rooms/search/pagination",
+"errorCode": "SYSTEM_ERROR",
+"service": "room-service"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

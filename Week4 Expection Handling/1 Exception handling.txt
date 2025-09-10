@@ -1,0 +1,221 @@
+https://github.com/pisething/room-service/tree/week_4_exception_handling
+
+
+1. Resource not found 
+
+When we use GET : http://localhost:8080/api/rooms/68479d90191b047eea2c6e106
+
+if we can not find something, it still show the status 200 Ok but in real it should be resource not found 
+
+Issue : 
+
+@Override
+	public Mono<RoomDTO> getRoomById(String id) {
+		log.info("Retreiving room with ID : {}",id);		
+		return roomRepository
+				.findById(id)
+				// we want to show logger the we can find the room 
+				.doOnNext(room -> log.info("Room received : {}",room))
+				.map(roomMapper::toRoomDTO);				
+	}
+
+This Method is the happy part when we can not get the correct Id it still show nothing to the consumber 
+
+==> 
+🔜 GET /api/rooms/68479d90191b047eea2c6e106
+
+🔚 GET /api/rooms/68479d90191b047eea2c6e106 - 200 (1 ms)
+
+Retreiving room with ID : 68479d90191b047eea2c6e106
+
+We missing the .doOnNext(room -> log.info("Room received : {}",room))
+
+
+Because it not have the much ID 
+
+===================================================================
+
+Solution we need to add Exception handling 
+
+@Override
+	public Mono<RoomDTO> getRoomById(String id) {
+		log.info("Retreiving room with ID : {}",id);		
+		return roomRepository
+			.findById(id)
+			.switchIfEmpty(Mono.error(new RuntimeException("Room is not found with ID : "+id)))
+			.doOnNext(room -> log.info("Room received : {}",room))
+			.map(roomMapper::toRoomDTO);				
+	}
+
+
+==> Result 
+
+java.lang.RuntimeException: Room is not found with ID : 684788cce8bf96ff11b1c2c41
+
+This is what we want to show the error on Runtime expection 
+
+But we can improve what is the exception that it will catch 
+
+======================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

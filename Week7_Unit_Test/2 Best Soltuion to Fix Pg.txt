@@ -1,0 +1,88 @@
+in the criterial : we return the query that why if we want to change the object query that instance we need to 
+create two different object. 
+
+But it is the not solution because we need to write the code again. 
+
+Ex: in the code :
+
+
+Query query = RoomCriteriaBuilder.build(filterDTO);		
+		
+		Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+		
+Query query2 = RoomCriteriaBuilder.build(filterDTO);	
+		
+		query2.skip((long) filterDTO.getPage() * filterDTO.getSize())
+		.limit(filterDTO.getSize());
+
+It have two query and query 2
+
+================================================================
+
+Good solution we can return Criterial from the class then we can create object inside the instance Method called. 
+
+1. RoomCriteriaBuilder
+
+public class RoomCriteriaBuilder {
+
+	// we want to get the Query that we create
+	// so in this class need to have Query return
+	// We thing what can we get to build Query ==> RoomFilterDTO that we just create
+
+	public static Criteria build(RoomFilterDTO filter) {
+		Criteria criteria = new Criteria();
+
+		if (Objects.nonNull(filter.getName())) {
+			criteria.and("name").is(filter.getName());
+		}
+
+		if (filter.getFloor() != null) {
+			criteria.and("attributes.floor").is(filter.getFloor());
+		}
+
+		if (Objects.nonNull(filter.getPrice()) && Objects.nonNull(filter.getPriceOp())) {
+			switch (filter.getPriceOp()) {
+			case "lt" -> criteria.and("attributes.price").lt(filter.getPrice());
+			case "lte" -> criteria.and("attributes.price").lte(filter.getPrice());
+			case "gt" -> criteria.and("attributes.price").gt(filter.getPrice());
+			case "gte" -> criteria.and("attributes.price").gte(filter.getPrice());
+			case "eq" -> criteria.and("attributes.price").is(filter.getPrice());
+			}
+		} else if (Objects.nonNull(filter.getPriceMin()) && Objects.nonNull(filter.getPriceMax())) {
+			criteria.and("attributes.price").gte(filter.getPriceMin()).lte(filter.getPriceMax());
+		}
+
+		return criteria;
+	}
+}
+
+2. RoomServiceImpl
+
+Criteria criteria = RoomCriteriaBuilder.build(filterDTO);		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

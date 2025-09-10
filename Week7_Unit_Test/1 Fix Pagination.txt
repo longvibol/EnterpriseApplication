@@ -1,0 +1,262 @@
+http://localhost:8080/api/rooms/search/pagination?page=1&size=1
+
+page=0&size=2 : it mean view page 0 size 2 (object) : ទំព័រទី១ ហើយ យក 2 Object 
+ 
+ចឹងបើយើងមើលក្នុង Database : If we have 4 object : Page 0 : 2 Object show 
+
+- and totalpage = 2 ( All Object / pageSize) 
+- and TotalElement  = 4 
+
+But it show wrong value: 
+
+{
+"page": 0,
+"size": 2,
+"totalElements": 2,
+"totalPage": 1,
+"content":[
+{
+"name": "Luxery Room",
+"attributes":{"width": 7, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+},
+{
+"name": "Small Love",
+"attributes":{"width": 7, "lengh": 8, "price": 550, "hasPacking": true, "HaveAC": true…}
+}
+]
+}
+
+
+===============================================================================================
+
+How to find the bug: 
+
+- it is from Filter page that make our Totalpage wrong value: 
+
+- We need to find in the controller with path then because it is wrong data so we can check in he service
+
+return roomService.getRoomByFilterPagination(roomFilterDTO) 
+
+==> We right click on : getRoomByFilterPagination then open Implementation 
+
+then we can check in the .built that it create the criterial search :
+
+==> Open RoomCriteriaBuilder :
+
+Query query = new Query(criteria)
+				.skip((long) filter.getPage() * filter.getSize())
+				.limit(filter.getSize());
+
+We can see this query have include the .skip in the builder that why it filter information. 
+
+Solution we need to put this .skip outside the method 
+
+1. RoomServiceImpl
+
+In Mono<Long> countMono = roomCustomRepository.coundByFilter(query);
+Because it is wrong countMono with the query that why it get wrong number 
+
+So :
+
+Query query = new Query(criteria)
+				.skip((long) filter.getPage() * filter.getSize())
+				.limit(filter.getSize());
+
+We remove : 
+
+.skip((long) filter.getPage() * filter.getSize())
+				.limit(filter.getSize());
+
+==> in the RoomServiceImpl : the query count will correct 
+
+----------------------------------------------------------------------------------
+
+2. RoomServiceImpl 
+
+the issue now with 
+
+Flux<RoomDTO> contentFlux = roomCustomRepository.findByFilter(query).map(roomMapper::toRoomDTO);
+
+
+2.1 Fist solution we can create different open for query 
+
+than we put our filter in that query 
+
+
+
+Test:
+
+GET:http://localhost:8080/api/rooms/search/pagination?page=0&size=2
+
+Result: Correct 
+
+
+{
+"page": 0,
+"size": 2,
+"totalElements": 6,
+"totalPage": 3,
+"content":[
+{
+"name": "Luxery Room",
+"attributes":{"width": 7, "lengh": 8, "price": 80, "hasPacking": true, "HaveAC": true…}
+},
+{
+"name": "Guest house",
+"attributes":{"width": 3, "lengh": 6, "price": 60, "Have Fan": true}
+}
+]
+}
+
+===================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

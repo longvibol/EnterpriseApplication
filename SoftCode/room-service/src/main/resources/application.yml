@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: room-service    
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: room
+      username: root
+      password: root
+      authentication-database: admin        
+logging:
+  level:
+    root: INFO
+    com.piseth.java.school: DEBUG   
+
+#Facker generate recorde
+room:
+  seed:
+    enabled: false

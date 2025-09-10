@@ -1,0 +1,27 @@
+Testing Result Vs Behavior : 
+
+There are two type of testing:
+
+1-Result : តើ Function នឹងត្រឹមត្រូវឬអត់​
+- We can put many parameter then the result will be correct.
+
+
+2-Behavior : Service called Service or Service call dependency 
+
+- We test on unit test mean each function it working find so for testing on behavior mean 
+យើងតេស្តថាវាបាន Called ទៅលើ Service​ នឹងជាការស្រាច់ 
+
+Example: 
+ឡាន ពេលវាចាប់ប្រាំងទៅវាបាន called service ណា ចឹងមានន័យថា វាចាប់ប្រាំង នឹង។ 
+So it mean it called this function. 
+
+Ex2: 
+
+Order :
+
+- inventory (service inside Order)
+- payment (service inside Order the same) 
+
+So when we so testing on Behavior every service inside Order (inventory and payment) we suppose it is working. 
+
+
