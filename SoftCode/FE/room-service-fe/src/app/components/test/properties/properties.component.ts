@@ -19,7 +19,11 @@ rooms = signal<Room[]>([]);
 // rooms: Room[] =[];  // this is old style Zone 
 
 //our custom params 
-params: RoomListParams ={page:0, size:5};
+params: RoomListParams ={
+  page: 0, size: 5,
+  priceMin: null,
+  priceMax: null
+};
 
 // Life cycle when start up reload the data 
 

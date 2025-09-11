@@ -1,4 +1,6 @@
-what we will 
+Video 142
+
+What we will 
 
 - Add Property Detail Page
 - Add Route 
@@ -21,25 +23,37 @@ WE will using Angular 19
 1. add route in the app.routes.ts 
 
 import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { SectionComponent } from './components/section/section.component';
 import { PropertyDetailsComponent } from './components/property-details/property-details.component';
 
 export const routes: Routes = [
     {
-        path:'properties', component: AppComponent, pathMatch:'full'
+        path:'', redirectTo: 'properties',pathMatch:'full'
     },
-     {
-        path:'properties/:id', component: PropertyDetailsComponent
+
+    {
+        path:'properties', component:SectionComponent
+    },
+    {
+        path:'properties/:id',component:PropertyDetailsComponent
+    },
+    {
+        path:'**', redirectTo:'properties'
     }
 
 ];
 
-យើងដាក់ចឹងវាដើរ តែ Page វាត គ្នា ពេលដែល route to url : http://localhost:4200/properties/1
-វាអត់ Replay page ទេ 
+explain : វាគិតលំដាប់
 
-==> Solution: 
+1-path:'', redirectTo: 'properties',pathMatch:'full' បើយើងអត់មានអី អោយវាទៅ path : properties
+2- path:'properties', component:SectionComponent បើគេវាយ http://localhost:4200/properties អោយវាទៅ properties
+3- បើវាមានដាក់ id អោយវាទៅ path​ ណាដែលគេបានចុចនឹង 
+4- Wildcard :   path:'**', redirectTo:'properties' វាយអីក៏ដោយ អោយវា redirect to the home page 
 
-we check the router outlet
+
+
+
+
 
 
 

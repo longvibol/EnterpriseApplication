@@ -14,9 +14,11 @@ import { RoomListParams } from '../../models/room-list-params';
 })
 export class SectionComponent {
 
-  filter = signal<RoomListParams>({page: 0, size: 4, priceMin: null, priceMax: null});
+  filter = signal<RoomListParams>({page:0, size:4,priceMin:null,priceMax:null})
 
   onFilterChanged(f: RoomListParams){
+    // when we get the value from parament we set the filter value in section 
     this.filter.set(f);
   }
+  
 }

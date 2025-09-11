@@ -1,0 +1,8 @@
+Video 142
+
+
+Note if we use link a it will refresh page. that make the system slow.
+
+So we use Angular proper :
+
+<a [routerLink]="['/properties', room.id]" class="btn btn-primary w-100">View Details</a>  

@@ -1,0 +1,404 @@
+Video 143
+
+there are two component: Grid and Filter 
+
+- In Filter we get only the filter object 
+and
+- Gird we create function to query data from DB 
+
+ដោយសារតែត្រូវឆ្លងកាត់ parent មួយទៀត ចឹង យើងត្រូវបោះអោយ parant is Section 
+
+បើវាផ្ទាល់គឺ parant and chair but this two component Grid and Filter is the same level child. 
+
+We use property binding and event binding 
+
+==> we start from 
+
++ out put ចេញ : properties-sidebare when we click on apply filter (event binding with signle) 
+
++ បោះចូល : Grid : [property binding]
+
+Video 144
+
+Controller class : .ts 
+Template : .html 
+
+
+Testing when click on the button show something: 
+
+(properties-sidebar>
+
++ html : we create event on click : 
+
+ <button class="btn btn-primary w-100" (click)="applyFilter()">Apply Filters</button>
+
++ Ts: when it click on the button it will run the function 
+
+applyFilter()
+
+==> 
+
+export class PropertiesSidebarComponent {
+applyFilter(){
+  console.log("Apply is clicked")
+}
+}
+
+* ដោយសារ Filter Propertis វាជា Form ចឹងយើងបោះវាចេញ​ So first we catch the properties in side the form we have 
+
+Step by Step to chatch the propertis inside the Form :
+
+TS:
+
+1- inject form builder 
+
+private fb = inject(FormBuilder);
+
+ដោយសារតែនៅក្នុង Form វាមាន propertis ច្រើនដូចជា Property Type​; Price Range; Min Price; Max Price​ យើងយកតែ PriceMin and Max​ មកប្រើសិន
+
+- Text box or drop box we can use control : 
+
+form = this.fb.group({
+    priceMin: this.fb.control<number | null> (null, {validators:[Validators.min(0)]}),
+    priceMax: this.fb.control<number | null> (null, {validators:[Validators.min(0)]})
+  })
+
+មានន័យថាយកយកចាប់យកតម្លៃ តែ Min and Max ហើយ យកចេញពី form.control ដោយតម្លៃ default if they are not input we assign 0 
+
+2. In template : Form Group 
+
+<div class="filter-section">
+        <label class="form-label">Price Range</label>
+        <div class="row g-2">
+        <div class="col-6">
+            <input type="number" class="form-control" placeholder="Min Price">
+        </div>
+        <div class="col-6">
+            <input type="number" class="form-control"  placeholder="Max Price">
+        </div>
+        </div>
+    </div>
+
+ដើម្បី Link គ្នាទៅនឹង Form Group យើងត្រូវដាក់ formControlName (ដោយសារយើងបោះតម្លៃទៅ) 
+
+==> <input type="number" class="form-control" formControlName="priceMin" placeholder="Min Price">
+
+explain: 
+
+formControlName="priceMin"  (formControlName=sytax in angular; priceMin = variable name in controller) 
+
+ចឹងយើង manage template ដែលយើងត្រូវធ្វើការចាប់ Form នឹង ដោយប្រើ formgroup 
+
+<div class="properties-sidebar" [formGroup]="form">
+
+Form inside this html 
+
+
+</div>
+
+Explain: 
+
+- [formGroup]="form" (formGroup=syntax in angular ; form = is the form name in the TS) and it is the properties binding 
+- in the controller TS : we imports: [ReactiveFormsModule],
+
+
+So we can test on the Apply Filter button : 
+
+applyFilter() {
+    // console.log("Apply is clicked")
+    console.log(this.form.getRawValue())
+  }
+
+
+3- Create custom event ដើម្បីបោះ event នឹងចេញក្រៅ 
+
+in the model : 
+
+export interface RoomListParams {
+    page?: number;
+    size?: number;
+    sort?: string;
+    roomType?: string;
+    properType?: string;
+    price?: number;
+    priceMin: number | null;
+    priceMax: number | null;
+}
+
+we add priceMin and priceMax to our model 
+
+-emit មានន័យថាយើងបោះ data ចេញក្រៅ
+- យើងគិតថាយើងចង់បោះអីចឹងយើងបង្កើត model above but it have page, sort, size a lot we want to emit only the priceMin and Max first 
+
+  filterChange = output<RoomListParams>(); // this is style signal 
+  private base: RoomListParams = {page:0, size: 4, priceMin: null, priceMax: null}
+
+- we initial the first value on the filterChange
+
+const {priceMin, priceMax} = this.form.getRawValue(); (អោយវាយកតម្លៃពី form ដែលគេបានរើសនឹង) 
+
+4. spread argument (បើវាមានតម្លៃហើយ យកតម្លៃនឹង បើអត់យកអាតម្លៃថ្មីនឹង)
+
+this.filterChange.emit({...this.base, priceMin: priceMin ?? null, priceMax: priceMax ?? null})
+
+គោលបំណង់យើងចង់បោះតម្លៃនឹងចេញក្រៅ​
+
++ ចឹងបន្ទាប់ពីចំណុណចេះយើងបានបោះតម្លៃចេញហើយ បន្ទាប់ពីគេដាក់តម្លៃ Filter with PriceMin and PriceMax then clink on Apply filter we out put the valtue outside. 
+
+-------------------------------------------------------------------------------------------------
+
+យើងមើលវាបោះអោយខាងណា ចឹងសម្រាប់ Sidebar វាបោះអោយ Parent vir in the Section component : 
+
+<section id="properties" class="properties section">
+
+
+	<app-properties-grid></app-properties-grid>
+
+	<app-properties-sidebar ></app-properties-sidebar>
+
+
+</section>
+
+we can see Grid and Sidebar are under Section 
+
+In Sidebar : យើងចាំចេះ បើយើងចង់បោះវាចេញគេហៅថា Event ចឹងហើយ () ហើយបោះ custom event របស់យើង 
+
+<app-properties-sidebar (filterChange)="onFilterChanged()"></app-properties-sidebar>
+
+Explain : (filterChange)="onFilterChanged() :: filterChange = is our custom event ; and onFilterChanged() is the function ដែលយើងត្រូវបង្កើតនៅក្នុង controller section 
+
+export class SectionComponent {
+
+  onFilterChanged(){
+
+  }
+}
+
+
+ដាក់តែប៉ុន្នឹងមកវាលែង Error ហើយ តែយើងចង់បាននឹង វាបោះតម្លៃពី Sidebar មកអោយវាចាំទទួលក្នុង Section នឹងចឹងយើងបង្កើត FilterChange មួយទៀត
+សម្រាប់ Default value: 
+
+export class SectionComponent {
+
+  filter = signal<RoomListParams>({page:0, size:0,priceMin:null,priceMax:null}) // this is the default value 
+
+  onFilterChanged(){
+
+  }
+}
+
+ចឹងវាបោះមកនឹងវាត្រូវមាន parameter វា​ 
+
+<app-properties-sidebar (filterChange)="onFilterChanged($event)"></app-properties-sidebar>
+
+
+($event) is the syntax របស់វា​
+
+onFilterChanged(f: RoomListParams){
+    // when we get the value from parament we set the filter value in section 
+    this.filter.set(f);
+  }
+
+មកដល់កន្លែងនឹង filter change in the section get the value now then next step we throw this valute to Grid 
+
+<app-properties-grid [filter] = "filter()"></app-properties-grid>
+
+
+We use property binding : [filter] = "filter()" ==> [filter] is the variable in the Grid ; "filter()" is the variable in Section 
+
+= In the Grid TS: 
+
+filter = input.required<RoomListParams>();
+
+ចឹងកន្លែង​ Grid នឹងហើយដែលវាអ្នកទៅទាញ ទិន្នន័យពី Data base 
+
+ដោយសារតែយើងធ្វើតាម Signle ចឹងបន្ទាប់ពីបាន filter ពី parent នឹងហើយ យើងត្រូវ convert វាជាទំរង់ observable (បើមានអីកែភ្លាម វា apply ភ្លាម)
+
+  constructor(){
+    toObservable(this.filter)
+      .pipe(
+        switchMap(f =>this.roomService.list(f)),
+        takeUntilDestroyed() 
+      )
+      .subscribe(page =>{
+        
+      })
+  }
+
+Explain : 
+
++ toObservable(this.filter) យើងសង្កេតនៅក្នុង Filter នឹងវាមានអី ប្រែប្រួលអត់
++ បើមាន .pipe(
+        switchMap(f =>this.roomService.list(f)), យើងប្រើ Service room ដើម្បីទៅទាញទិន្នន័យមក​ 
++ takeUntilDestroyed()  ការពារកុំអោយ Memory ច្រើនពេកត្រូវ Clear វាចោល 
+
++  .subscribe(page =>{
+} កន្លែងដែលយើងបាន data នឹងហើយយកមកធ្វើអី 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

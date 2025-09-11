@@ -4,16 +4,17 @@ import { PropertyDetailsComponent } from './components/property-details/property
 
 export const routes: Routes = [
     {
-        path: '', redirectTo: 'properties', pathMatch: 'full'
+        path:'', redirectTo: 'properties',pathMatch:'full'
+    },
+
+    {
+        path:'properties', component:SectionComponent
     },
     {
-        path: 'properties', component: SectionComponent
+        path:'properties/:id',component:PropertyDetailsComponent
     },
     {
-        path: 'properties/:id', component: PropertyDetailsComponent
-    },
-    {
-        path: '**', redirectTo: 'properties'
-    },
+        path:'**', redirectTo:'properties'
+    }
 
 ];
