@@ -1,0 +1,267 @@
+video 147 and 148
+
+Location : Refer to address search: it have city, provide and district 
+
+Our app have two template: Admin UI and User UI : Room Owner App and Visitor App
+
+==> So we need to store our address in both side : owner and visitor 
+
+==> we will build Address Service : to store address for Owner and visitor to store there address 
+
+ចឹង Owener and Vistore can consume this address service to store the data 
+(យើងបង្កើត UI មួយទៀតដែលយើងអាចធ្វើការចុះ Select ហើយអោយវាធ្លាក់ address មកយើងអាចរើសបាន)
+
+
+--------------------------------------------
+[
+  {
+    "code": "12",
+    "level": "PROVINCE",
+    "parentCode": null,
+    "path": [
+      "12"
+    ],
+    "nameKh": "ភ្នំពេញ",
+    "nameEn": "Phnom Penh",
+    "createdAt": "2025-09-07T01:30:04.430Z",
+    "updatedAt": "2025-09-07T01:30:04.430Z"
+  },
+  {
+    "code": "12-03",
+    "level": "DISTRICT",
+    "parentCode": "12",
+    "path": [
+      "12",
+      "12-03"
+    ],
+    "nameKh": "ខណ្ឌទួលគោក",
+    "nameEn": "Toul Kork",
+    "createdAt": "2025-09-07T01:30:45.230Z",
+    "updatedAt": "2025-09-07T01:30:45.230Z"
+  }
+]
+
+Explain: 
+
+- "code": "12" : Is the unit key ==> Primary Key 
+- "Level" : បើខេត្តយើងអោយវា មានលេខ ពីរខ្ទង់ទៅ "code": "12-03"​​​ 
+
+Search : we create path : 
+
+   "path": [
+      "12",
+      "12-03" ]
+
+មានន័យថាបើវា ​search path ["12"] វាមកតែអា 12 នឹងទេ បើយើងដាក់ថែម​ "12-03" វាមកតាអាក្រោមនឹងទេ we can separate code 
+(search array operation in Mongodb) 
+
+----------------------------------------------------------
+
+Video 149: 
+
+Create AminLevel that return the value : 
+
+1. AminLevel : Class
+
+First style 
+
+package com.piseth.java.school.addressservice.domain.enumeration;
+
+import lombok.Getter;
+
+@Getter
+public enum AdminLevel {
+	PROVINCE(1), DISTRICT(2), COMMUNE(3), VILLAGE(4);
+
+	int dept;
+
+	private AdminLevel(int dept) {
+		this.dept = dept;
+	}
+
+}
+
+Second style : 
+
+package com.piseth.java.school.addressservice.domain.enumeration;
+
+import lombok.Getter;
+
+@Getter
+public enum AdminLevel {
+	PROVINCE, DISTRICT, COMMUNE, VILLAGE;
+
+	public int depth() {
+		return switch (this) {
+		case PROVINCE -> 1;
+		case DISTRICT -> 2;
+		case COMMUNE -> 3;
+		case VILLAGE -> 4;
+		};
+	}
+
+}
+
+==> យើងធ្វើចឹងដើម្បីធ្វើការផ្ទៀងផ្ទាត់ if it is level (1) mean Province ចឹងកូដវាមាន តែមួយ  "code": "12"
+
+- level (2) mean DISTRICT ចឹងកូដវាមាន តែមួយ  "code": "12-03"
+
+2. Create AdminAreas
+
+@Document("adminAreas")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminArea {
+
+	@Id
+	private String code;
+
+	private AdminLevel adminLevel;
+	private String parentCode;
+	private String nameKh;
+	private String nameEn;
+	private List<String> path;
+
+	// audit
+	private Instant createAt;
+	private Instant updateAt;
+
+	@Version
+	private Long version;
+
+}
+
+ចឹងដើម្បីបង្កើត domain នឹងបានយើងអាចយកទំរង់ Sample ដែលយើងចង់បានយកមកធ្វើ
+
+  {
+    "code": "12",
+    "level": "PROVINCE",
+    "parentCode": null,
+    "path": [
+      "12"
+    ],
+    "nameKh": "ភ្នំពេញ",
+    "nameEn": "Phnom Penh",
+    "createdAt": "2025-09-07T01:30:04.430Z",
+    "updatedAt": "2025-09-07T01:30:04.430Z"
+  },
+ 
+
+ដោយសារតែយើងប្រើវាជា Builder មានន័យថាដើម្បីបង្កើត  Class adminAreas យើងមិនចាំបាច់ដាក់គ្រាប់ Propertiy or fild នឹងចូលទេ
+តែយើងត្រូវ add annotation : 
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

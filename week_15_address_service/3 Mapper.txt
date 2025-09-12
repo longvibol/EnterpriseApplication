@@ -1,0 +1,206 @@
+Video 151: 
+
+
+Mapper we create Interface: 
+
+- Mapper we map from Request មក Respond ហើយ Respond មក Request ving 
+
+1. AdminAreaMapper
+
+@Mapper(componentModel = "spring")
+public interface AdminAreaMapper {
+	
+	// Map from request to our model in order to insert to database 
+	គេបោះ Request មកយើងចង់បាន save to database តាមទំរង់របស់យើង 	
+	AdminArea toEntity(AdminAreaCreateRequestBuilder dto);
+
+	មានន័យថាអោយតា file or properties នៅក្នុង AdminAreaCreateRequestBuilder វាបង្កើត អោយដូចទៅនឹង Entity របស់យើង 
+លើកលែងតែ path ទេ ដែលវាយកចេញពី code មក 
+យើងមាន ៖
+ "code": "12-03",
+
+យើងបង្កើតជា Array : 
+==> "path": [
+      "12",
+      "12-03"
+    ],
+
+==> so we build the function to convert from code to path តាមទំរង់ដែលយើងចង់បាន (Method helper) 
+
+ពីមុននៅក្នុង interface យើងមិនអាចបង្កើត Method ban te but new version we can create but just put default inform method
+
+- Update : they input request update then we update our entity 
+
+===========================================================
+
+
+package com.piseth.java.school.addressservice.mapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
+import com.piseth.java.school.addressservice.domain.AdminArea;
+import com.piseth.java.school.addressservice.dto.AdminAreaCreateRequest;
+import com.piseth.java.school.addressservice.dto.AdminAreaUpdateRequest;
+
+@Mapper(componentModel = "spring")
+public interface AdminAreaMapper {
+	
+	// Map from request to our model in order to insert to database 	
+	@Mapping(target = "path", expression = "java(buildPath(dto.getCode()))")
+	@Mapping(target = "createAt", ignore = true)
+	@Mapping(target = "updateAt", ignore = true)
+	@Mapping(target = "version", ignore = true)
+	AdminArea toEntity(AdminAreaCreateRequest dto);
+	
+	default List<String> buildPath(String code){
+		// We want : code : "12-03" ==> path : "12-03" convert from code to Array String 
+		
+		if(code == null || code.isBlank()) {
+			return List.of();
+		}
+		String[] parts = code.split("-");
+		List<String> path =  new ArrayList<>(parts.length);
+		
+		String acc = "";
+		for(int i =0 ; i < parts.length; i++) {
+			if(i == 0) {
+				acc = parts[i];
+			}else {
+				acc = acc + "-" + parts[i];
+			}
+			path.add(acc);
+		}
+		
+		return path;
+	}
+	
+	@Mapping(target = "createAt", ignore = true)
+	@Mapping(target = "updateAt", ignore = true)
+	@Mapping(target = "version", ignore = true)
+	@Mapping(target = "adminLevel", ignore = true)
+	@Mapping(target = "parentCode", ignore = true)
+	@Mapping(target = "code", ignore = true)
+	@Mapping(target = "path", ignore = true)
+	void update(@MappingTarget AdminArea target, AdminAreaUpdateRequest dto);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
