@@ -1,0 +1,132 @@
+Video 150
+
+DTO : វាមានអាកែបាន និងអាកែមិនបាន ដោយសារតែ ទីតាំងវានៅណានៅនឹងហើយ ចឹងយើងមិនចាំបាច់កែវាទេ
+
+អ្វីដែលអាចកែប្រែបានគឺមានតែ nameKh and nameEn តេ​។ បើយើងចង់បានថ្មី យើងធ្វើការ create ថ្មី​បន្ទាប់មកយើង riase event មួយមក​
+
+so we have separate database : 1 for Admin and 1 for User 
+
+Validation 
+
+@NotBlank វាខ្លាំងជាង @NotNull
+
+Flow when we create Controller: 
+
+
+1- domain 
+2- dto
+3- mapper
+4- Repository
+5- service 
+6- controller 
+
+-------------------------------------------------------------------
+
+*Cerate DTO to create and upate the AdminArea* 
+
+1-class : AdminAreaCreateRequest
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminAreaCreateRequest {
+	
+	@NotBlank
+	@Pattern(regexp = "^[0-9]{2}(?:-[0-9]{2}){0,3}$", message = "code must look like 12 or 12-03-07-02")
+	private String code;
+	
+	@NotNull
+	private AdminLevel adminLevel;
+	
+	private String parentCode;
+	
+	@NotBlank
+	private String nameKh;
+	
+	@NotBlank
+	private String nameEn;
+
+}
+
+2-class : AdminAreaUpdateRequest
+
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminAreaUpdateRequest {
+	
+	@NotBlank
+	private String nameKh;
+	@NotBlank
+	private String nameEn;
+
+}
+
+3- Class:  AdminAreaResponse 
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminAreaResponse {
+
+	private String code;
+
+	private AdminLevel adminLevel;
+	private String parentCode;
+	private String nameKh;
+	private String nameEn;
+	private List<String> path;
+	private Instant createAt;
+	private Instant updateAt;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

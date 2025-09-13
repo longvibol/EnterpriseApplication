@@ -25,6 +25,6 @@ export class PropertiesSidebarComponent {
     //console.log("Apply is clicked")
     //console.log(this.form.getRawValue())
     const {priceMin, priceMax}  = this.form.getRawValue();
-    // this.filterChange.emit({...this.base, priceMin: priceMin ?? null, priceMax: priceMax ?? null})
+    this.filterChange.emit({...this.base, priceMin: priceMin ?? null, priceMax: priceMax ?? null})
   }
 }
