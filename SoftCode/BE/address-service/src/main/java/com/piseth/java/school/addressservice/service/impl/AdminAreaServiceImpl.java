@@ -7,8 +7,10 @@ import com.piseth.java.school.addressservice.domain.enumeration.AdminLevel;
 import com.piseth.java.school.addressservice.dto.AdminAreaCreateRequest;
 import com.piseth.java.school.addressservice.dto.AdminAreaResponse;
 import com.piseth.java.school.addressservice.dto.AdminAreaUpdateRequest;
+import com.piseth.java.school.addressservice.mapper.AdminAreaMapper;
 import com.piseth.java.school.addressservice.repository.AdminAreaRepsitory;
 import com.piseth.java.school.addressservice.service.AdminAreaService;
+import com.piseth.java.school.addressservice.validator.AdminAreaValidator;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -18,13 +20,27 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AdminAreaServiceImpl implements AdminAreaService {
 	
-	private final AdminAreaRepsitory repsitory;
+	private final AdminAreaRepsitory repository;
+	private final AdminAreaValidator validator;
+	private final AdminAreaMapper mapper;
 
 	@Override
 	public Mono<AdminAreaResponse> create(AdminAreaCreateRequest dto) {
 		// we create with lazy style when have someone the it will called our validation
-
-		return null;
+		return Mono.fromCallable(()->{
+			final AdminArea candidate = mapper.toEntity(dto);			
+			validator.validate(candidate);
+			return candidate;
+		}).flatMap(cadidate->{
+//			CheckParentCodeExists(candidate)
+//			.then(ensureCodeIsUnique(candidate)); because we can do it at the same time
+			
+			return Mono.when(CheckParentCodeExists(cadidate),ensureCodeIsUnique(cadidate))
+			.thenReturn(cadidate)
+			// to save 
+			.flatMap(c -> repository.save(c))
+			.map(mapper::toResponse);
+		});
 	}
 
 	// CheckParentCodeExists
@@ -33,7 +49,7 @@ public class AdminAreaServiceImpl implements AdminAreaService {
 		if(candidate.getLevel() == AdminLevel.PROVINCE) {
 			return Mono.empty();
 		}		
-		return repsitory.existsById(candidate.getParentCode())
+		return repository.existsById(candidate.getParentCode())
 			.flatMap(exists ->{
 				if(exists) {
 					return Mono.empty();
@@ -44,10 +60,10 @@ public class AdminAreaServiceImpl implements AdminAreaService {
 		
 	}
 	
-	// EnsureCodeIsUnique	
+	// EnsureCodeIsUnique ; check duplicate
 	private Mono<Void> ensureCodeIsUnique(final AdminArea candidate){
 		
-		return repsitory.existsById(candidate.getCode())
+		return repository.existsById(candidate.getCode())
 			.flatMap(exists ->{
 				if(exists) {
 					return Mono.error(new IllegalAccessException("AdminArea already exists : " + candidate.getCode()));
