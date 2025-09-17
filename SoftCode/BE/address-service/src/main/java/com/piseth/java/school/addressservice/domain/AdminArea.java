@@ -3,7 +3,9 @@ package com.piseth.java.school.addressservice.domain;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -31,7 +33,10 @@ public class AdminArea {
 	private List<String> path;
 
 	// audit
+	@CreatedDate
 	private Instant createAt;
+	
+	@LastModifiedDate
 	private Instant updateAt;
 
 	@Version
