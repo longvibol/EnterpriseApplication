@@ -1,14 +1,24 @@
 package com.piseth.java.school.addressservice.service.impl;
 
+import java.util.Objects;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.piseth.java.school.addressservice.domain.AdminArea;
 import com.piseth.java.school.addressservice.domain.enumeration.AdminLevel;
 import com.piseth.java.school.addressservice.dto.AdminAreaCreateRequest;
 import com.piseth.java.school.addressservice.dto.AdminAreaResponse;
 import com.piseth.java.school.addressservice.dto.AdminAreaUpdateRequest;
+import com.piseth.java.school.addressservice.exception.AdminAreaNotFoundException;
+import com.piseth.java.school.addressservice.exception.ChildrenExistException;
+import com.piseth.java.school.addressservice.exception.DuplicateAdminAreaException;
+import com.piseth.java.school.addressservice.exception.ParentNotFoundException;
+import com.piseth.java.school.addressservice.mapper.AdminAreaMapper;
 import com.piseth.java.school.addressservice.repository.AdminAreaRepsitory;
 import com.piseth.java.school.addressservice.service.AdminAreaService;
+import com.piseth.java.school.addressservice.validator.AdminAreaValidator;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -18,13 +28,29 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AdminAreaServiceImpl implements AdminAreaService {
 	
-	private final AdminAreaRepsitory repsitory;
+	private final AdminAreaRepsitory repository;
+	private final AdminAreaValidator validator;
+	private final AdminAreaMapper mapper;
+	
+	private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.ASC, "code");
 
 	@Override
 	public Mono<AdminAreaResponse> create(AdminAreaCreateRequest dto) {
 		// we create with lazy style when have someone the it will called our validation
-
-		return null;
+		return Mono.fromCallable(()->{
+			final AdminArea candidate = mapper.toEntity(dto);			
+			validator.validate(candidate);
+			return candidate;
+		}).flatMap(cadidate->{
+//			CheckParentCodeExists(candidate)
+//			.then(ensureCodeIsUnique(candidate)); because we can do it at the same time
+			
+			return Mono.when(CheckParentCodeExists(cadidate),ensureCodeIsUnique(cadidate))
+			.thenReturn(cadidate)
+			// to save 
+			.flatMap(c -> repository.save(c))
+			.map(mapper::toResponse);
+		});
 	}
 
 	// CheckParentCodeExists
@@ -33,33 +59,30 @@ public class AdminAreaServiceImpl implements AdminAreaService {
 		if(candidate.getLevel() == AdminLevel.PROVINCE) {
 			return Mono.empty();
 		}		
-		return repsitory.existsById(candidate.getParentCode())
+		return repository.existsById(candidate.getParentCode())
 			.flatMap(exists ->{
 				if(exists) {
 					return Mono.empty();
 				}else {
-					return Mono.error(new IllegalAccessException("Parent not found : " + candidate.getParentCode()));
+					return Mono.error(new ParentNotFoundException(candidate.getParentCode()));
 				}
 			});
 		
 	}
 	
-	// EnsureCodeIsUnique	
+	// EnsureCodeIsUnique ; check duplicate
 	private Mono<Void> ensureCodeIsUnique(final AdminArea candidate){
 		
-		return repsitory.existsById(candidate.getCode())
+		return repository.existsById(candidate.getCode())
 			.flatMap(exists ->{
 				if(exists) {
-					return Mono.error(new IllegalAccessException("AdminArea already exists : " + candidate.getCode()));
+					return Mono.error(new DuplicateAdminAreaException(candidate.getCode()));
 					
 				}else {
 					return Mono.empty();
 				}
 			});
 	}
-	
-	
-	
 	
 
 	/*
@@ -74,26 +97,60 @@ public class AdminAreaServiceImpl implements AdminAreaService {
 
 	@Override
 	public Mono<AdminAreaResponse> get(String code) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.findById(code)
+			.switchIfEmpty(Mono.error(new AdminAreaNotFoundException(code)))
+			.map(mapper::toResponse);
 	}
 
 	@Override
 	public Mono<Void> delete(String code) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		return repository.existsById(code)
+			.flatMap(exists->{				
+				if(!exists) {
+					return Mono.error(new AdminAreaNotFoundException(code));
+				}
+				return repository.existsByParentCode(code).flatMap(hasChildren->{
+					if(hasChildren) {
+						if(hasChildren) {
+							return Mono.error(new ChildrenExistException(code));
+						}						
+					}
+					return repository.deleteById(code);
+				});
+
+			});
+	}	
 
 	@Override
-	public Mono<AdminAreaResponse> update(AdminAreaUpdateRequest dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<AdminAreaResponse> update(String code, AdminAreaUpdateRequest dto) {
+		return repository.findById(code)
+			.switchIfEmpty(Mono.error(new AdminAreaNotFoundException(code)))
+			.flatMap(entity ->{
+				mapper.update(entity, dto);
+				return repository.save(entity);
+			}).map(mapper::toResponse);
+		
 	}
 
 	@Override
 	public Flux<AdminAreaResponse> list(AdminLevel level, String parentCode) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final boolean hasLevel = Objects.nonNull(level);
+		final boolean hasParent = StringUtils.hasText(parentCode);
+		
+		if(hasLevel && hasParent) {
+			return repository.findByLevelAndParentCode(level, parentCode, DEFAULT_SORT).map(mapper::toResponse);
+		}
+		
+		if(hasLevel) {
+			return repository.findByLevel(level, DEFAULT_SORT).map(mapper::toResponse);
+		}
+		
+		if(hasParent) {
+			return repository.findByParentCode(parentCode, DEFAULT_SORT).map(mapper::toResponse);
+		}
+		
+		return repository.findAll().map(mapper::toResponse);
 	}
 
 }

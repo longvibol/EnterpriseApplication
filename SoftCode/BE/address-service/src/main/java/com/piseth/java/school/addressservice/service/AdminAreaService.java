@@ -21,7 +21,7 @@ public interface AdminAreaService {
 	
 	//Update 
 	
-	Mono<AdminAreaResponse> update(AdminAreaUpdateRequest dto);
+	Mono<AdminAreaResponse> update(String code, AdminAreaUpdateRequest dto);
 	
 	// list to combo box 
 	
