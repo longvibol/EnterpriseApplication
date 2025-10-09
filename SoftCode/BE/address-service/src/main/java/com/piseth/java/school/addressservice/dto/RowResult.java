@@ -2,9 +2,22 @@ package com.piseth.java.school.addressservice.dto;
 
 import com.piseth.java.school.addressservice.domain.enumeration.Outcome;
 
-public class RowResult {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public final class RowResult {
 	
-	private Outcome outcome;
-	private RowError error;
+	private final Outcome outcome;
+	private final RowError error;
+	
+	public static RowResult inserted() {
+		return new RowResult(Outcome.INSERTED, null);
+	}
+	
+	public static RowResult error(final Outcome outcome, final RowError error) {
+		return new RowResult(outcome,error);
+	}
 
 }
