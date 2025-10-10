@@ -12,9 +12,11 @@ import com.piseth.java.school.addressservice.dto.RowResult;
 import com.piseth.java.school.addressservice.dto.UploadSummary;
 import com.piseth.java.school.addressservice.mapper.AdminAreaMapper;
 import com.piseth.java.school.addressservice.mapper.ParsedRowMapper;
+import com.piseth.java.school.addressservice.mapper.UploadSummaryMapper;
 import com.piseth.java.school.addressservice.service.AdminAreaImportService;
 import com.piseth.java.school.addressservice.service.AdminAreaService;
 import com.piseth.java.school.addressservice.service.ExcelAdminAreaParser;
+import com.piseth.java.school.addressservice.service.helper.ImportAccumulator;
 import com.piseth.java.school.addressservice.service.helper.RowErrorClassifier;
 import com.piseth.java.school.addressservice.validator.AdminAreaValidator;
 
@@ -32,13 +34,17 @@ public class AdminAreaImportServiceImpl implements AdminAreaImportService{
 	private final AdminAreaValidator validator;
 	private final AdminAreaService adminAreaService;
 	private final RowErrorClassifier rowErrorClassifier;
+	private final UploadSummaryMapper uploadSummaryMapper;
 
 	@Override
 	public Mono<UploadSummary> importExcel(FilePart file, boolean dryRun) {
-		parser.parse(file)
+		
+		return parser.parse(file)
 			.sort(ParseRow.BY_DEPTH)
-			.concatMap(row -> handleRow(row, dryRun));
-		return null;
+			.concatMap(row -> handleRow(row, dryRun)) // we want it to insert provice firs 
+//			.reduce(new ImportAccumulator(), ImportAccumulator::accumulator)
+			.reduce(new ImportAccumulator(), ImportAccumulator::accumulate)
+			.map(uploadSummaryMapper::toUploadSummary);
 	}
 	
 	private Mono<RowResult> handleRow(final ParseRow row, boolean dryRun){

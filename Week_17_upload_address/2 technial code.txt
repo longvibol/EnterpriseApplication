@@ -1,0 +1,94 @@
+1. This is called side effect (because the task work inside then it need the outside to do count) 
+it is not recommend 
+
+
+@Override
+	public Mono<UploadSummary> importExcel(FilePart file, boolean dryRun) {
+		
+		AtomicInteger numberOfRow = new AtomicInteger(); 
+		AtomicInteger numberOfInserted = new AtomicInteger(); 
+		AtomicInteger numberOfDuplication = new AtomicInteger(); 		
+		
+		parser.parse(file)
+			.sort(ParseRow.BY_DEPTH)
+			.concatMap(row -> handleRow(row, dryRun)) // we want it to insert provice firs 
+			.map(row ->{
+				numberOfRow.getAndIncrement(); // side effect
+			});
+		return null;
+	}
+
+
+2. We use reduce to improve it : 
+
+	public static void testReduce() {
+		var list = List.of(1,2,3,4);
+		Integer var = list.stream().reduce(0,(a,b)->a+b);
+		System.out.println(var);
+	}
+	
+	public static void main(String[] args) {
+		testReduce();
+	}
+
+
+--> we take inside to do the process 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

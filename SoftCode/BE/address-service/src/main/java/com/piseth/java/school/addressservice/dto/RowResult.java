@@ -19,5 +19,9 @@ public final class RowResult {
 	public static RowResult error(final Outcome outcome, final RowError error) {
 		return new RowResult(outcome,error);
 	}
+	
+	public boolean isInserted() {
+		return this.outcome == Outcome.INSERTED;
+	}
 
 }
