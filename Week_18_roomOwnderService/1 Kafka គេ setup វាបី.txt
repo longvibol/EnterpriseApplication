@@ -1,0 +1,12 @@
+Kafka គេ setup វាបី server it use for connection:
+
+room-server ==> Kafka <== room-owner-service 
+
+Run docker file :
+
+>> docker compose up -d
+
+- Kafka broker មានន័យថា server 
+- Topics is like Table name = event 
+- Consumers = subscriber = who interest to our channel 
+

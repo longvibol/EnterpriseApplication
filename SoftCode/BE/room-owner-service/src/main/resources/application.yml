@@ -1,14 +1,14 @@
 server:
- port: 8080
+ port: 8081
 
 spring:
   application:
-    name: room-service    
+    name: room-owner-service    
   data:
     mongodb:
       host: localhost
-      port: 27018
-      database: room
+      port: 27019
+      database: roomOwner
       username: root
       password: root
       authentication-database: admin        
@@ -16,8 +16,3 @@ logging:
   level:
     root: INFO
     com.piseth.java.school: DEBUG   
-
-#Facker generate recorde
-room:
-  seed:
-    enabled: false
