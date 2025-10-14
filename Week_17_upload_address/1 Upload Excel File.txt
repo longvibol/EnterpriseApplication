@@ -1,0 +1,16 @@
+Upload Excel File 
+
+1. Create record : it auto create get method no set 
+this class use for get the upload excel then we convert to object 
+
+>> create in the dto
+
+- ParseRow.class = it is the amusable class (can not extends) then we create the filed inside it will create getter 
+
+- parse = convert 
+
+
+2. Create interface ExcelAdminAreaParser
+
+this class we use to get from excel file 
+
