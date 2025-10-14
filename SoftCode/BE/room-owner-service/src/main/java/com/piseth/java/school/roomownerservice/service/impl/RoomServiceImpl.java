@@ -1,41 +1,28 @@
 package com.piseth.java.school.roomownerservice.service.impl;
 
-import java.util.List;
-
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.piseth.java.school.roomownerservice.domain.Room;
-import com.piseth.java.school.roomownerservice.dto.PageDTO;
 import com.piseth.java.school.roomownerservice.dto.RoomCreateRequest;
-import com.piseth.java.school.roomownerservice.dto.RoomDTO;
-import com.piseth.java.school.roomownerservice.dto.RoomFilterDTO;
-import com.piseth.java.school.roomownerservice.dto.RoomImportSummary;
 import com.piseth.java.school.roomownerservice.dto.RoomResponse;
 import com.piseth.java.school.roomownerservice.dto.RoomUpdateRequest;
-import com.piseth.java.school.roomownerservice.exception.RoomNotFoundException;
-import com.piseth.java.school.roomownerservice.mapper.RoomMapper;
-import com.piseth.java.school.roomownerservice.repository.RoomCustomRepository;
-import com.piseth.java.school.roomownerservice.repository.RoomRepository;
 import com.piseth.java.school.roomownerservice.service.RoomService;
-import com.piseth.java.school.roomownerservice.util.RoomCriteriaBuilder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class RoomServiceImpl implements RoomService {
-	
-	
+public class RoomServiceImpl implements RoomService {	
 	
 	@Override
 	public Mono<RoomResponse> create(RoomCreateRequest request) {
-
+		// save to db : room collection 
+		// outbox : outbox collection 
+		// filter from outbox to send kafka message 
+		
+		
 	
 		return null;
 	}

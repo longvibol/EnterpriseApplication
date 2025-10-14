@@ -1,0 +1,81 @@
+- Outbox : យើងធានាថា Data របស់យើងអត់ បាត់
+
++ ជាកន្លែងដែលធ្វើទំនាក់ទំនងរវាង Our service to the Kafka Message ពេលដែលយើងធ្វើ Service អ្វីមួយវាប្រាប់ទៅ kafka 
+ថាមាន Message ចូលមកអត់ បើចូលវា take note អោយរ
+
+- Replecka : server backup 
+
+
+_---------------------------------
+
+outbox Status :
+
+public enum OutboxStatus {
+    PENDING, SENT, FAILED
+}
+
+- Pending : ពេលយើងផ្ញើរទៅ kafka 
+- Send : ពេលយើងផ្ញើរហើយ ហើយចូលក្នុង Kafa = success 
+- Failed : no success send 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
