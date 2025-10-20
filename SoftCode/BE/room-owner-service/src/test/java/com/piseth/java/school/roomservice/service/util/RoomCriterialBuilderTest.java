@@ -1,26 +1,11 @@
 package com.piseth.java.school.roomservice.service.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
-
-import com.piseth.java.school.roomownerservice.dto.RoomFilterDTO;
-import com.piseth.java.school.roomownerservice.util.RoomCriteriaBuilder;
-
-import nl.altindag.log.LogCaptor;
-
 class RoomCriterialBuilderTest {
 
-	/*
 	
+	/*
 	// Empty input
-	@Test
+	@Test	
 	void shouldReturnEmptyCriteria_whenNoFilterProvided() {
 		// Given
 		RoomFilterDTO filter = new RoomFilterDTO();

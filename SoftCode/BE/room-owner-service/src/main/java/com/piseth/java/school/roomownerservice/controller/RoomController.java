@@ -1,22 +1,33 @@
 package com.piseth.java.school.roomownerservice.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.piseth.java.school.roomownerservice.dto.RoomCreateRequest;
+import com.piseth.java.school.roomownerservice.dto.RoomResponse;
 import com.piseth.java.school.roomownerservice.service.RoomService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-@Slf4j
 @RestController
-@RequestMapping(value = "/api/rooms")
+@RequestMapping("/api/rooms")
 public class RoomController {
-		
+	
 	private final RoomService roomService;
 	//private final RoomImportService roomImportService;
+	
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mono<RoomResponse> create(@Valid @RequestBody final RoomCreateRequest req) {
+      return roomService.create(req);
+  }
 	
 	/*
 	@PostMapping

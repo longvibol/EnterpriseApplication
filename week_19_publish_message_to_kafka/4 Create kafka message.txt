@@ -1,0 +1,9 @@
+- KafkaRoomEventPublisher : គោលបំណង់ចង់ផ្ញើរ Message ទៅ message broker 
+
+- Serialize : Object to String 
+
+- Deserialize : String to Object 
+
+- Sharding : database separate ពេលយើងមាន data base ច្រើន
+
+

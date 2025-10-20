@@ -136,6 +136,26 @@
 	        <artifactId>javafaker</artifactId>
 	        <version>1.0.2</version>
 	    </dependency>
+	    
+	    <!-- Spring Kafka (brings KafkaTemplate and JSON serializer) -->
+		  <dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka</artifactId>
+		  </dependency>
+		
+		  <!-- Reactor Kafka (reactive producer/consumer engine) -->
+		  <dependency>
+		    <groupId>io.projectreactor.kafka</groupId>
+		    <artifactId>reactor-kafka</artifactId>
+		  </dependency>
+		
+		  <!-- Tests (embedded broker utilities, @EmbeddedKafka, etc.) -->
+		  <dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka-test</artifactId>
+		    <scope>test</scope>
+		  </dependency>	  
+
 
 	</dependencies>
 	<build>

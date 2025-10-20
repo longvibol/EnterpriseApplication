@@ -1,0 +1,201 @@
+- bootstrap-servers : server that we create inside the kafka docker 
+- Set producer: it will send in byte (byte it is very fast than text) 
+
++ Serializre (sender) and deSerializer(received)  
+
+Ex: 
+
+- key-serializer: org.apache.kafka.common.serialization.StringSerializer (is is the class from kafka)
+- acks: all (យើងពិនិត្យមើលបានទទួលទាំងអស់គ្នាឬនៅ)
+
+------------------------------- this is under spring to create kafka property 
+
+ kafka:
+    bootstrap-servers: localhost:9092,localhost:9094,localhost:9096 
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+        compression.type: gzip
+        linger.ms: 10
+        max.in.flight.requests.per.connection: 5
+        delivery.timeout.ms: 120000
+        retries: 2147483647
+    properties:
+      spring.json.add.type.headers: false       
+
+--------------------------------------------------------
+
+This is our configure for our own property 
+
+app:
+  messaging:
+    producerId: room-owner-service
+    eventVersion: v1
+    topics:
+      roomEvents: room.events.v1
+      roomDlq: room.events.v1.dlq
+  outbox:
+    poll-interval-ms: 1000  // ចំនួននាទីដែលយើងបានកំនត់
+    max-batch: 100 // ទាញម្តង់ចំនួន ១០០ មកមើល
+    max-attempts: 12
+    retention-days: 14     
+
+Explain :
+
+- roomEvents: room.events.v1
+- roomDlq: room.events.v1.dlq
+
+យើងកំណត់ចំនួនដង់ផ្ញើរទៅ បើផ្ញើរទៅច្រើនដង់ហើយវាមិនចូលយើងអោយវា ចូល dlq 
+
+dlq: deadLetterQueue 
+
+
+----------------------------------------------
+
+==> We create one class to retrive the property from the 
+
+package com.piseth.java.school.roomownerservice.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import lombok.Data;
+
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "app.outbox")
+public class OutboxProperties {
+    private long pollIntervalMs = 1000;
+    private int maxBatch = 100;
+    private int maxAttempts = 12;
+    private int retentionDays = 14; // TTL after SENT
+}
+
+
+------------------------------------
+
+Add Kafka dependency 
+
+
+<!-- Spring Kafka (brings KafkaTemplate and JSON serializer) -->
+		  <dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka</artifactId>
+		  </dependency>
+		
+		  <!-- Reactor Kafka (reactive producer/consumer engine) -->
+		  <dependency>
+		    <groupId>io.projectreactor.kafka</groupId>
+		    <artifactId>reactor-kafka</artifactId>
+		  </dependency>
+		
+		  <!-- Tests (embedded broker utilities, @EmbeddedKafka, etc.) -->
+		  <dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka-test</artifactId>
+		    <scope>test</scope>
+		  </dependency>	  
+
+
+--> then create class for KafkaReactiveConfig 
+
+package com.piseth.java.school.roomownerservice.config;
+
+import java.util.Map;
+
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
+
+import reactor.kafka.sender.SenderOptions;
+
+@Configuration
+public class KafkaReactiveConfig {
+
+    @Bean
+    ReactiveKafkaProducerTemplate<String, Object> reactiveKafkaProducerTemplate(
+            final KafkaProperties properties) {
+
+        final Map<String, Object> producerProps = properties.buildProducerProperties();
+        final SenderOptions<String, Object> senderOptions = SenderOptions.create(producerProps);
+        return new ReactiveKafkaProducerTemplate<>(senderOptions);
+    }
+}
+
+
+============================================================================================================
+
+Because we are not yet create the security : so we create one MongoDuditor 
+
+Code : 
+
+package com.piseth.java.school.roomownerservice.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.ReactiveAuditorAware;
+import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing;
+
+import reactor.core.publisher.Mono;
+
+@Configuration
+@EnableReactiveMongoAuditing
+public class MongoAuditingConfig {
+
+    @Bean
+    ReactiveAuditorAware<String> reactiveAuditorAware() {
+        return () -> Mono.just("system"); // TODO integrate Keycloak principal
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

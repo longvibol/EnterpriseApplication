@@ -11,8 +11,35 @@ spring:
       database: roomOwner
       username: root
       password: root
-      authentication-database: admin        
+      authentication-database: admin
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9094,localhost:9096 
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+        compression.type: gzip
+        linger.ms: 10
+        max.in.flight.requests.per.connection: 5
+        delivery.timeout.ms: 120000
+        retries: 2147483647
+    properties:
+      spring.json.add.type.headers: false             
 logging:
   level:
     root: INFO
-    com.piseth.java.school: DEBUG   
+    com.piseth.java.school: DEBUG
+app:
+  messaging:
+    producerId: room-owner-service
+    eventVersion: v1
+    topics:
+      roomEvents: room.events.v1
+      roomDlq: room.events.v1.dlq
+  outbox:
+    poll-interval-ms: 1000
+    max-batch: 100
+    max-attempts: 12
+    retention-days: 14     
