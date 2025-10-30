@@ -1,13 +1,17 @@
 package com.piseth.java.school.roomownerservice.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.piseth.java.school.roomownerservice.domain.Address;
 import com.piseth.java.school.roomownerservice.domain.Room;
 import com.piseth.java.school.roomownerservice.dto.AddressDTO;
 import com.piseth.java.school.roomownerservice.dto.RoomCreateRequest;
 import com.piseth.java.school.roomownerservice.dto.RoomResponse;
+import com.piseth.java.school.roomownerservice.dto.RoomUpdateRequest;
 import com.piseth.java.school.roomownerservice.messaging.event.RoomFullPayload;
 
 @Mapper(componentModel = "spring")
@@ -24,11 +28,12 @@ public interface RoomMapper {
   @Mapping(target = "extraAttributes", expression = "java(new java.util.HashMap<>())")
   Room toEntity(RoomCreateRequest req);
 
-  /*
+  
   // Update (patch) → Entity
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  // if they update the field that we don't have Ignore it to update 
   void updateEntity(@MappingTarget Room target, RoomUpdateRequest req);
-*/
+
   // Address conversions
   Address toAddress(AddressDTO dto);
   AddressDTO toAddressDto(Address address);

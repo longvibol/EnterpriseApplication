@@ -1,0 +1,5 @@
+PUT and Patch 
+
+- Put : we mostly use for update the whole entity 
+- Patch : update some of the entity 
+

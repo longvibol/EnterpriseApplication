@@ -14,6 +14,7 @@ import com.piseth.java.school.roomownerservice.domain.enumeration.RoomStatus;
 import com.piseth.java.school.roomownerservice.dto.RoomCreateRequest;
 import com.piseth.java.school.roomownerservice.dto.RoomResponse;
 import com.piseth.java.school.roomownerservice.dto.RoomUpdateRequest;
+import com.piseth.java.school.roomownerservice.exception.RoomNotFoundException;
 import com.piseth.java.school.roomownerservice.mapper.RoomMapper;
 import com.piseth.java.school.roomownerservice.messaging.event.RoomEventEnvelope;
 import com.piseth.java.school.roomownerservice.messaging.event.RoomEventType;
@@ -63,14 +64,30 @@ public class RoomServiceImpl implements RoomService{
 
 	@Override
 	public Mono<RoomResponse> update(String id, RoomUpdateRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.findById(id)
+	              .switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+	              .flatMap(existing -> {
+	                  mapper.updateEntity(existing, request);
+	                  return repository.save(existing)
+	                		  // update to kafka
+	                          .flatMap(saved -> enqueueEvent(saved, RoomEventType.ROOM_UPDATED, "update").thenReturn(saved));
+	              })
+	              .map(mapper::toResponse)
+	              .doOnSuccess(r -> log.info("Room updated id={}", r.getId()))
+	              .doOnError(ex -> log.error("Update room failed: {}", ex.getMessage(), ex));
 	}
 
 	@Override
 	public Mono<Void> delete(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.findById(id)
+	              .switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+	              .flatMap(existing -> {
+	                  // keep final snapshot for delete event
+	                  return enqueueEvent(existing, RoomEventType.ROOM_DELETED, "delete")
+	                          .then(repository.deleteById(id));
+	              })
+	              .doOnSuccess(v -> log.info("Room deleted id={}", id))
+	              .doOnError(ex -> log.error("Delete room failed: {}", ex.getMessage(), ex));
 	}
 	
 	private Mono<OutboxEvent> enqueueEvent(final Room room,
