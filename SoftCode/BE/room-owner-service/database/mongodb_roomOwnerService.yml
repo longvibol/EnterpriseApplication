@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  mongodb:
+  mongodb_owner_service:
     image: mongo:6.0
-    container_name: mongodb_owner
+    container_name: mongodb_owner_service
     ports:
       - "27019:27017"
     volumes:

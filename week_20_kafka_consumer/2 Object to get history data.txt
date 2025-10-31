@@ -1,0 +1,15 @@
+- consumer is : room service 
+- producer is : room owner service 
+
+We want when the consumer just start we also can get the database from Producer to save into Consumer database:
+- Consume old message 
+
+1- run the command to restart the kafka 
+
+2- change name of the 
+
+      group-id: visitor-room-projection-3
+      auto-offset-reset: earliest # (start from beginning)
+
+
+

@@ -1,18 +1,18 @@
-server:
- port: 8080
+We get the message now from the kafka, now we can consume the message and save in the database 
 
-spring:
-  application:
-    name: room-service    
-  data:
-    mongodb:
-      host: localhost
-      port: 27018
-      database: room
-      username: root
-      password: root
-      authentication-database: admin
-  kafka:
+Step by Step 
+
+1. Configer property 
+
+- we no need to create the controller 
+
+1- setup the consumer kafka 
+setup port of kafa where is the kafka is located 
+
+
+in the application.yml
+
+kafka:
     bootstrap-servers: localhost:9092
     consumer:
       #group-id: visitor-room-projection
@@ -26,12 +26,4 @@ spring:
         spring.json.use.type.headers: false
         spring.json.value.default.type: com.piseth.java.school.roomservice.message.event.RoomEventEnvelope
       max-poll-records: 100        
-logging:
-  level:
-    root: INFO
-    com.piseth.java.school: DEBUG   
 
-app:
-  messaging:
-    topics:
-      roomEvents: room.events.v1
