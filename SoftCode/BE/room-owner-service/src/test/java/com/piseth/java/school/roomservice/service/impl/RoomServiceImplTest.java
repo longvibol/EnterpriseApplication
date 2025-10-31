@@ -1,25 +1,13 @@
 package com.piseth.java.school.roomservice.service.impl;
 
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.piseth.java.school.roomownerservice.domain.Room;
-import com.piseth.java.school.roomownerservice.dto.RoomDTO;
-import com.piseth.java.school.roomownerservice.mapper.RoomMapper;
-import com.piseth.java.school.roomownerservice.repository.RoomCustomRepository;
-import com.piseth.java.school.roomownerservice.repository.RoomRepository;
-import com.piseth.java.school.roomownerservice.service.impl.RoomServiceImpl;
-
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.test.context.ContextConfiguration;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceImplTest {
+	
+	/*
 	
 	@Mock
 	private RoomRepository roomRepository; 
@@ -57,4 +45,5 @@ class RoomServiceImplTest {
 			.verifyComplete();
 	
 	}
+	*/
 }

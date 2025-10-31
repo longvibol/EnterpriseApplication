@@ -1,0 +1,81 @@
+Publish Message : kafka 
+
+- Publisher is room owner service : it is publish message 
+- and the room-service is the subscriber 
+
+
+------------------------------------------------
+
+1- Publisher : RoomOwnerService 
+
+- Create 
+- Update 
+- Delete 
+
++ Payload is what we create the Entity and send it to the kafka:
++ Inner Class : is the that we use only inside the class 
+
+2- Remove volume in the docker 
+
+>> docker compose down -v 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

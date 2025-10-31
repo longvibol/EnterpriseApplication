@@ -136,6 +136,16 @@
 	        <artifactId>javafaker</artifactId>
 	        <version>1.0.2</version>
 	    </dependency>
+	    
+	    	      <!-- Kafka (Reactor) -->
+	  <dependency>
+	    <groupId>org.springframework.kafka</groupId>
+	    <artifactId>spring-kafka</artifactId>
+	  </dependency>
+	  <dependency>
+	    <groupId>io.projectreactor.kafka</groupId>
+	    <artifactId>reactor-kafka</artifactId>
+	  </dependency>
 
 	</dependencies>
 	<build>

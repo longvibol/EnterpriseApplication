@@ -1,79 +1,89 @@
 package com.piseth.java.school.roomservice.domain;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.piseth.java.school.roomservice.domain.enumeration.GenderPreference;
-import com.piseth.java.school.roomservice.domain.enumeration.PropertyType;
-import com.piseth.java.school.roomservice.domain.enumeration.RoomType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Document
+@Builder
+@Document("visitor_rooms")
+@CompoundIndexes({
+    @CompoundIndex(name = "idx_status_availableFrom", def = "{'status': 1, 'availableFrom': 1}"),
+    @CompoundIndex(name = "idx_addr_province_district", def = "{'address.provinceCode': 1, 'address.districtCode': 1}")
+})
 public class Room {
 	
-	@Id
-	private String id;
-	private String name;
-	
-	private Double price;                  // price per month
-    private Integer floor;
-    private Double roomSize;              // square meters
+  @Id
+  private String id; // same as Room aggregate id
 
-    private Location location;
+  private String ownerId;
+  private String name;
+  private String description;
+  private Double price;
+  private String currencyCode;
+  private Integer floor;
+  private Double roomSize;
+  private String roomType;
+  private String propertyType;
 
-    private Boolean hasFan;
-    private Boolean hasAirConditioner;
-    private Boolean hasParking;
-    private Boolean hasPrivateBathroom;
-    private Boolean hasBalcony;
-    private Boolean hasKitchen;
-    private Boolean hasFridge;
-    private Boolean hasWashingMachine;
-    private Boolean hasTV;
-    private Boolean hasWiFi;
-    private Boolean hasElevator;
+  private Address address;
 
-    private Integer maxOccupants;
-    private Boolean isPetFriendly;
-    private Boolean isSmokingAllowed;
-    private Boolean isSharedRoom;
-    private GenderPreference genderPreference;
+  private Boolean hasFan;
+  private Boolean hasAirConditioner;
+  private Boolean hasParking;
+  private Boolean hasPrivateBathroom;
+  private Boolean hasBalcony;
+  private Boolean hasKitchen;
+  private Boolean hasFridge;
+  private Boolean hasWashingMachine;
+  private Boolean hasTV;
+  private Boolean hasWiFi;
+  private Boolean hasElevator;
 
-    private RoomType roomType;
-    private PropertyType propertyType;
+  private Integer maxOccupants;
+  private Boolean isPetFriendly;
+  private Boolean isSmokingAllowed;
+  private Boolean isSharedRoom;
+  private String genderPreference;
 
-    private Double distanceToCenter;        // optional
-    private List<String> nearbyLandmarks;   // ["university", "mall"]
+  private Double distanceToCenter;
+  private List<String> nearbyLandmarks;
+  private Boolean isUtilityIncluded;
+  private Boolean depositRequired;
+  private Double depositAmount;
+  private Integer minStayMonths;
+  private String contactPhone;
 
-    private Boolean isUtilityIncluded; //100
-    private Boolean depositRequired;
-    private Integer minStayMonths;
+  private List<String> photoUrls;
+  private String videoUrl;
+  private Boolean verifiedListing;
 
-    private Boolean hasPhotos;
-    private Integer photoCount;
-    private Boolean hasVideoTour;
+  private String status;
+  private LocalDateTime availableFrom;
+  private LocalDateTime availableTo;
 
-    private Boolean verifiedListing;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private String createdBy;
+  private String updatedBy;
 
-    private LocalDateTime availableFrom;
-    private LocalDateTime availableTo;
+  private Map<String, Object> extraAttributes;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime lastUpdated;
-
-    private Map<String, Object> extraAttributes = new HashMap<>();
+  @Indexed
+  private LocalDateTime lastEventAt;
+  private boolean deleted; // soft delete 
 
 }
