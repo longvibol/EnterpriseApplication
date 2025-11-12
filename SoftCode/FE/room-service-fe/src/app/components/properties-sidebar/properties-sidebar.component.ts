@@ -1,11 +1,12 @@
 import { Component, inject, output } from '@angular/core';
 import { FeaturedPropertiesComponent } from "../featured-properties/featured-properties.component";
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { RoomListParams } from '../../models/room-list-params';
+import { AdminAreaResponse } from '../../services/address.service';
 
 @Component({
   selector: 'app-properties-sidebar',
-  imports: [FeaturedPropertiesComponent, ReactiveFormsModule],
+  imports: [FeaturedPropertiesComponent, ReactiveFormsModule, FormsModule],
   templateUrl: './properties-sidebar.component.html',
   styleUrl: './properties-sidebar.component.css'
 })
@@ -16,7 +17,16 @@ export class PropertiesSidebarComponent {
 
   private fb = inject(FormBuilder);
 
+  provinces: AdminAreaResponse[] =[];
+  districts: AdminAreaResponse[] =[];
+  communes: AdminAreaResponse[] =[];
+  villages: AdminAreaResponse[] =[];
+
   form = this.fb.group({
+    provinceCode: this.fb.control<string>(''),
+    districtCode: this.fb.control<string>({value:'', disabled: true}),
+    communeCode: this.fb.control<string>({value:'', disabled: true}),
+    villageCode: this.fb.control<string>({value:'', disabled: true}),
     priceMin: this.fb.control<number | null> (null, {validators: [Validators.min(0)]}),
     priceMax: this.fb.control<number | null> (null, {validators: [Validators.min(0)]}),
   })
