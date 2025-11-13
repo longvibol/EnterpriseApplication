@@ -9,7 +9,7 @@ import { buildParams } from '../core/http/utils';
 
 export enum AdminLevel{
   PROVINCE = 'PROVINCE',
-  DISCTRICT = 'DISCTRICT',
+  DISTRICT = 'DISTRICT',
   COMMUNE = 'COMMUNE',
   VILLAGE = 'VILLAGE'
 }
@@ -29,14 +29,40 @@ export class AddressService {
   // api_url
   // request param
   private http = inject(HttpClient);
-  private base = `${environment.apiUrl}`;
+  private base = `${environment.addressApiUrl}/api/admin-areas`;
 
   ///room/search/pagination
 
   constructor() { }
 
+  getProvinces() : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams().set('level', AdminLevel.PROVINCE);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+  getDistricts(provinceCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.DISTRICT)
+      .set('parentCode', provinceCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+  getCommunes(districtCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.COMMUNE)
+      .set('parentCode', districtCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+    getVillages(communeCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.VILLAGE)
+      .set('parentCode', communeCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
   list(params?: RoomListParams ) : Observable<Page<Room>>{
     // return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
-     return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
+     return this.http.get<Page<Room>>(this.base + "/api/rooms/search/pagination", {params: buildParams(params)});
   }
 }
