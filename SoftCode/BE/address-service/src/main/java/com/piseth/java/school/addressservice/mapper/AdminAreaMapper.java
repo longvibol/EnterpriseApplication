@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 import com.piseth.java.school.addressservice.domain.AdminArea;
 import com.piseth.java.school.addressservice.dto.AdminAreaCreateRequest;
 import com.piseth.java.school.addressservice.dto.AdminAreaResponse;
+import com.piseth.java.school.addressservice.dto.AdminAreaSlimResponse;
 import com.piseth.java.school.addressservice.dto.AdminAreaUpdateRequest;
 
 @Mapper(componentModel = "spring",
@@ -62,6 +63,7 @@ public interface AdminAreaMapper {
 	// from Entity to Respond 
 	
 	AdminAreaResponse toResponse(AdminArea entity);
+	AdminAreaSlimResponse toSlimResponse(AdminArea entity);
 	
 	void update(@MappingTarget AdminArea target, AdminAreaUpdateRequest dto);
 }

@@ -3,6 +3,7 @@ package com.piseth.java.school.addressservice.service;
 import com.piseth.java.school.addressservice.domain.enumeration.AdminLevel;
 import com.piseth.java.school.addressservice.dto.AdminAreaCreateRequest;
 import com.piseth.java.school.addressservice.dto.AdminAreaResponse;
+import com.piseth.java.school.addressservice.dto.AdminAreaSlimResponse;
 import com.piseth.java.school.addressservice.dto.AdminAreaUpdateRequest;
 
 import reactor.core.publisher.Flux;
@@ -26,4 +27,5 @@ public interface AdminAreaService {
 	// list to combo box 
 	
 	Flux<AdminAreaResponse> list(AdminLevel level, String parentCode);
+	Flux<AdminAreaSlimResponse> listSlim(AdminLevel level, String parentCode);
 }
