@@ -1,0 +1,17 @@
+- payload is the data to send to API 
+
+
+----------------------------
+
+
+  <app-room-form 
+    [mode]="'create'"
+    (create)="onCreate($event)">
+  </app-room-form>
+
+
+----------------------
+ចំណាំ 
+
+Input យើងដាក់ក្នុង []
+Method យើងដាក់ក្នុង () 

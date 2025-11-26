@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { AddressService } from '../../services/address.service';
+import { AddressService, AdminAreaResponse } from '../../services/address.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { startWith, switchMap, tap } from 'rxjs/operators';
@@ -26,11 +26,11 @@ type RoomStatus = 'AVAILABLE' | 'RENTED' | 'HIDDEN';
 })
 export class RoomFormComponent {
   private fb = inject(FormBuilder);
-  private address = inject(AddressService);
-  private destroyRef = inject(DestroyRef);
+  private addressService = inject(AddressService);
+  private destroyRef = inject(DestroyRef);  // good to have
 
   // Signals (Angular 19)
-  mode = input<'create' | 'update'>('create');
+  mode = input<'create' | 'update'>('create'); // waiting for the input and default is ('create')
   value = input<any | null>(null);
   create = output<any>();
   update = output<{ id: string; body: any }>();
@@ -47,6 +47,7 @@ export class RoomFormComponent {
   districts: Array<{ code: string; nameEn: string }> = [];
   communes: Array<{ code: string; nameEn: string }> = [];
   villages: Array<{ code: string; nameEn: string }> = [];
+  // villages: AdminAreaResponse[] = [];
 
   // --- Reactive Form (ALL fields) ---
   form: FormGroup = this.fb.group({
@@ -81,7 +82,7 @@ export class RoomFormComponent {
       line2: [''],
       postalCode: [''],
 
-      nearbyLandmarks: this.fb.array<FormControl<string>>([]),
+      nearbyLandmarks: this.fb.array<FormControl<string>>([]), // field tha type is array we put like this 
 
       geo: this.fb.group({
         latitude: [null],
@@ -146,7 +147,7 @@ export class RoomFormComponent {
   // ---------- lifecycle ----------
   ngOnInit() {
   // 1) Load provinces once
-  this.address.getProvinces()
+  this.addressService.getProvinces()
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(list => this.provinces = list);
 
@@ -185,7 +186,7 @@ export class RoomFormComponent {
         this.communes = [];
         this.villages = [];
       }),
-      switchMap(code => code ? this.address.getDistricts(code) : of([])),
+      switchMap(code => code ? this.addressService.getDistricts(code) : of([])),
       takeUntilDestroyed(this.destroyRef)
     )
     .subscribe(list => this.districts = list);
@@ -203,7 +204,7 @@ export class RoomFormComponent {
 
         this.villages = [];
       }),
-      switchMap(code => code ? this.address.getCommunes(code) : of([])),
+      switchMap(code => code ? this.addressService.getCommunes(code) : of([])),
       takeUntilDestroyed(this.destroyRef)
     )
     .subscribe(list => this.communes = list);
@@ -216,7 +217,7 @@ export class RoomFormComponent {
         villageCtrl.enable();
         villageCtrl.setValue('');
       }),
-      switchMap(code => code ? this.address.getVillages(code) : of([])),
+      switchMap(code => code ? this.addressService.getVillages(code) : of([])),
       takeUntilDestroyed(this.destroyRef)
     )
     .subscribe(list => this.villages = list);
@@ -242,6 +243,7 @@ export class RoomFormComponent {
   // ---------- Patch for update (no awaits) ----------
   patchAll(room: any) {
     // arrays first
+    //patch = update all form 
     (room.photoUrls ?? []).forEach((u: string) => this.addPhoto(u));
     (room.address?.nearbyLandmarks ?? []).forEach((l: string) => this.addLandmark(l));
 
@@ -328,10 +330,11 @@ export class RoomFormComponent {
 
   // ---------- Submit ----------
   submit() {
-    if (this.form.invalid) {
+    /*if (this.form.invalid) {
+      // check each file is it okay or not (this.form.invalid)
       this.form.markAllAsTouched();
       return;
-    }
+    }*/
     const raw = this.form.getRawValue();
 
     // parse extraAttributes JSON safely
@@ -342,7 +345,7 @@ export class RoomFormComponent {
       extraAttributes = {};
     }
 
-    const body = {
+    const body = { //payload
       id: raw.id || undefined,
       ownerId: raw.ownerId,
 
@@ -425,6 +428,6 @@ export class RoomFormComponent {
     } else if (this.mode() === 'update' && this.value()?.id) {
       this.update.emit({ id: this.value()!.id, body });
     }
-    //console.log(body);
+    console.log(body);
   }
 }
