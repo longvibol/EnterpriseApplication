@@ -5,10 +5,11 @@ import { PropertiesListComponent } from "../properties-list/properties-list.comp
 import { PaginationComponent } from "../pagination/pagination.component";
 import { PropertiesSidebarComponent } from "../properties-sidebar/properties-sidebar.component";
 import { RoomListParams } from '../../models/room-list-params';
+import { RoomFormComponent } from "../room-form/room-form.component";
 
 @Component({
   selector: 'app-section',
-  imports: [PropertiesHeaderComponent, PropertiesGridComponent, PropertiesListComponent, PaginationComponent, PropertiesSidebarComponent],
+  imports: [PropertiesHeaderComponent, PropertiesGridComponent, PropertiesListComponent, PaginationComponent, PropertiesSidebarComponent, RoomFormComponent],
   templateUrl: './section.component.html',
   styleUrl: './section.component.css'
 })
