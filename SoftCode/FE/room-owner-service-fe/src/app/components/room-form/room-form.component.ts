@@ -15,7 +15,7 @@ import { startWith, switchMap, tap } from 'rxjs/operators';
 
 type RoomType = 'SINGLE' | 'DOUBLE' | 'STUDIO';
 type PropertyType = 'APARTMENT' | 'HOUSE' | 'CONDO' | 'TOWNHOUSE' | 'COMMERCIAL';
-type GenderPreference = 'MALE' | 'FEMALE' | 'ANY';
+type GenderPreference = 'MALE' | 'FEMALE' | 'NO_PREFERENCE';
 type RoomStatus = 'AVAILABLE' | 'RENTED' | 'HIDDEN';
 
 @Component({
@@ -27,11 +27,11 @@ type RoomStatus = 'AVAILABLE' | 'RENTED' | 'HIDDEN';
 export class RoomFormComponent {
   private fb = inject(FormBuilder);
   private addressService = inject(AddressService);
-  private destroyRef = inject(DestroyRef);  // good to have
+  private destroyRef = inject(DestroyRef); // good to have
 
   // Signals (Angular 19)
-  mode = input<'create' | 'update'>('create'); // waiting for the input and default is ('create')
-  value = input<any | null>(null);
+  mode = input<'create' | 'update'>('create');
+  value = input<any | null>(null); 
   create = output<any>();
   update = output<{ id: string; body: any }>();
 
@@ -39,15 +39,15 @@ export class RoomFormComponent {
   currencies = ['USD', 'KHR'];
   roomTypes: RoomType[] = ['SINGLE', 'DOUBLE', 'STUDIO'];
   propertyTypes: PropertyType[] = ['APARTMENT', 'HOUSE', 'CONDO', 'TOWNHOUSE', 'COMMERCIAL'];
-  genderPrefs: GenderPreference[] = ['MALE', 'FEMALE', 'ANY'];
+  genderPrefs: GenderPreference[] = ['MALE', 'FEMALE', 'NO_PREFERENCE'];
   statuses: RoomStatus[] = ['AVAILABLE', 'RENTED', 'HIDDEN'];
 
   // address reference lists (bound in template with @for)
   provinces: Array<{ code: string; nameEn: string }> = [];
   districts: Array<{ code: string; nameEn: string }> = [];
   communes: Array<{ code: string; nameEn: string }> = [];
-  villages: Array<{ code: string; nameEn: string }> = [];
-  // villages: AdminAreaResponse[] = [];
+  //villages: Array<{ code: string; nameEn: string }> = [];
+  villages: AdminAreaResponse[] = [];
 
   // --- Reactive Form (ALL fields) ---
   form: FormGroup = this.fb.group({
@@ -82,7 +82,7 @@ export class RoomFormComponent {
       line2: [''],
       postalCode: [''],
 
-      nearbyLandmarks: this.fb.array<FormControl<string>>([]), // field tha type is array we put like this 
+      nearbyLandmarks: this.fb.array<FormControl<string>>([]),
 
       geo: this.fb.group({
         latitude: [null],
@@ -108,7 +108,7 @@ export class RoomFormComponent {
     isPetFriendly: [false],
     isSmokingAllowed: [false],
     isSharedRoom: [false],
-    genderPreference: ['ANY' as GenderPreference],
+    genderPreference: ['NO_PREFERENCE' as GenderPreference],
 
     // Additional info
     distanceToCenter: [null],
@@ -243,7 +243,6 @@ export class RoomFormComponent {
   // ---------- Patch for update (no awaits) ----------
   patchAll(room: any) {
     // arrays first
-    //patch = update all form 
     (room.photoUrls ?? []).forEach((u: string) => this.addPhoto(u));
     (room.address?.nearbyLandmarks ?? []).forEach((l: string) => this.addLandmark(l));
 
@@ -330,11 +329,10 @@ export class RoomFormComponent {
 
   // ---------- Submit ----------
   submit() {
-    /*if (this.form.invalid) {
-      // check each file is it okay or not (this.form.invalid)
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
-    }*/
+    }
     const raw = this.form.getRawValue();
 
     // parse extraAttributes JSON safely
@@ -345,7 +343,7 @@ export class RoomFormComponent {
       extraAttributes = {};
     }
 
-    const body = { //payload
+    const body = { // payload
       id: raw.id || undefined,
       ownerId: raw.ownerId,
 
