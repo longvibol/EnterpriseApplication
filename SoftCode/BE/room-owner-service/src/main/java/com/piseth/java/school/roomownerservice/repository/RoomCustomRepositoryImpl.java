@@ -13,9 +13,7 @@ import reactor.core.publisher.Mono;
 @Repository
 @RequiredArgsConstructor
 public class RoomCustomRepositoryImpl implements RoomCustomRepository{
-	
 	private final ReactiveMongoTemplate mongoTemplate;
-	// in order to create dynamic we use ReactiveMongoTemplate 
 
 	@Override
 	public Flux<Room> findByFilter(Query query) {
@@ -23,7 +21,9 @@ public class RoomCustomRepositoryImpl implements RoomCustomRepository{
 	}
 
 	@Override
-	public Mono<Long> coundByFilter(Query query) {
+	public Mono<Long> countByFilter(Query query) {
 		return mongoTemplate.count(query, Room.class);
 	}
+	
+
 }

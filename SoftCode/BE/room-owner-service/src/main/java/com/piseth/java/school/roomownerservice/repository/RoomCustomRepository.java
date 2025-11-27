@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 public interface RoomCustomRepository {
 	
 	Flux<Room> findByFilter(Query query);
-	Mono<Long> coundByFilter(Query query);
+	
+	Mono<Long> countByFilter(Query query);
 
 }
