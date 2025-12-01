@@ -10,11 +10,11 @@ import reactor.core.publisher.Mono;
 
 public interface RoomService {
 	
-	Mono<RoomResponse> create(RoomCreateRequest request);
-	Mono<RoomResponse> update(String id, RoomUpdateRequest request);
-	Mono<Void> delete(String id);
-	Mono<RoomResponse> getById(String id);
-	Mono<PageDTO<RoomResponse>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
+	Mono<RoomResponse> create(RoomCreateRequest request, String ownerId);
+	Mono<RoomResponse> update(String id, RoomUpdateRequest request, String ownerId);
+	Mono<Void> delete(String id, String ownerId);
+	Mono<RoomResponse> getById(String id, String ownerId);
+	Mono<PageDTO<RoomResponse>> getRoomByFilterPagination(RoomFilterDTO filterDTO, String ownerId);
 	
 	
 }

@@ -1,0 +1,8 @@
+rm -rf .angular
+rm -f dist
+rm -rf node_modules
+
+>> npm install
+
+
+

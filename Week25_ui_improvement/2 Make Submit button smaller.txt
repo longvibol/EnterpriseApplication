@@ -1,0 +1,110 @@
+- Old button 
+
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-primary">
+        {{ mode() === 'create' ? 'Create Room' : 'Update Room' }}
+      </button>
+    </div>
+
+- Update button 
+
++ In the room-from.component.html
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+      <!-- Back Button -->
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm px-3"
+        (click)="goBack()">
+        ← Back
+      </button>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-sm px-4"
+        [disabled]="form.invalid">
+        {{ mode() === 'create' ? 'Create Room' : 'Update Room' }}
+      </button>
+
+    </div>
+
++ in the js 
+
+  goBack(){
+    
+  }
+
+
+3- We add the router when click on the goback it will back to list 
+
+- add router 
+
+  import { Router } from '@angular/router';
+  private router = inject(Router)
+
+==> 
+
+
+in the js: 
+
+  goBack():void{
+    this.router.navigate(['/rooms']);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
