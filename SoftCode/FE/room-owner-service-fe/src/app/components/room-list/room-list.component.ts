@@ -66,10 +66,10 @@ export class RoomListComponent {
     this.router.navigate(['/rooms', 'new']);
   }
   view(r: Room): void {
-    if (r.id) { this.router.navigate(['/rooms', r.id]); } // redirect /rooms/123
+    if (r.id) { this.router.navigate(['/rooms', r.id]); }
   }
   edit(r: Room): void {
-    if (r.id) { this.router.navigate(['/rooms', r.id, 'edit']); } // redirect /rooms/123/edit
+    if (r.id) { this.router.navigate(['/rooms', r.id, 'edit']); }
   }
 
   // Pagination helpers 
@@ -122,5 +122,9 @@ export class RoomListComponent {
     this.status.set('');     
     this.pageIndex.set(0);
     this.load();
+  }
+
+  goUpload(): void {
+    this.router.navigate(['/rooms', 'upload']);
   }
 }
