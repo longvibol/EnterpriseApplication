@@ -25,4 +25,8 @@ export class RoomService {
     // return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
      return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination?size=10", {params: buildParams(params)});
   }
+getById(id: string): Observable<Room>{
+  return this.http.get<Room>(`${this.base}/rooms/${id}`);
+}
+
 }
