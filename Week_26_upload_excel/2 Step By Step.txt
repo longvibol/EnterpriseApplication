@@ -1,0 +1,121 @@
+Controller we focus only the routing 
+
+1- Create class to get our upload 
+
+public record RoomParsedRow(
+        int lineNumber,
+        String ownerId,
+        String name,
+        String description,
+
+----
+
+)
+
+គោលបំណង់គឺដើម្បីធ្វើការ ទាក់យក Upload file from Excel then parse to List of Object! 
+
+Noted :
+
+- in the Excel is the flat object 
+
+- in the Json is the level object 
+
+==> ចឹងហើយបានជាយើងត្រូវប្រើ Mapper convert from Flat object to Object in our class 
+
+@Mapper(componentModel = "spring")
+public interface RoomParsedRowMapper {
+
+    @Mapping(target = "address.provinceCode", source = "provinceCode")
+    @Mapping(target = "address.districtCode", source = "districtCode")
+    @Mapping(target = "address.communeCode", source = "communeCode")
+    @Mapping(target = "address.villageCode", source = "villageCode")
+    @Mapping(target = "address.line1", source = "addressLine1")
+    @Mapping(target = "address.line2", source = "addressLine2")
+    @Mapping(target = "address.postalCode", source = "postalCode")
+    @Mapping(target = "address.geo.latitude", source = "latitude")
+    @Mapping(target = "address.geo.longitude", source = "longitude")
+    RoomCreateRequest toCreateRequest(RoomParsedRow row);
+}
+
+---------------------------------------------------------------------------------------
+
+3- Row Clarifier
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

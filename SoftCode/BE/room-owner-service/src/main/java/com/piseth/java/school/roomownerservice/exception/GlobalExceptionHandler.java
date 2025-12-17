@@ -32,7 +32,8 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(WebExchangeBindException.class)
 	public Mono<ProblemDetail> handleConstraintViolation(WebExchangeBindException ex, ServerWebExchange exchange){
-		log.warn("Constrain Violation: {}",ex.getMessage());		
+		log.warn("Constrain Violation: {}",ex.getMessage());	
+		ex.printStackTrace();
 		return Mono.just(problemFactory.create(
 				HttpStatus.BAD_REQUEST, 
 				ex.getMessage(), 

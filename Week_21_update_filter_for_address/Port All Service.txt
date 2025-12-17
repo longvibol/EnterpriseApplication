@@ -1,0 +1,82 @@
+1-Address-Service
+
+server:
+  port: 8082
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: admin-areas-mongodb
+    ports:
+      - "27020:27017"
+
+2-Room-Service 
+
+server:
+ port: 8080
+
+services:
+  mongodb_roomService:
+    image: mongo:6.0
+    container_name: mongodb_roomService
+    ports:
+      - "27018:27017"
+
+3-Room-owner-service
+
+server:
+ port: 8081
+
+services:
+  mongodb_owner_service:
+    image: mongo:6.0
+    container_name: mongodb_owner_service
+    ports:
+      - "27019:27017"
+
+4- Kafka 
+
+	- kafka-1: "9092:9092"  
+	- kafka-2: "9094:9094"
+	- kafka-3: "9096:9096"
+	- kafka-ui: "8090:8080"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,76 @@
++ Dry Run Upload: 
+
+We upload the excel by dry run: when it wrong we noted to the user then show the location that issue.
+
+then good upload we will save to database!
+
+
+Main code :
+
+1-private final ExcelAdminAreaParser parser; : យើង Read from excel then parse to Row (new object) 
+private final ParsedRowMapper parsedRowMapper; បន្ទាប់មកយើង បង្កើតវាអោយត្រូវ នឹង Object ដែលយើងចង់បាន Mapper 
+
+- AdminAreaCreateRequest toCreateRequest(ParseRow row); យើងបង្លែងវាអោយទៅជា AdminAreaCreatRequest របស់យើងដែលបានបង្កើត
+
+
+2-private final AdminAreaMapper adminAreaMapper;​ តាមរយៈពេកគេ Request មកនឹងយើងនឹង បន្លែងវាអោយទៅជា Entity របស់យើង​
+
+- AdminArea toEntity(AdminAreaCreateRequest dto);
+
+
+3-private final AdminAreaValidator validator; យើងពិនិត្យវា តើវាត្រូវទៅតាមលក្ខខ័ណ្ឌយើងអត់
+
+
+4-private final AdminAreaService adminAreaService; យើងមាន Service ដើម្បីធ្វើការ save វា
+
+5-private final RowErrorClassifier rowErrorClassifier; ចាប់ប្រភេទ Error ដើម្បី ធ្វើការ Display យើងធ្វើវាជាប្រភេទ Outcome វិញ ថាវាខុសអីគេ
+
+- public enum Outcome {
+	
+	INSERTED, ខុស ប្រភេទ ទិន្នន័យ
+	DUPLICATE, ដូចគ្នា 
+	VALIDATION,
+	PARENT_MISSING,
+	OTHER
+}
+
+
+6-private final UploadSummaryMapper uploadSummaryMapper; សង្ខេប វាតើ upload ចូលបានប៉ុន្មាន ខុសអីខ្លះ
+
+- public class ImportAccumulator {
+	private int totalRows;
+	private int inserted;
+	private int duplicates;
+	private int validationErrors;
+	private int parentMissing;
+	private int otherErrors;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

@@ -1,0 +1,4 @@
+Put : when we want to update all property វាបោះ hold object ទៅ (បើវា Nall វា Over right )
+
+Patch : បើ Property នឹងវាអត់មានវាមិន Update ទេ​ ( part update) 
+
