@@ -1,0 +1,11 @@
+.active-filters {
+    margin-bottom: 12px;
+  }
+  
+  .chip {
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
