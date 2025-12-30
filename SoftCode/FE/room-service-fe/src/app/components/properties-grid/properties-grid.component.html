@@ -1,8 +1,8 @@
  <div class="properties-grid view-grid active" data-aos="fade-up" data-aos-delay="200">
     <div class="row g-4">
-    @for(room of rooms(); track room.id){
+    @for(vm of rooms(); track vm.room.id){
         <div class="col-lg-4 col-md-4">
-            <app-property-card [room]="room"></app-property-card>
+            <app-property-card [room]="vm.room"></app-property-card>
         </div>
     }
     </div>

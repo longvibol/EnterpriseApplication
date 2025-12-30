@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import { Page } from '../models/page';
 import { Room } from '../models/room';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { buildParams } from '../core/http/utils';
+import { buildParams } from '../utils/param-util';
+//import { buildParams } from '../core/http/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +23,11 @@ export class RoomService {
   constructor() { }
 
   list(params?: RoomListParams ) : Observable<Page<Room>>{
-    // return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
-     return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination?size=10", {params: buildParams(params)});
+    return this.http.get<Page<Room>>(this.base + "/rooms/search/pagination", {params: buildParams(params)});
   }
-getById(id: string): Observable<Room>{
-  return this.http.get<Room>(`${this.base}/rooms/${id}`);
-}
 
+ /** GET /rooms/{id} */
+  getById(id: string): Observable<Room> {
+    return this.http.get<Room>(`${this.base}/rooms/${id}`);
+  }
 }

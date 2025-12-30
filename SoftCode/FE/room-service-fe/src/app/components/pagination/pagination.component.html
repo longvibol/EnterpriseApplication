@@ -1,13 +1,52 @@
-<nav class="mt-5" data-aos="fade-up" data-aos-delay="300">
-            <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-            </ul>
-        </nav>
+@if (totalPages() > 1) {
+    <nav class="pagi mt-4" aria-label="Pagination">
+      <ul class="pagination justify-content-center gap-1 flex-wrap">
+  
+        <!-- First -->
+        <li class="page-item" [class.disabled]="!canPrev()">
+          <button type="button" class="page-link" (click)="first()" [disabled]="!canPrev()"
+                  aria-label="First page" title="First">
+            <i class="bi bi-chevron-bar-left"></i>
+          </button>
+        </li>
+  
+        <!-- Prev -->
+        <li class="page-item" [class.disabled]="!canPrev()">
+          <button type="button" class="page-link" (click)="prev()" [disabled]="!canPrev()">
+            <i class="bi bi-chevron-left me-1"></i> Prev
+          </button>
+        </li>
+  
+        <!-- Page numbers -->
+        @for (p of pages(); track p) {
+          <li class="page-item" [class.active]="p === page()">
+            <button type="button" class="page-link" (click)="goTo(p)">
+              {{ p + 1 }}
+            </button>
+          </li>
+        }
+  
+        <!-- Next -->
+        <li class="page-item" [class.disabled]="!canNext()">
+          <button type="button" class="page-link" (click)="next()" [disabled]="!canNext()">
+            Next <i class="bi bi-chevron-right ms-1"></i>
+          </button>
+        </li>
+  
+        <!-- Last -->
+        <li class="page-item" [class.disabled]="!canNext()">
+          <button type="button" class="page-link" (click)="last()" [disabled]="!canNext()"
+                  aria-label="Last page" title="Last">
+            <i class="bi bi-chevron-bar-right"></i>
+          </button>
+        </li>
+  
+      </ul>
+  
+      <!-- Friendly helper text -->
+      <div class="pagi-hint text-center small text-muted mt-2">
+        Page <strong>{{ page() + 1 }}</strong> of <strong>{{ totalPages() }}</strong>
+      </div>
+    </nav>
+  }
+  
