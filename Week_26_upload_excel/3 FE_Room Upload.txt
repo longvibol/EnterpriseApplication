@@ -1,0 +1,99 @@
+1- in routing 
+
+for the most specific we put in above :
+
+------------------
+
+export const routes: Routes = [
+    {
+        path: '', redirectTo: 'rooms', pathMatch: 'full'
+    },
+    { path: 'rooms', component: RoomListComponent },
+    { path: 'rooms/new', component: RoomCreateComponent },
+    { path: 'rooms/upload', component: RoomUploadComponent },
+    { path: 'rooms/:id', component: RoomDetailComponent },
+    { path: 'rooms/:id/edit', component: RoomEditComponent },
+    {
+        path: '**', redirectTo: 'properties'
+    },
+
+];
+
+----------------------------
+
+if we put the 
+
+room upload is below 'rooms/:id' ==> it will route to the if first !
+
+
+ { path: 'rooms/upload', component: RoomUploadComponent },
+
+
+ដាក់អោយបានមុន Parameter 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

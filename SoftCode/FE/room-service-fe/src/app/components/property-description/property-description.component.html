@@ -1,6 +1,67 @@
 <div class="property-description" data-aos="fade-up" data-aos-delay="300">
-              <h3>About This Property</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
-              <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
-            </div>
+  <div class="d-flex align-items-start justify-content-between gap-3">
+    <div>
+      <h3 class="mb-1">{{ room().name }}</h3>
+      <div class="text-muted">
+        <i class="bi bi-geo-alt"></i> {{ fullAddress() || 'No address provided' }}
+      </div>
+    </div>
+
+    <div class="text-end">
+      <span class="badge bg-secondary me-1">{{ room().propertyType }}</span>
+      <span class="badge bg-info text-dark me-1">{{ room().roomType }}</span>
+      <span class="badge"
+            [class.bg-success]="room().status === 'AVAILABLE'"
+            [class.bg-warning]="room().status === 'RENTED'"
+            [class.bg-dark]="room().status === 'HIDDEN'">
+        {{ room().status }}
+      </span>
+    </div>
+  </div>
+
+  <hr>
+
+  @if (room().description) {
+    <p class="mb-3">{{ room().description }}</p>
+  } @else {
+    <p class="text-muted mb-3">No description yet.</p>
+  }
+
+  <div class="row g-2">
+    <div class="col-md-6">
+      <div class="small text-muted">Contact</div>
+      <div><i class="bi bi-telephone"></i> {{ room().contactPhone }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="small text-muted">Rules</div>
+      <div class="d-flex flex-wrap gap-2">
+
+        @if (room().maxOccupants) {
+          <span class="badge bg-light text-dark">
+            Max {{ room().maxOccupants }} occupants
+          </span>
+        }
+
+        @if (room().minStayMonths) {
+          <span class="badge bg-light text-dark">
+            Min {{ room().minStayMonths }} month(s)
+          </span>
+        }
+
+        <span class="badge bg-light text-dark">
+          {{ room().genderPreference || 'ANY' }}
+        </span>
+
+        <span class="badge bg-light text-dark">
+          {{ room().isPetFriendly ? 'Pets allowed' : 'No pets' }}
+        </span>
+
+        <span class="badge bg-light text-dark">
+          {{ room().isSmokingAllowed ? 'Smoking allowed' : 'No smoking' }}
+        </span>
+
+      </div>
+    </div>
+  </div>
+</div>

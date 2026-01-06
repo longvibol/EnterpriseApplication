@@ -1,0 +1,25 @@
+@if (chips().length > 0) {
+    <div class="active-filters">
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <span class="text-muted small me-1">Active filters:</span>
+  
+        @for (c of chips(); track c.key) {
+          <button
+            type="button"
+            class="chip btn btn-sm btn-outline-secondary"
+            (click)="onRemove(c)">
+            <span class="me-1">{{ c.label }}</span>
+            <i class="bi bi-x-lg"></i>
+          </button>
+        }
+  
+        <button
+          type="button"
+          class="btn btn-sm btn-link text-decoration-none"
+          (click)="onClearAll()">
+          Clear all
+        </button>
+      </div>
+    </div>
+  }
+  

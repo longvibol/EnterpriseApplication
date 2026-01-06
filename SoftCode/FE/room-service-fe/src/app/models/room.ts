@@ -1,113 +1,97 @@
-import { GenderPreference, PropertyType, RoomType } from "./enum";
-import { RoomLocation } from "./room-location";
+import { RoomType, PropertyType, GenderPreference, RoomStatus } from "./enum";
 
 export interface Room {
-    id ?: string;
-    name ?: string;
-    price ?: number;
-    floor ?: number;
-    roomSize ?: number;
-    location ?: RoomLocation;
-    hasFan ?:boolean;
-    hasAirConditioner ?:boolean;
-    hasParking ?:boolean;
-     hasPrivateBathroom?: boolean;
-    hasBalcony?: boolean;
-    hasKitchen?: boolean;
-    hasFridge?: boolean;
-    hasWashingMachine?: boolean;
-    hasTV?: boolean;
-    hasWiFi?: boolean;
-    hasElevator?: boolean;
-    maxOccupants?: number;
-    isPetFriendly?: boolean;
-    isSmokingAllowed?: boolean;
-    isSharedRoom?: boolean;
-    genderPreference?: GenderPreference;
+  // ---- Identifiers & Ownership ----
+  id: string;
+  ownerId: string;
 
-    roomType?: RoomType;
-    propertyType?: PropertyType;
+  // ---- Basic Info ----
+  name: string;
+  description?: string;
 
-    distanceToCenter?: number;
-    nearbyLandmarks?: string[];
+  // ---- Pricing ----
+  price?: number;
+  currencyCode: string; // e.g. "USD", "KHR"
 
-    isUtilityIncluded?: boolean;
-    depositRequired?: boolean;
-    minStayMonths?: number;
+  // ---- Property Details ----
+  floor?: number;
+  roomSize?: number; // square meters
+  roomType: RoomType; // SINGLE, DOUBLE, STUDIO
+  propertyType: PropertyType; // APARTMENT, HOUSE, etc.
 
-    hasPhotos?: boolean;
-    photoCount?: number;
-    hasVideoTour?: boolean;
+  // ---- Address ----
+  address: Address;
 
-    verifiedListing?: boolean;
+  // ---- Amenities ----
+  hasFan?: boolean;
+  hasAirConditioner?: boolean;
+  hasParking?: boolean;
+  hasPrivateBathroom?: boolean;
+  hasBalcony?: boolean;
+  hasKitchen?: boolean;
+  hasFridge?: boolean;
+  hasWashingMachine?: boolean;
+  hasTV?: boolean;
+  hasWiFi?: boolean;
+  hasElevator?: boolean;
 
-    availableFrom?: string;   // ISO string
-    availableTo?: string;     // ISO string
+  // ---- Room Rules ----
+  maxOccupants?: number;
+  isPetFriendly?: boolean;
+  isSmokingAllowed?: boolean;
+  isSharedRoom?: boolean;
+  genderPreference?: GenderPreference;
 
-    createdAt?: string;
-    lastUpdated?: string;
+  // ---- Additional Info ----
+  distanceToCenter?: number;
+  isUtilityIncluded?: boolean;
+  depositRequired?: boolean;
+  depositAmount?: number;
+  minStayMonths?: number;
+  contactPhone: string;
 
-    extraAttributes?: Record<string, any>; 
+  // ---- Media ----
+  photoUrls?: string[];
+  videoUrl?: string;
+  verifiedListing?: boolean;
 
+  // ---- Availability ----
+  status: RoomStatus;
+  availableFrom?: string; // ISO string from backend
+  availableTo?: string;
 
+  // ---- Audit ----
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+
+  // ---- Extra ----
+  extraAttributes?: Record<string, any>;
 }
 
-/*
 
-"content": [
-        {
-            "id": "68a28bcf3db7c1f20d03afea",
-            "name": "Cozy Studio Apartment",
-            "price": 350.0,
-            "floor": 3,
-            "roomSize": 28.5,
-            "location": {
-                "country": null,
-                "city": "Phnom Penh",
-                "district": "Chamkarmon",
-                "street": null,
-                "fullAddress": null
-            },
-            "hasFan": true,
-            "hasAirConditioner": true,
-            "hasParking": false,
-            "hasPrivateBathroom": true,
-            "hasBalcony": true,
-            "hasKitchen": true,
-            "hasFridge": true,
-            "hasWashingMachine": false,
-            "hasTV": false,
-            "hasWiFi": true,
-            "hasElevator": true,
-            "maxOccupants": 2,
-            "isPetFriendly": false,
-            "isSmokingAllowed": false,
-            "isSharedRoom": false,
-            "genderPreference": "NO_PREFERENCE",
-            "roomType": "STUDIO",
-            "propertyType": "APARTMENT",
-            "distanceToCenter": 2.3,
-            "nearbyLandmarks": [
-                "university",
-                "mall",
-                "hospital"
-            ],
-            "isUtilityIncluded": true,
-            "depositRequired": true,
-            "minStayMonths": 3,
-            "hasPhotos": true,
-            "photoCount": 5,
-            "hasVideoTour": false,
-            "verifiedListing": true,
-            "availableFrom": "2025-09-01T00:00:00",
-            "availableTo": "2026-09-01T00:00:00",
-            "createdAt": "2025-08-18T09:00:00",
-            "lastUpdated": "2025-08-18T09:05:00",
-            "extraAttributes": {
-                "furnished": true,
-                "internetSpeedMbps": 50,
-                "security": "24/7"
-            }
-        }
+// ---------------- Nested Types ----------------
+export interface Address {
+  provinceCode?: string;
+  districtCode?: string;
+  communeCode?: string;
+  villageCode?: string;
 
-        */
+  provinceName?: string;
+  districtName?: string;
+  communeName?: string;
+  villageName?: string;
+
+  line1?: string;
+  line2?: string;
+  postalCode?: string;
+
+  nearbyLandmarks?: string[];
+  geo?: GeoLocation;
+}
+
+export interface GeoLocation {
+  latitude?: number;
+  longitude?: number;
+}

@@ -137,4 +137,14 @@ public class RoomFilterDTO {
 
     @Schema(description = "Max distance in meters for geo search", example = "5000")
     private Double maxDistanceMeters;
+    
+    
+    // Add filder 
+    
+    private String provinceCode;
+	private String districtCode;
+	private String communeCode;
+	private String villageCode;
+    
+    
 }

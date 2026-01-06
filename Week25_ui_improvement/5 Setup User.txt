@@ -1,0 +1,2 @@
+Dummy data = data ដែលយើងបានរៀបចំ = static data 
+

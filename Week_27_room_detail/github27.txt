@@ -1,0 +1,12 @@
+FE: Room-service-fe:
+
+https://github.com/pisething/room-service-fe/blob/week_27_room_detail/src/app/components/property-details/property-details.component.ts
+
+
+BE: 
+
+Room owner service
+
+https://github.com/pisething/room-owner-service
+
+

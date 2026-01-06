@@ -1,0 +1,112 @@
+To change the Response we have two option: 
+
+1- We create new api 
+
+2- Update what we have 
+
+នៅពេលដែលយើង Release API ម្តង់ហើយ យើងមិនអាច Break បានទេ 
+it is like the contract we can not break it. 
+
+==> Enter 
+
+- យើងអាចថែម File បាន តែយើងមិនអាច Remove ទេ
+==> តាយើងធ្វើការ change API url it make the client called have problem 
+
+==> it called golden rule on API (don't break change)
+
+ទោះបីយើង ធ្វើការ Reponse ថ្មីក៏ដោយតែដោយសារតែយើង Qurey from Data it return the same filed 
+
+Flux<AdminArea> findByLevelAndParentCode(AdminLevel level, String parentCode, Sort sort);
+
+ចឹងយើងត្រូវតែមាន Method មួយផ្សេងទៀតដែលទាញតែអ្វីដែលយើងចង់បាននឹងមកបានហើយ (projection)
+
+Note 
+
+from Client (web) to Back  then From API to Database (where we custom our query in the projection) will reduce the network 
+
+---------------------------------------------------------
+
+In the repository 
+
+// projection
+		@Query(value = "{'level': ?0}", 
+				fields = "{'code':1, 'level':1, 'parentCode':1,'nameEn':1}")
+		Flux<AdminArea> findSlimByLevel(AdminLevel level, Sort sort);
+		
+		@Query(value = "{'parentCode': ?0}", 
+				fields = "{'code':1, 'level':1, 'parentCode':1,'nameEn':1}")
+		Flux<AdminArea> findSlimByParentCode(String parentCode, Sort sort);
+		
+		@Query(value = "{'level': ?0, 'parentCode': ?1}", 
+				fields = "{'code':1, 'level':1, 'parentCode':1,'nameEn':1}")
+		Flux<AdminArea> findSlimByLevelAndParentCode(AdminLevel level, String parentCode, Sort sort);
+		
+
+		@Query(value = "{}", 
+				fields = "{'code':1, 'level':1, 'parentCode':1,'nameEn':1}")
+		Flux<AdminArea> findSlimAll(Sort sort);	
+
+
+
+-------------------------------------------------------------------------------------
+
+
+In the Imple:
+
+
+@Override
+	public Flux<AdminAreaSlimResponse> listSlim(AdminLevel level, String parentCode) {
+		final boolean hasLevel = Objects.nonNull(level);
+		final boolean hasParent = StringUtils.hasText(parentCode);
+		
+		if(hasLevel && hasParent) {
+			return repository.findSlimByLevelAndParentCode(level, parentCode, DEFAULT_SORT)
+					.map(mapper::toSlimResponse);
+		}
+		
+		if(hasLevel) {
+			return repository.findSlimByLevel(level, DEFAULT_SORT).map(mapper::toSlimResponse);
+		}
+		
+		if(hasParent) {
+			return repository.findSlimByParentCode(parentCode, DEFAULT_SORT).map(mapper::toSlimResponse);
+		}
+		
+		return repository.findSlimAll(DEFAULT_SORT).map(mapper::toSlimResponse);
+	}
+
+
+---------------------------------------------------------------------------------------------------------
+
+Research : 
+
+Display query mongodb from the backend 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,157 @@
+Error message :
+
+" new:1 Access to XMLHttpRequest at 'http://localhost:8081/api/rooms' from origin 'http://localhost:4200' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. "
+
+-------------------------------------------------------------
+
+We need to allow the CORS in the configuration from the backeng 
+
+>> room-owner-service
+
+in the CorsConfig.java: 
+
+---------------------------------------------------------------------------------------
+
+package com.piseth.java.school.roomownerservice.config;
+
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
+@Configuration
+public class CorsConfig {
+	
+	@Bean
+	CorsWebFilter corsWebFilter() {
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedOrigin("http://localhost:4200/");
+		
+		// methods (needed for preflight)
+		config.setAllowedOriginPatterns(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+		
+		// headers Angular might send
+		config.setAllowedHeaders(List.of("*"));
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/api/**", config);
+		
+		return new CorsWebFilter(source);
+	}
+
+}
+
+
+------------------------------------------------------------------------------------------------------------------
+
+Truboleshot : print stackTrace 
+
+
+	@ExceptionHandler(WebExchangeBindException.class)
+	public Mono<ProblemDetail> handleConstraintViolation(WebExchangeBindException ex, ServerWebExchange exchange){
+		log.warn("Constrain Violation: {}",ex.getMessage());	
+		ex.printStackTrace();
+		return Mono.just(problemFactory.create(
+				HttpStatus.BAD_REQUEST, 
+				ex.getMessage(), 
+				ErrorCode.CONSTRAIN_VIOLATION.name(), 
+				exchange));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RoomCreateRequest {
 
-    @NotBlank
-    private String ownerId;
 
     @NotBlank
     private String name;

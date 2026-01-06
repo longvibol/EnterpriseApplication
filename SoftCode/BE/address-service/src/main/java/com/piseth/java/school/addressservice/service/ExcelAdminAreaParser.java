@@ -6,8 +6,7 @@ import com.piseth.java.school.addressservice.dto.ParseRow;
 
 import reactor.core.publisher.Flux;
 
-public interface ExcelAdminAreaParser {
-	
+public interface ExcelAdminAreaParser {	
 	
 	Flux<ParseRow> parse(FilePart file);
 

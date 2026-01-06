@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h3 class="mb-1">Saved Rooms</h3>
+      <div class="text-muted small">
+        Saved on this device
+        @if (expiresAt()) {
+          • Auto-expires soon
+        }
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="switchView('grid')">Grid</button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="switchView('list')">List</button>
+
+      <button class="btn btn-outline-danger btn-sm" [disabled]="!hasFavorites()" (click)="clearAll()">
+        Clear all
+      </button>
+    </div>
+  </div>
+
+  @if (state() === 'loading') {
+    <div class="text-center py-5">Loading...</div>
+  } @else if (state() === 'error') {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  } @else if (!hasFavorites()) {
+    <div class="text-center py-5">
+      <div class="mb-2"><i class="bi bi-heart"></i></div>
+      No saved rooms yet.
+    </div>
+  } @else {
+    @if (viewMode() === 'grid') {
+      <app-properties-grid
+        [rooms]="rooms()"
+        (favoriteToggle)="toggleFavorite($event)">
+      </app-properties-grid>
+    } @else {
+      <app-properties-list
+        [rooms]="rooms()"
+        (favoriteToggle)="toggleFavorite($event)">
+      </app-properties-list>
+    }
+  }
+</div>

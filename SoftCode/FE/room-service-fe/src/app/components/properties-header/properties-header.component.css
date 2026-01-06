@@ -1,0 +1,27 @@
+.properties-header {
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.04);
+  }
+  
+  .sort-select {
+    width: 200px;
+  }
+  
+  .result-text {
+    font-size: 13px;
+    color: rgba(0,0,0,.65);
+  }
+  
+  /* Brand */
+  .properties-header .btn-primary {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+  }
+  
+  .properties-header .btn-primary:hover {
+    background: var(--brand-primary-hover);
+    border-color: var(--brand-primary-hover);
+  }

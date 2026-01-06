@@ -1,0 +1,47 @@
+
+.pagi .pagination {
+    margin: 0;
+  }
+  
+  /* Make links look like modern chips */
+  .pagi .page-link {
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    padding: 8px 12px;
+    color: rgba(0,0,0,.75);
+    background: #fff;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+  }
+  
+  .pagi .page-link:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    background: rgba(0,0,0,.02);
+  }
+  
+  .pagi .page-item.disabled .page-link,
+  .pagi .page-link:disabled {
+    opacity: .45;
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
+  }
+  
+  /* Active page (use your brand color) */
+  .pagi .page-item.active .page-link {
+    background: #2c7a7b;
+    border-color: #2c7a7b;
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(44, 122, 123, .25);
+  }
+  
+  /* Make number buttons square-ish but friendly */
+  .pagi .page-item .page-link {
+    min-width: 42px;
+    text-align: center;
+  }
+  
+  .pagi-hint {
+    color: rgba(0,0,0,.6);
+  }

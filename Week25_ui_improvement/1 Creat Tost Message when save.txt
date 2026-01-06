@@ -1,0 +1,75 @@
+1- We use angular material 
+
+>>ng add @angular/material
+
+Y -> Y use the default 
+
+To check what is the difference 
+
+>> git diff 
+
+2- import component 
+
+after we download the material now we import the component to our ui
+
+-In the room-create components : 
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+private snackBar = inject(MatSnackBar);
+
+របៀបប្រើវាគឺយើងកំនត់នាទីរបស់វា បន្ទាប់ពី called our event 
+
+----------------------------------------------------
+
+  onUpdate(evt: { id: string; body: Room }) {
+    this.roomService.update(evt.id, evt.body).subscribe({
+      next: () => {
+
+         // show success toast
+        this.snackBar.open('Room created successfully', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
+
+        this.router.navigate(['/rooms', evt.id]);
+      },
+      error: err => {
+        console.error('Update failed', err);
+       // error toast
+        this.snackBar.open('Failed to create room', 'Close', {
+          duration: 4000,
+          panelClass: ['snack-error'], // optional custom style
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

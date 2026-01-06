@@ -1,11 +1,46 @@
 package com.piseth.java.school.roomservice.util;
 
-import static com.piseth.java.school.roomservice.util.RoomConstants.*;
+import static com.piseth.java.school.roomservice.util.RoomConstants.ALLOWED_SORT_FIELDS;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_AVAILABLE_FROM;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_AVAILABLE_TO;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_FLOOR;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_GENDER_PREFERENCE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_AIR_CONDITIONER;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_BALCONY;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_ELEVATOR;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_FAN;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_FRIDGE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_KITCHEN;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_PARKING;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_PRIVATE_BATHROOM;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_TV;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_WASHING_MACHINE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_HAS_WIFI;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_IS_PET_FRIENDLY;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_IS_SHARED_ROOM;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_IS_SMOKING_ALLOWED;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_LOCATION_CITY;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_LOCATION_DISTRICT;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_MAX_OCCUPANTS;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_MIN_STAY_MONTHS;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_NAME;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_NEARBY_LANDMARKS;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_PRICE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_PROPERTY_TYPE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_ROOM_SIZE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_ROOM_TYPE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.FIELD_VERIFIED_LISTING;
+import static com.piseth.java.school.roomservice.util.RoomConstants.OP_EQ;
+import static com.piseth.java.school.roomservice.util.RoomConstants.OP_GT;
+import static com.piseth.java.school.roomservice.util.RoomConstants.OP_GTE;
+import static com.piseth.java.school.roomservice.util.RoomConstants.OP_LT;
+import static com.piseth.java.school.roomservice.util.RoomConstants.OP_LTE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -30,6 +65,27 @@ public class RoomCriteriaBuilder {
 		if (Objects.nonNull(filter.getFloor())) {
 			criterias.add(Criteria.where(FIELD_FLOOR).is(filter.getFloor()));
 		}
+		
+		// ---- Start filter by Address
+		
+		if(StringUtils.isNoneBlank(filter.getProvinceCode())) {			
+//		condition : filter.getProvinceCode()) && !filter.getProvinceCode().isBlank() ==> we can use StringUtils instead
+		criterias.add(Criteria.where("address.provinceCode").is(filter.getProvinceCode()));			
+		}	
+		
+		if(StringUtils.isNoneBlank(filter.getDistrictCode())) {			
+		criterias.add(Criteria.where("address.districtCode").is(filter.getDistrictCode()));			
+		}
+		
+		if(StringUtils.isNoneBlank(filter.getCommuneCode())) {			
+			criterias.add(Criteria.where("address.communeCode").is(filter.getCommuneCode()));			
+		}
+		
+		if(StringUtils.isNoneBlank(filter.getVillageCode())) {			
+			criterias.add(Criteria.where("address.villageCode").is(filter.getVillageCode()));			
+		}
+		
+		// ---------------
 
 		if (Objects.nonNull(filter.getRoomSizeMin()) || Objects.nonNull(filter.getRoomSizeMax())) {
 			Criteria c = Criteria.where(FIELD_ROOM_SIZE);
@@ -151,7 +207,8 @@ public class RoomCriteriaBuilder {
 
 	public static Sort sort(RoomFilterDTO filter) {
 
-		Sort.Direction direction = "desc".equalsIgnoreCase(filter.getDirection()) ? Sort.Direction.DESC
+		Sort.Direction direction = "desc".equalsIgnoreCase(filter.getDirection()) 
+				? Sort.Direction.DESC
 				: Sort.Direction.ASC;
 
 		String sortField = Objects.nonNull(filter.getSortBy()) ? filter.getSortBy() : FIELD_NAME;

@@ -1,0 +1,183 @@
+Good Display the data from BE- Call Api 
+
+API Call :
+
+http://localhost:8082/api/admin-areas?level=PROVINCE
+
+[
+{
+"code": "01",
+"level": "PROVINCE",
+"parentCode": null,
+"nameKh": "ខេត្ត បន្ទាយមានជ័យ",
+"nameEn": "Province Banteay Meanchey",
+"path":[
+"01"
+],
+"createAt": "2025-11-13T00:53:18.919Z",
+"updateAt": "2025-11-13T00:53:18.919Z"
+},
+{
+"code": "02",
+"level": "PROVINCE",
+"parentCode": null,
+"nameKh": "ខេត្ត បាត់ដំបង",
+"nameEn": "Province Battambang",
+"path":[
+"02"
+],
+"createAt": "2025-11-13T00:53:18.950Z",
+"updateAt": "2025-11-13T00:53:18.950Z"
+},
+
+
+-----------------------------------------------------------------
+
+1. Creaste Repsond 
+
+export interface AdminAreaResponse{
+  code: string;
+  nameEn: string;
+  level: AdminLevel;
+  parentCode?: string | null;
+}
+
+We create it in the interface for the AminAreaReasponse 
+
+2. Create API Called 
+
+2.1 Create environment folder 
+
+- and name the file environments.ts 
+
+export const environment = {
+    production: false,
+    apiUrl:'http://localhost:8082/api',
+    addressApiUrl:'http://localhost:8082'
+}
+
+
+--Explian : addressApiUrl:'http://localhost:8082' this is the base URL 
+
+Follow the POSTMAN Called;  http://localhost:8082/api/admin-areas?level=PROVINCE
+
+-- /api/admin-areas?level=PROVINCE : is the what we need to adjust form the diffence url 
+
+2.2. what we inject the from enviroment 
+
+- private base = `${environment.addressApiUrl}/api/admin-areas`;
+
+These below is the function to GET called : 
+
+  getProvinces() : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams().set('level', AdminLevel.PROVINCE);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+  getDistricts(provinceCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.DISCTRICT)
+      .set('parentCode', provinceCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+  getCommunes(districtCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.COMMUNE)
+      .set('parentCode', districtCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+    getVillages(communeCode: string) : Observable<AdminAreaResponse[]>{
+    const param = new HttpParams()
+      .set('level', AdminLevel.VILLAGE)
+      .set('parentCode', communeCode);
+    return this.http.get<AdminAreaResponse[]>(this.base,{params: param});
+  }
+
+---------------------------------------------------------------------
+
+
+3. how to called the servie to us in the html 
+
+3.1 in the properties-sidebar.component.ts
+
+We in inject the server to use : 
+
+- private addressService = inject(AddressService);
+
+Then we can called the service: 
+
+  constructor(){
+    this.addressService.getProvinces().subscribe(list =>{
+      this.provinces = list ?? [];
+    })
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,174 @@
+1- we read the room from id 
+
+ការទាញ data យកមកប្រើ 
+
+  private route = inject(ActivatedRoute);
+  private roomService = inject(RoomService);
+  private destroyRef = inject(DestroyRef);
+
+  room = signal<Room | null>(null);
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
+
+
+- Explain :
+
++ room = signal<Room | null>(null); យើងបង្កើត Variable យកមកប្រើដោយប្រើ signal បើវាមានអី update it will display to the template.
+
+ការបង្កើតសារីថ្មី ជា function then we will access style function the same! 
+
+or we can write : 
+
+room: Room = null ; បង្កើត varaibale room then have data type is Room with default value is null; ការបង្កើតសារីចាស់ 
+
++ loading and error : we use when the query from BE have issue or in loading process 
+
++ private roomService = inject(RoomService); we inject our service 
+
++ private destroyRef = inject(DestroyRef); ពេលដែលវាលុយ ឬ update it will update to our BE and it is good to have 
+ពេលគេចង់ផ្លាស់ប្តូរទៅ Id ផ្សេងអោយវាបញ្ចប់អោយបានលឿន
+
+
++ * private route = inject(ActivatedRoute); សម្រាប់ទាញ ទិន្នន័យ id and it is secure because it change and difficult to remember http://localhost:4200/properties/693779d0e05018c66095cf14
+
+អ្វីដែលយើងចឹងបានគឺ អា 693779d0e05018c66095cf14 យើងត្រូវប្រើ router មកជំនួយ
+
+យើងចង់បានទោះបីជា គេប្តូរ Id យ៉ាងណាក៏ដោយក៏យើងអាចចាប់បានដែល 
+
++  filter((id): id is string => !!id), it is string and no undifine and no emptly 
+
++ side effect : ចឹងអោយវាធ្វើការនៅខាងក្រៅ pip line 
+
+tap(() => { // side effect
+          this.loading.set(true);
+          this.error.set(null);
+        }),
+
++ cancel subscription ចាស់គេប្រើ switchMap 
+
+switchMap(id =>
+          this.roomService.getById(id).pipe(
+            catchError(err => {
+              this.error.set(err?.message ?? 'Failed to load room');
+              return of(null);
+            })
+          )
+
+2- send data from parent to chile 
+
+- our child is : property-details
+
+in the : 
+
+<app-property-overview [room]="room()"></app-property-overview>
+
+Then it will show the error message: 
+
+" Can't bind to 'room' since it isn't a known property of 'app-property-overview'. " 
+
+- ចឹងយើងត្រូវការបង្កើត variable to ts file : 
+
+import { Component, computed, input } from '@angular/core';
+import { Room } from '../../models/room';
+import { DatePipe } from '@angular/common';
+
+@Component({
+  selector: 'app-property-overview',
+  imports: [DatePipe],
+  templateUrl: './property-overview.component.html',
+  styleUrl: './property-overview.component.css'
+})
+export class PropertyOverviewComponent {
+  room = input.required<Room>();
+
+}
+
+then after we create room in the property-deatil : it will show another error : 
+
+"Type 'Room | null' is not assignable to type 'Room'.
+  Type 'null' is not assignable to type 'Room'.ngtsc(2322)" 
+
+<app-property-overview [room]="room()!"></app-property-overview>
+
+- We put ! in the [room]="room()! that we tell the type scrip it does not have null. only the room value. 
+
+
+3- Access the variable from the single 
+
+<div class="property-overview sticky-top" data-aos="fade-up" data-aos-delay="200">
+
+<div class="price-tag">{{ priceText() }}</div>
+
+it use as function called !
+
+---------------------------------------------
+
++ diread signle : single ដែលកើតមកពី single ផ្សេងទៀត
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

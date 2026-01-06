@@ -13,11 +13,11 @@ public class CorsConfig {
 	CorsWebFilter corsWebFilter() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedOrigin("http://localhost:4200/");
+		config.addAllowedOrigin("http://localhost:4300/");
 		
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/api/**", config);
 		
 		return new CorsWebFilter(source);
 	}
-
 }

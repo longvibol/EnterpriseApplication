@@ -1,0 +1,93 @@
+<div class="filterbar card shadow-sm border-0 mb-3">
+    <div class="card-body py-3">
+      <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+  
+        <!-- Left: Quick filters -->
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+  
+          <!-- Location -->
+          <button type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="openLocationPicker()">
+            <i class="bi bi-geo-alt me-1"></i> Location
+          </button>
+  
+          <!-- Property type -->
+          <select class="form-select form-select-sm w-auto"
+                  [formControl]="form.controls.propertyType">
+            <option value="">All Property</option>
+            <option [value]="PropertyType.APARTMENT">Apartment</option>
+            <option [value]="PropertyType.HOUSE">House</option>
+            <option [value]="PropertyType.CONDO">Condo</option>
+            <option [value]="PropertyType.TOWNHOUSE">Townhouse</option>
+            <option [value]="PropertyType.COMMERCIAL">Commercial</option>
+          </select>
+  
+          <!-- Room type pills -->
+          <div class="btn-group btn-group-sm" role="group">
+  
+            <button type="button"
+                    class="btn"
+                    [class.btn-primary]="form.controls.roomType.value === null"
+                    [class.btn-outline-secondary]="form.controls.roomType.value !== null"
+                    (click)="setRoomType(null)">
+              Any
+            </button>
+  
+            <button type="button"
+                    class="btn"
+                    [class.btn-primary]="form.controls.roomType.value === RoomType.SINGLE"
+                    [class.btn-outline-secondary]="form.controls.roomType.value !== RoomType.SINGLE"
+                    (click)="setRoomType(RoomType.SINGLE)">
+              Single
+            </button>
+  
+            <button type="button"
+                    class="btn"
+                    [class.btn-primary]="form.controls.roomType.value === RoomType.DOUBLE"
+                    [class.btn-outline-secondary]="form.controls.roomType.value !== RoomType.DOUBLE"
+                    (click)="setRoomType(RoomType.DOUBLE)">
+              Double
+            </button>
+  
+            <button type="button"
+                    class="btn"
+                    [class.btn-primary]="form.controls.roomType.value === RoomType.STUDIO"
+                    [class.btn-outline-secondary]="form.controls.roomType.value !== RoomType.STUDIO"
+                    (click)="setRoomType(RoomType.STUDIO)">
+              Studio
+            </button>
+  
+          </div>
+  
+          <!-- Price -->
+          <div class="price-box d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">Min</span>
+              <input type="number"
+                     class="form-control"
+                     placeholder="0"
+                     [formControl]="form.controls.priceMin">
+            </div>
+  
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">Max</span>
+              <input type="number"
+                     class="form-control"
+                     placeholder="Any"
+                     [formControl]="form.controls.priceMax">
+            </div>
+          </div>
+  
+        </div>
+  
+        <!-- Right: actions -->
+        <button type="button"
+                class="btn btn-link btn-sm text-decoration-none"
+                (click)="clearAll()">
+          Clear all
+        </button>
+  
+      </div>
+    </div>
+  </div>

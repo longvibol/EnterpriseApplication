@@ -1,0 +1,14 @@
+.filterbar {
+    border-radius: 16px;
+  }
+  
+  .price-box .input-group {
+    width: 160px;
+  }
+  
+  @media (max-width: 576px) {
+    .price-box .input-group {
+      width: 140px;
+    }
+  }
+  

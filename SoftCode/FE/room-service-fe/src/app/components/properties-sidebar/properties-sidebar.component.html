@@ -1,84 +1,125 @@
-<div class="properties-sidebar" [formGroup]="form">
+<div class="properties-sidebar card border-0 shadow-sm" [formGroup]="form">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h5 class="mb-0">More Filters</h5>
+        <button type="button" class="btn btn-link btn-sm text-decoration-none"
+                (click)="resetAll()">
+          Reset
+        </button>
+      </div>
+  
+      <div class="accordion" id="filtersAccordion">
+        <!-- Location -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseLocation">
+              <i class="bi bi-geo-alt me-2"></i> Location
+            </button>
+          </h2>
+          <div id="collapseLocation" class="accordion-collapse collapse show"
+               data-bs-parent="#filtersAccordion">
+            <div class="accordion-body">
+              <div class="row g-2">
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Province</label>
+                  <select class="form-select"
+                          formControlName="provinceCode"
+                          #provinceSelect
+                          (change)="onProvinceChange(provinceSelect.value)">
+                    <option value="">Any province</option>
+                    @for (p of provinces; track p.code) {
+                      <option [value]="p.code">{{ p.nameEn }}</option>
+                    }
+                  </select>
+                </div>
+  
+                <div class="col-12 col-md-3">
+                  <label class="form-label">District</label>
+                  <select class="form-select"
+                          formControlName="districtCode"
+                          #districtSelect
+                          (change)="onDistrictChange(districtSelect.value)">
+                    <option value="">Any district</option>
+                    @for (d of districts; track d.code) {
+                      <option [value]="d.code">{{ d.nameEn }}</option>
+                    }
+                  </select>
+                </div>
+  
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Commune</label>
+                  <select class="form-select"
+                          formControlName="communeCode"
+                          #communeSelect
+                          (change)="onCommuneChange(communeSelect.value)">
+                    <option value="">Any commune</option>
+                    @for (c of communes; track c.code) {
+                      <option [value]="c.code">{{ c.nameEn }}</option>
+                    }
+                  </select>
+                </div>
+  
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Village</label>
+                  <select class="form-select" formControlName="villageCode">
+                    <option value="">Any village</option>
+                    @for (v of villages; track v.code) {
+                      <option [value]="v.code">{{ v.nameEn }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="filter-widget">
-    <h5 class="filter-title">Filter Properties</h5>
-
-    <div class="filter-section">
-        <label class="form-label">Property Type</label>
-        <select class="form-select">
-        <option>All Types</option>
-        <option>House</option>
-        <option>Apartment</option>
-        <option>Condo</option>
-        <option>Townhouse</option>
-        <option>Commercial</option>
-        </select>
+        <!-- Amenities (starter set; you can add more later) -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseAmenities">
+              <i class="bi bi-stars me-2"></i> Amenities
+            </button>
+          </h2>
+          <div id="collapseAmenities" class="accordion-collapse collapse"
+               data-bs-parent="#filtersAccordion">
+            <div class="accordion-body">
+              <div class="amenities-grid">
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasWiFi">
+                  <span><i class="bi bi-wifi me-1"></i> WiFi</span>
+                </label>
+  
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasAirConditioner">
+                  <span><i class="bi bi-snow me-1"></i> AC</span>
+                </label>
+  
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasParking">
+                  <span><i class="bi bi-car-front me-1"></i> Parking</span>
+                </label>
+  
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasPrivateBathroom">
+                  <span><i class="bi bi-droplet me-1"></i> Private bath</span>
+                </label>
+  
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasKitchen">
+                  <span><i class="bi bi-egg-fried me-1"></i> Kitchen</span>
+                </label>
+  
+                <label class="amenity">
+                  <input type="checkbox" formControlName="hasWashingMachine">
+                  <span><i class="bi bi-bucket me-1"></i> Washer</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
     </div>
-
-    <div class="filter-section">
-        <label class="form-label">Price Range</label>
-        <div class="row g-2">
-        <div class="col-6">
-            <input type="number" class="form-control" formControlName="priceMin" placeholder="Min Price">
-        </div>
-        <div class="col-6">
-            <input type="number" class="form-control" formControlName="priceMax" placeholder="Max Price">
-        </div>
-        </div>
-    </div>
-
-    <div class="filter-section">
-        <label class="form-label">Bedrooms</label>
-        <div class="bedroom-filter">
-        <button class="btn btn-outline-secondary btn-sm filter-btn active">Any</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">1+</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">2+</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">3+</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">4+</button>
-        </div>
-    </div>
-
-    <div class="filter-section">
-        <label class="form-label">Bathrooms</label>
-        <div class="bathroom-filter">
-        <button class="btn btn-outline-secondary btn-sm filter-btn active">Any</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">1+</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">2+</button>
-        <button class="btn btn-outline-secondary btn-sm filter-btn">3+</button>
-        </div>
-    </div>
-
-    <div class="filter-section">
-        <label class="form-label">Location</label>
-        <input type="text" class="form-control" placeholder="Enter city or neighborhood">
-    </div>
-
-    <div class="filter-section">
-        <label class="form-label">Features</label>
-        <div class="features-filter">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="garage">
-            <label class="form-check-label" for="garage">Garage</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="pool">
-            <label class="form-check-label" for="pool">Swimming Pool</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="balcony">
-            <label class="form-check-label" for="balcony">Balcony</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="garden">
-            <label class="form-check-label" for="garden">Garden</label>
-        </div>
-        </div>
-    </div>
-
-    <button class="btn btn-primary w-100" (click)="applyFilter()">Apply Filters</button>
-
-    </div>
-
-    <app-featured-properties></app-featured-properties>
-
-</div>
+  </div>

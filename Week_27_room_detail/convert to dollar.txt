@@ -1,0 +1,12 @@
+convert from to dollar sign :
+
+  priceText = computed(() => {
+    const r = this.room();
+    const price = r.price ?? 0;
+    const code = r.currencyCode ?? 'USD';
+    try {
+      return new Intl.NumberFormat(undefined, { style: 'currency', currency: code }).format(price);
+    } catch {
+      return `${price} ${code}`;
+    }
+  });

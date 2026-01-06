@@ -1,0 +1,7 @@
+FE: 
+
+https://github.com/pisething/room-owner-service-fe/blob/week_24_update_and_detail/src/app/components/room-form/room-form.component.ts
+
+BE: 
+
+https://github.com/pisething/room-owner-service/tree/week_24_update_and_detail

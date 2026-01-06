@@ -1,0 +1,41 @@
+.filter-widget .form-select:disabled,
+.filter-widget .form-select[disabled] {
+    background-color: #e9ecef;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.filter-widget .form-select:not(:disabled) {
+    background-color: #fff;
+    opacity: 1;
+}
+
+.properties-sidebar {
+    border-radius: 16px;
+  }
+  
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  
+  .amenity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(0,0,0,.12);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .amenity input {
+    transform: scale(1.1);
+  }
+  
+  .amenity:hover {
+    background: rgba(13,110,253,.06);
+    border-color: rgba(13,110,253,.25);
+  }

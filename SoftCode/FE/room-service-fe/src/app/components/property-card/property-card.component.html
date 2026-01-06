@@ -1,35 +1,91 @@
+<div class="pcard">
+  <!-- Image -->
+  <div class="pcard-media">
+    <img class="pcard-img" [src]="vm().mainPhoto" [alt]="vm().room.name">
 
-        <div class="property-card">
-        <div class="property-image">
-            <img src="assets/img/real-estate/property-exterior-1.webp" alt="Modern Family Home" class="img-fluid">
-            <div class="property-badges">
-            <span class="badge featured">Featured</span>
-            <span class="badge for-sale">For Sale</span>
-            </div>
-            <div class="property-overlay">
-            <button class="favorite-btn"><i class="bi bi-heart"></i></button>
-            <button class="gallery-btn" data-count="12"><i class="bi bi-images"></i></button>
-            </div>
+    <!-- Badges -->
+    <div class="pcard-badges">
+      @if (vm().room.verifiedListing) {
+        <span class="pcard-badge badge-verified">
+          <i class="bi bi-patch-check-fill me-1"></i> Verified
+        </span>
+      }
+      <span class="pcard-badge" [ngClass]="vm().statusClass">
+        {{ vm().statusText }}
+      </span>
+    </div>
+
+    <!-- Overlay actions -->
+    <div class="pcard-actions">
+      <button type="button" class="icon-btn" title="Save" (click)="favoriteToggle.emit()">
+        <i class="bi" [ngClass]="vm().isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+      </button>
+
+      @if (vm().photoCount > 1) {
+        <span class="count-pill" title="Photos">
+          <i class="bi bi-images me-1"></i> {{ vm().photoCount }}
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="pcard-body">
+    <div class="d-flex align-items-start justify-content-between gap-2">
+      <div class="pcard-price">{{ vm().priceText }}</div>
+      @if (vm().room.depositRequired) {
+        <span class="pcard-hint" title="Deposit required">
+          <i class="bi bi-shield-lock me-1"></i> Deposit
+        </span>
+      }
+    </div>
+
+    <h4 class="pcard-title" [title]="vm().room.name">{{ vm().room.name }}</h4>
+
+    <div class="pcard-location" [title]="vm().addressText">
+      <i class="bi bi-geo-alt me-1"></i>
+      <span>{{ vm().addressText || 'Location not specified' }}</span>
+    </div>
+
+    <!-- Quick facts -->
+    <div class="pcard-facts">
+      @if (vm().roomTypeText) {
+        <span class="fact"><i class="bi bi-door-open me-1"></i> {{ vm().roomTypeText }}</span>
+      }
+      @if (vm().propertyTypeText) {
+        <span class="fact"><i class="bi bi-house me-1"></i> {{ vm().propertyTypeText }}</span>
+      }
+      @if (vm().room.roomSize) {
+        <span class="fact">
+          <i class="bi bi-arrows-angle-expand me-1"></i> {{ vm().room.roomSize }} m²
+        </span>
+      }
+    </div>
+
+    <!-- Amenities icons -->
+    @if (vm().amenities.length > 0) {
+      <div class="pcard-amenities">
+        @for (a of vm().amenities; track a.icon) {
+          <span class="amenity" [title]="a.label">
+            <i class="bi" [ngClass]="a.icon"></i>
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Footer info -->
+    <div class="pcard-footer">
+      @if (vm().availableText) {
+        <div class="small text-muted">
+          <i class="bi bi-calendar-event me-1"></i> Available from {{ vm().availableText }}
         </div>
-        <div class="property-content">
-            <div class="property-price">{{room.price}}</div>
-            <h4 class="property-title">{{room.name}}</h4>
-            <p class="property-location"><i class="bi bi-geo-alt"></i> {{room.location?.fullAddress}}</p>
-            <div class="property-features">
-            <span><i class="bi bi-house"></i> 4 Bed</span>
-            <span><i class="bi bi-water"></i> 3 Bath</span>
-            <span><i class="bi bi-arrows-angle-expand"></i> 2,400 sqft</span>
-            </div>
-            <div class="property-agent">
-            <img src="assets/img/real-estate/agent-1.webp" alt="Agent" class="agent-avatar">
-            <div class="agent-info">
-                <strong>Sarah Johnson</strong>
-                <div class="agent-contact">
-                <small><i class="bi bi-telephone"></i> +1 (555) 123-4567</small>
-                </div>
-            </div>
-            </div>
-           <a [routerLink]="['/properties', room.id]" class="btn btn-primary w-100">View Details</a>
-        </div>
-        </div>
-    
+      }
+
+      <div class="pcard-cta">
+        <a [routerLink]="['/properties', vm().room.id]" class="btn btn-primary btn-sm w-100">
+          View details
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

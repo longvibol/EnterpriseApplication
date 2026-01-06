@@ -1,0 +1,199 @@
+- Show error message on control
+- Disable submit button when form is invalid 
+
+1- ក្នុង Form ដែលយើងបានដាក់ validation ពេលដែលគេមិនបានបំពេញយើងមិនអោយគេចុត create បានទេ
+
+ <button
+        type="submit"
+        class="btn btn-primary btn-sm px-4"
+        [disabled]="form.invalid">
+        {{ mode() === 'create' ? 'Create Room' : 'Update Room' }}
+      </button>
+
+
+Review  in the form note : 
+
+form: FormGroup = this.fb.group({
+    // identifiers & audit (disabled)
+    id: [{ value: '', disabled: true }],
+    ownerId: ['', Validators.required],
+
+    name: ['', Validators.required],
+    description: [''],
+
+    price: [null],
+    currencyCode: ['USD', Validators.required],
+
+    floor: [null],
+    roomSize: [null],
+    roomType: [null as RoomType | null, Validators.required],
+    propertyType: [null as PropertyType | null, Validators.required],
+
+
+--> required កន្លែងនឹងដែលប្រាប់ថា ត្រូវតែមាន
+
+after that we can see the create button will disable 
+
+2- validation on the input filed (field invalide) 
+
+if we are not touch or input we can not submit 
+
+- we build one function to get the input field then
+
+  isInvalid(path: string): boolean{
+    // this function return boolean true or false 
+    const ctrl = this.form.get(path);
+    return !!ctrl && ctrl.invalid && (ctrl.touched || this.submitted);
+  }
+
+
+Explian : 
+
+- !!ctrl សញ្ញា !! ពីរដង់នឹងវានឹងសួរថា តើវាមានអត់ តើតម្លៃវា Null or undefine or not 
+
+- !!ctrl && ctrl.invalid បើសិនជាវាមាន​ ហើយមានវា invalide ឬ (ctrl.touched || this.submitted) គេបានប៉ះវាសិន ឬ ចុច submit 
+
+ចាំអោយវាដំណើរការ message with html neng 
+
+
+        <div class="col-12 col-md-4">
+          <label class="form-label">Owner ID *</label>
+          <input class="form-control" 
+          formControlName="ownerId" 
+          placeholder="owner id"
+          [ngClass]="{' is-invalid': isInvalid('ownderId')}"
+          >
+        </div>
+
+--We use : [ngClass]="{' is-invalid': isInvalid('ownderId')}"
+ 
+is-invalide is the class in the bootscrip and it already have 
+
+---------------------------------------------------------------
+
+hold code : 
+      <div class="row g-2">
+        <div class="col-12 col-md-4">
+          <label class="form-label">Owner ID *</label>
+          <input class="form-control" 
+          formControlName="ownerId" 
+          placeholder="owner id"
+          [ngClass]="{ 'is-invalid': isInvalid('ownerId') }">
+          <div class="invalid-feedback" *ngIf="isInvalid('ownerId')">
+            Owner ID is required.
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Name *</label>
+          <input class="form-control" formControlName="name" placeholder="Room name">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <textarea rows="3" class="form-control" formControlName="description" placeholder="Description"></textarea>
+        </div>
+      </div>
+
+================================================================
+
+
+on the price validation :
+
+- in the JS:
+
+price: [null, [Validators.required, Validators.min(0.01)]],
+
+- in the html "
+
+        <div class="col-6 col-md-3">
+          <label class="form-label">Price</label>
+          <input type="number" 
+          class="form-control" 
+          formControlName="price" 
+          placeholder="0"
+          [ngClass]="{ 'is-invalid': isInvalid('price') }">
+          <div class="invalid-feedback d-block" *ngIf="isInvalid('price')">
+            <span *ngIf="form.get('price')?.hasError('required')">
+              Price is required.
+            </span>
+            <span *ngIf="form.get('price')?.hasError('min')">
+              Price must be greater than 0.
+            </span>
+          </div>
+        </div>
+
+
+==> we check if with the : *ngIf="isInvalid('price')" and *ngIf="form.get('price')?.hasError('min')"
+
+
+ <div class="invalid-feedback d-block" *ngIf="isInvalid('price')">
+            <span *ngIf="form.get('price')?.hasError('required')">
+              Price is required.
+            </span>
+            <span *ngIf="form.get('price')?.hasError('min')">
+              Price must be greater than 0.
+            </span>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
