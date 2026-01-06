@@ -1,4 +1,4 @@
-import { Component, computed, input, Input } from '@angular/core';
+import { Component, computed, input, Input, output } from '@angular/core';
 import { Room } from '../../models/room';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -13,11 +13,10 @@ import { toRoomVM } from '../../utils/room-formatter';
 })
 export class PropertyCardComponent {
 
-  room = input.required<Room>();
+  //room = input.required<Room>();
+  vm = input.required<RoomVM>();
 
-  // Build VM once (all formatting is centralized in room-formatters)
-  vm = computed<RoomVM>(() => toRoomVM(this.room()));
-
+  favoriteToggle = output<void>();
   // UI-only helpers
   hasMultiplePhotos = computed(() => this.vm().photoCount > 1);
 }

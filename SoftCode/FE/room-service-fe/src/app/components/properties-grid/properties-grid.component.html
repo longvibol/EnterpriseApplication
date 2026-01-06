@@ -2,7 +2,8 @@
     <div class="row g-4">
     @for(vm of rooms(); track vm.room.id){
         <div class="col-lg-4 col-md-4">
-            <app-property-card [room]="vm.room"></app-property-card>
+            <app-property-card [vm]="vm"
+          (favoriteToggle)="favoriteToggle.emit(vm.room.id)"></app-property-card>
         </div>
     }
     </div>

@@ -30,4 +30,10 @@ export class RoomService {
   getById(id: string): Observable<Room> {
     return this.http.get<Room>(`${this.base}/rooms/${id}`);
   }
+
+  getByIds(ids: string[]): Observable<Room[]> {
+    const params = buildParams({ ids }); //  buildParams supports arrays 
+    return this.http.get<Room[]>(`${this.base}/rooms/by-ids`, { params });
+  }
+
 }

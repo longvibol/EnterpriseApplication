@@ -17,8 +17,8 @@
 
     <!-- Overlay actions -->
     <div class="pcard-actions">
-      <button type="button" class="icon-btn" title="Save">
-        <i class="bi bi-heart"></i>
+      <button type="button" class="icon-btn" title="Save" (click)="favoriteToggle.emit()">
+        <i class="bi" [ngClass]="vm().isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
       </button>
 
       @if (vm().photoCount > 1) {

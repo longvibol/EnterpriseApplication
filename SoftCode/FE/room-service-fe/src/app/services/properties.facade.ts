@@ -7,6 +7,7 @@ import { RoomListParams } from '../models/room-list-params';
 import { RoomService } from './room.service';
 import { RoomVM } from '../models/room-vm';
 import { toRoomVM } from '../utils/room-formatter';
+import { FavoritesStore } from './favorite.store';
 
 export interface PageInfo {
   totalPages: number;
@@ -19,6 +20,8 @@ export type LoadState = 'idle' | 'loading' | 'success' | 'error';
 export const DEFAULT_FILTER: RoomListParams = {
   page: 0,
   size: 4,
+  sortBy: 'createdAt',
+  direction: 'desc',
 
   priceMin: null,
   priceMax: null,
@@ -72,7 +75,9 @@ export class PropertiesFacade {
   readonly totalPages = computed(() => this.pageInfo().totalPages);
   readonly total = computed(() => this.pageInfo().totalElements);
 
-  constructor(private readonly roomService: RoomService) {
+  constructor(
+    private readonly roomService: RoomService,
+  private readonly favorites: FavoritesStore) {
     toObservable(this.filterSig)
       .pipe(
         distinctUntilChanged((a, b) => shallowEqual(a, b)),
@@ -107,7 +112,7 @@ export class PropertiesFacade {
           return;
         }
 
-        this.rooms.set((page.content ?? []).map(toRoomVM)); 
+        this.rooms.set((page.content ?? []).map(r => toRoomVM(r, this.favorites.isFavorite(r.id!)))); 
         this.pageInfo.set({
           totalPages: page.totalPage ?? 0,
           totalElements: page.totalElements ?? 0
@@ -127,4 +132,14 @@ export class PropertiesFacade {
   clearAll(): void {
     this.filterSig.set({ ...DEFAULT_FILTER });
   }
+
+  toggleFavorite(roomId: string): void {
+    this.favorites.toggle(roomId);
+
+    // keep current list in sync immediately
+    this.rooms.update(list =>
+      list.map(vm => vm.room.id === roomId ? { ...vm, isFavorite: !vm.isFavorite } : vm)
+    );
+  }
+
 }

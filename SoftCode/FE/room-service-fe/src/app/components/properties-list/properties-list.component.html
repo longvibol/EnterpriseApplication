@@ -83,8 +83,11 @@
               </div>
 
               <div class="plist-actions d-flex gap-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" title="Save">
-                  <i class="bi bi-heart"></i>
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        title="Save"
+                        (click)="favoriteToggle.emit(vm.room.id)">
+                  <i class="bi" [ngClass]="vm.isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
                 </button>
 
                 <a [routerLink]="['/properties', vm.room.id]" class="btn btn-primary btn-sm">

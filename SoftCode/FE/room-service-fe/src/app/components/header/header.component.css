@@ -1,0 +1,56 @@
+/* ---------- Header Actions (Favorites, CTA) ---------- */
+.header-actions .btn {
+  border-radius: 999px;
+  padding: 6px 14px;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.header-actions .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Make badge feel attached, not floating */
+.header-actions .badge {
+  font-size: 0.65rem;
+  padding: 4px 6px;
+}
+
+/* ---------- Navigation Menu ---------- */
+.navmenu ul {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navmenu a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Hover = subtle highlight */
+.navmenu a:hover {
+  background: rgba(13, 110, 253, 0.05);
+}
+
+/* Active = stronger but still soft */
+.navmenu a.active {
+  background: rgba(13, 110, 253, 0.12);
+  color: var(--bs-primary);
+}
+
+/* ---------- Mobile tweaks ---------- */
+@media (max-width: 991px) {
+  .header-actions .btn span {
+    display: none; /* hide text, keep icon */
+  }
+
+  .navmenu a {
+    border-radius: 6px; /* pills look weird in stacked menus */
+  }
+}

@@ -16,5 +16,6 @@ import { RoomVM } from '../../models/room-vm';
 export class PropertiesGridComponent{
   
   rooms = input.required<RoomVM[]>(); 
+  favoriteToggle = output<string>(); // roomId
 
 }

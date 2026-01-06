@@ -3,7 +3,8 @@ import { PropertyType, RoomType } from "./enum";
 export interface RoomListParams {
     page?: number;
     size?: number;
-    sort?: string;
+    sortBy?: 'createdAt' | 'price' | 'viewCount' | 'name';
+    direction?: 'asc' | 'desc';
     roomType?: RoomType | null;
     propertyType?: PropertyType | null;
     price?: number;

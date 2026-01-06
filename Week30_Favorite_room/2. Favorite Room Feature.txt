@@ -1,0 +1,103 @@
+-Favorite room:
+
+FE:
+
+- store room id (when they click on the Favorite icon it will add to the Bucket) 
+Ex: (2345,5643,4334)
+
+- Store in local storage (cookies) 
+
+Note store in the backend it called Session 
+
+BE: 
+- create API to return list of room by list of room ids 
+
+Ex:
+
+http://localhost:8080/api/rooms/by-ids?ids=691406e8ccb5e436144ed109&ids=6914070f710a72972d3173ba
+
+---------------------
+
+- Persist current ids and refresh TTL 
+
+Persist = store 
+TTL = Time to live 
+
+---
+
+Note what is Pick
+
+private toBackendSort(sort: SortOption): Pick<RoomListParams, 'sortBy' | 'direction'> {
+
+------------RoomListParams
+
+
+export interface RoomListParams {
+    page?: number;
+    size?: number;
+    sortBy?: 'createdAt' | 'price' | 'viewCount' | 'name';
+    direction?: 'asc' | 'desc';
+    roomType?: RoomType | null;
+    propertyType?: PropertyType | null;
+    price?: number;
+    priceMin: number | null;
+    priceMax: number | null;
+    provinceCode?: string | null;
+    districtCode?: string | null;
+    communeCode?: string | null;
+    villageCode?: string | null;
+    hasWiFi?: boolean | null;
+    hasAirConditioner?: boolean | null;
+    hasParking?: boolean | null;
+    hasPrivateBathroom?: boolean | null;
+    hasKitchen?: boolean | null;
+    hasWashingMachine?: boolean | null;
+}
+
+
+--------------------------
+
+There are many field in the RoomListParams : and we use Pick (យកតែ property ដែលយើងចង់យកមកប្រើ) 
+
+Ex:
+
+  private toBackendSort(sort: SortOption): Pick<RoomListParams, 'sortBy' | 'direction'> {
+    switch (sort) {
+      case 'PRICE_ASC':
+        return { sortBy: 'price', direction: 'asc' };
+      case 'PRICE_DESC':
+        return { sortBy: 'price', direction: 'desc' };
+      case 'MOST_VIEWED':
+        return { sortBy: 'viewCount', direction: 'desc' };
+      case 'NEWEST':
+      default:
+        return { sortBy: 'createdAt', direction: 'desc' };
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

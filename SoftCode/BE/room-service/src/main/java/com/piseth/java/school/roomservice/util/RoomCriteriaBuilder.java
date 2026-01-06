@@ -207,7 +207,8 @@ public class RoomCriteriaBuilder {
 
 	public static Sort sort(RoomFilterDTO filter) {
 
-		Sort.Direction direction = "desc".equalsIgnoreCase(filter.getDirection()) ? Sort.Direction.DESC
+		Sort.Direction direction = "desc".equalsIgnoreCase(filter.getDirection()) 
+				? Sort.Direction.DESC
 				: Sort.Direction.ASC;
 
 		String sortField = Objects.nonNull(filter.getSortBy()) ? filter.getSortBy() : FIELD_NAME;

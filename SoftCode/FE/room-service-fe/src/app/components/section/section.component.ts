@@ -12,7 +12,7 @@ import { PropertiesFacade } from '../../services/properties.facade';
 
 @Component({
   selector: 'app-section',
-  imports: [PropertiesHeaderComponent, PropertiesGridComponent, PropertiesListComponent, PropertiesSidebarComponent, PropertyFilterBarComponent, PropertyActiveFilterBarComponent, PaginationComponent],
+  imports: [PropertiesHeaderComponent, PropertiesGridComponent, PropertiesListComponent, PaginationComponent, PropertiesSidebarComponent, PropertyFilterBarComponent, PropertyActiveFilterBarComponent],
   templateUrl: './section.component.html',
   styleUrl: './section.component.css'
 })
@@ -28,10 +28,24 @@ export class SectionComponent {
     this.viewMode.set(mode);
   }
 
+  private toBackendSort(sort: SortOption): Pick<RoomListParams, 'sortBy' | 'direction'> {
+    switch (sort) {
+      case 'PRICE_ASC':
+        return { sortBy: 'price', direction: 'asc' };
+      case 'PRICE_DESC':
+        return { sortBy: 'price', direction: 'desc' };
+      case 'MOST_VIEWED':
+        return { sortBy: 'viewCount', direction: 'desc' };
+      case 'NEWEST':
+      default:
+        return { sortBy: 'createdAt', direction: 'desc' };
+    }
+  }
+
   onSortChange(sort: SortOption) {
     this.sort.set(sort);
-    this.facade.patchFilter({ sort, page: 0 });
-    // after we short we need to set the page to zero to make the data recreate 
+     const backendSort = this.toBackendSort(sort);
+    this.facade.patchFilter({ ...backendSort, page: 0 });
   }
 
 }

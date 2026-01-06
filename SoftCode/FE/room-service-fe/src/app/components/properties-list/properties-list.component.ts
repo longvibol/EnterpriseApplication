@@ -16,5 +16,5 @@ import { RoomVM } from '../../models/room-vm';
 })
 export class PropertiesListComponent {
 rooms = input.required<RoomVM[]>();
-
+favoriteToggle = output<string>(); // roomId
 }

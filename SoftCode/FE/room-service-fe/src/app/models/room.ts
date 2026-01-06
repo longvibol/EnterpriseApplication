@@ -2,7 +2,7 @@ import { RoomType, PropertyType, GenderPreference, RoomStatus } from "./enum";
 
 export interface Room {
   // ---- Identifiers & Ownership ----
-  id?: string;
+  id: string;
   ownerId: string;
 
   // ---- Basic Info ----

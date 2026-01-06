@@ -1,0 +1,65 @@
+Example:
+
+- id room 1 = 691406e8ccb5e436144ed109
+- id room 2 = 6914070f710a72972d3173ba
+
+http://localhost:8080/api/rooms/by-ids?ids=691406e8ccb5e436144ed109&ids=6914070f710a72972d3173ba
+
+
+
+1- in the RoomService
+
+Add new service : Flux<RoomDTO> getRoomsByIds(List<String> ids);
+
+2- in the RoomServiceImpl
+
+	@Override
+	public Flux<RoomDTO> getRoomsByIds(List<String> ids) {
+	    if (ids == null || ids.isEmpty()) {
+	        return Flux.empty();
+	    }
+
+	    return roomRepository.findAllById(ids)
+	            .map(roomMapper::toRoomDTO);
+	}
+
+
+3- in the RoomController
+
+	@GetMapping("/by-ids")
+	@Operation(summary = "Get rooms by IDs (for favorites)")
+	public Flux<RoomDTO> getRoomsByIds(@RequestParam List<String> ids) {
+	    return roomService.getRoomsByIds(ids);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

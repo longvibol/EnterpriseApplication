@@ -69,7 +69,7 @@ export function amenityIcons(room: any): Array<{ icon: string; label: string }> 
   return items.filter(x => x.ok).map(x => ({ icon: x.icon, label: x.label })).slice(0, 6);
 }
 
-export function toRoomVM(room: Room): RoomVM {
+export function toRoomVM(room: Room, isFavorite: boolean): RoomVM {
   const urls = room.photoUrls ?? [];
   const photoCount = urls.length;
 
@@ -84,7 +84,8 @@ export function toRoomVM(room: Room): RoomVM {
     statusClass: statusClass(room.status as any),
     amenities: amenityIcons(room as any),
     roomTypeText: capitalize(room.roomType),
-    propertyTypeText: capitalize(room.propertyType)
+    propertyTypeText: capitalize(room.propertyType),
+    isFavorite
   };
 }
 
