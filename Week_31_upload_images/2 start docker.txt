@@ -1,0 +1,8 @@
+1- start project 
+
+>> docker compose -f minio.yaml up -d 
+
+2- Clear volume 
+
+> docker compose -f minio.yaml down -v 
+

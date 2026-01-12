@@ -1,0 +1,321 @@
+1- Implementation for our interface 3 condition : 
+
+យើងបង្កើត កុងត្រាមួយដែលមានលក្ខណៈដូចខាងក្រោម
+
+- putObject : upload រូបភាពចូល
+- removeObjects : លុបរូបភាព (បើគេដក់ចេញ ហើយយើងត្រូវលុយវាចេញពី storage យើងកុំទុកនាំអោយ អស់ space) 
+- presignedGetUrl : រយៈពេលមើលបានប៉ុន្មាន 
+
+
+2- crate class MinioObjectStorage implements from ObjectStorage
+
+--------------------------------------------------------------------------
+
+package com.piseth.java.school.roomownerservice.storage;
+
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+
+import org.springframework.stereotype.Component;
+
+import com.piseth.java.school.roomownerservice.config.MinioProperties;
+
+import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
+import io.minio.http.Method;
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+@Component
+@RequiredArgsConstructor
+public class MinioObjectStorage implements ObjectStorage { // web server : Netty : even loop
+
+    private final MinioClient minioClient;
+    private final MinioProperties props;
+
+    @Override
+    public Mono<Void> putObject(final String objectKey, final String contentType, final Path filePath) {
+        return Mono.fromCallable(() -> {
+                    long size = Files.size(filePath);
+                    try (InputStream in = Files.newInputStream(filePath)) {
+                        minioClient.putObject(
+                                PutObjectArgs.builder()
+                                        .bucket(props.bucket())
+                                        .object(objectKey)
+                                        .contentType(contentType)
+                                        .stream(in, size, -1) // -1 means “let MinIO decide multipart chunk size”
+                                        .build()
+                        );
+                    }
+                    return true;
+                })
+                .subscribeOn(Schedulers.boundedElastic()) // Project Reactor
+                .then();
+    }
+
+    @Override
+    public Mono<Void> removeObject(final String objectKey) {
+        return Mono.fromRunnable(() -> {
+                    try {
+                        minioClient.removeObject(
+                                RemoveObjectArgs.builder()
+                                        .bucket(props.bucket())
+                                        .object(objectKey)
+                                        .build()
+                        );
+                    } catch (Exception e) {
+                        // idempotent delete: don’t fail hard if missing
+                    }
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
+    }
+
+    @Override
+    public Mono<String> presignedGetUrl(final String objectKey, final Duration expiry) {
+        // If you have public gateway URL, you can skip presigned and build URL from base
+        if (props.publicBaseUrl() != null && !props.publicBaseUrl().isBlank()) {
+            String base = props.publicBaseUrl().endsWith("/") ? props.publicBaseUrl() : props.publicBaseUrl() + "/";
+            return Mono.just(base + props.bucket() + "/" + objectKey);
+        }
+
+        return Mono.fromCallable(() -> minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs.builder()
+                                .method(Method.GET)
+                                .bucket(props.bucket())
+                                .object(objectKey)
+                                .expiry((int) expiry.toSeconds())
+                                .build()
+                ))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+}
+
+
+--------------------------------------------------------------------------
+
+Explain: basic :
+
+
+" វាជាអ្វី ដើម្បីអ្វី នឹងធ្វើដូចម្តេច " 
+
+1- អ្វីជាគោលបំណង់ 
+
+Mono<Void> putObject(String objectKey, String contentType, Path filePath);
+
+explain: 
+
+គោលបំណង់វា ជាកន្លែងរក្សទិន្នន័យ​​ ដើម្បីធ្វើការ  upload រូបភាពទៅ (ដើម្បីដាក់រូបភាពទៅ Server) ម្តេចបានវាជា Void ដោយសារតែយើង
+ចង់ដាក់រូបភាព ចូល Storage យើងអត់ចង់បានអ្វី Return មកវិញទេ។​
+
+==> យើងចង់បានអោយវានៅក្នុង Server : it is command not query 
+
+- public class MinioObjectStorage implements ObjectStorage:
+
+គេហៅវា ObjectStorage វាជា high level interface ហើយយើង implements ពីវា 
+
+ចឹងលើកក្រោយ បើយើងចង់ផ្លាស់ប្តូរ Server storage to S3 We can crate new implements from S3 
+
+@Primary 
+
+
+----------------------------------------------------------------------------------
+
+private final MinioClient minioClient; វាជា APi from minio 
+
+private final MinioProperties props; this is property 
+
+- public Mono<Void> putObject(final String objectKey, final String contentType, final Path filePath):
+
++ objectKey : វាដូចជាចំនុះសម្គាល់រូបភាពរបស់យើងចឹង
++ contentType : file extension : jpg, png, webp 
++ filePath : ទីតាំង file ជាក់ស្តែងដែលរូបភាព នឹងវាស្តិតនៅ
+
+
++ for IO task it is block thread 
+
+1- Upload 
+
+Ex: 
+
+in the legacy system : old system we create the maximum thread 
+ជាទូរទៅ គេដាក់ 200 thread full - ក្នុងពេលតែមួយនឹង វាទទួលបាន 200 Request 
+ហើយសម្រាប់ មួយៗ នឹងពេលដែលវា ជួប នឹង Blocking stadment (Red or Write file : it is blocking) មានន័យថាវាអោយធ្វើការអោយចប់អានឹងសិន ទើបអោយធ្វើការអី ផ្សេងបាន​
+
+- Thread នឹងដូចជាកម្មករដែលធ្វើការ អោយយើងចឹង ។ ចឹងបានយើងមកប្រើ Java Reactive stream 
+
+យើងធ្វើការអោយវា Assign Thread ផ្សេង .subscribeOn(Schedulers.boundedElastic()) // Project Reactor
+==> it is the thread that working for IO task 
+
+ពេលដែលបើកដំបូងការងារនឹង គឺ Main Thread អ្នកធ្វើការ Example Thread A បន្ទាប់មកដោយសារតែយើងអោយវាធ្វើការជា IO task ចឹង 
+main thread នឹងវា block ចឹងយើងអត់ចង់អោយអា main Thread name A នឹងវារវល់ជាមួយយើងទេ នៅក្នុង Java គេបង្កើត thread ថ្មីអោយវាធ្វើការតែ IO task នឹងទេ គេហៅថា boundedElastic
+
+- Mono.fromCallable() វាត្រូវការ​ Return អីមួយចឹង យើង ​Return true or string anything. 
+
+-  try (InputStream in = Files.newInputStream(filePath)) {} : why we use try (best pratic)
+
+នៅក្នុង Java 7 គេប្រើ try with resource : គេបើ file នឹងទោះវាមានបញ្ហារអីក៏ដោយវា នឹងបិទ file នឹងទៅដោយខ្លួនវា​
+==> ចឹងវាអត់មានបញ្ហា memory leak ទេ Ex: when we open the file then we forget to close it have leak memory 
+
+
+- ដើម្បីធ្វើការ Save object នឹងយើងប្រើការ Method putobject របស់ minio នឹង​​ minioClient.putObject()
+- chunk size : (-1) យើងអោយ minio នឹងអ្នកពុះបំបែក File នឹងអោយខ្លួនវា ដើម្បីអោយ វាធ្វើការ upload file មានសម្ថិភាព
+
+2- Remove 
+
+- Mono.fromRunnable() - this is no return 
+
+យើងប្រើ Method from minio ចឹងយើងត្រូវការ objectkey and 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

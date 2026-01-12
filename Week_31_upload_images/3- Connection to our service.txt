@@ -1,0 +1,396 @@
+1- Our buckets name: room-media
+
+Add the storage to the our application.yml 
+
+storage:
+  minio:
+    endpoint: http://localhost:9000
+    accessKey: minioadmin
+    secretKey: minioadmin
+    bucket: room-media
+    publicBaseUrl: http://localhost:9000
+    maxFilesPerRoom: 10
+    maxFileSizeBytes: 5000000
+
+
+These about is the property that we setup 
+
+-------------------------------------------------
+
+2- Dependency
+
+<dependency>
+			  <groupId>io.minio</groupId>
+			  <artifactId>minio</artifactId>
+			  <version>8.5.17</version>
+		  </dependency> 
+
+
+3- Create our class to call the API from minio = create class 
+
+-----------------------------------------------
+
+package com.piseth.java.school.roomownerservice.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@ConfigurationProperties(prefix = "storage.minio")
+public record MinioProperties(
+        String endpoint,
+        String accessKey,
+        String secretKey,
+        String bucket,
+        String publicBaseUrl,
+        Integer maxFilesPerRoom,
+        Long maxFileSizeBytes
+) {}
+
+--------------------------------------------------
+
+Explain:
+
+@ConfigurationProperties(prefix = "storage.minio") = យើងចាប់ពី Propery from minio 
+
+from Java 17 mostly, they prefer recode 
+
+public record MinioProperties() - it is the same ask class 
+
+Spring-Boot 2025 is version 4- they mostly use record 
+
+ចឹងយើងមើលទៅ សម្រាប់ Recode នឹងវាដូចទៅនឹង អ្វីដែលយើងបានដាក់នៅក្នុង application.yml 
+
+
+4- បង្កើត been: minion របស់ client អ្វីដែលយើងចង់អោយ client upload មក
+
+--------------------------------------------------------------------------------------
+
+package com.piseth.java.school.roomownerservice.config;
+
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.minio.MinioClient;
+
+@Configuration
+@EnableConfigurationProperties(MinioProperties.class)
+public class MinioConfig {
+
+    @Bean
+    MinioClient minioClient(final MinioProperties props) {
+        return MinioClient.builder()
+                .endpoint(props.endpoint())
+                .credentials(props.accessKey(), props.secretKey())
+                .build();
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+Explain:
+
+-MinioClient this is from minio class that they have provide from minio 
+
+5- Add property to the Room model 
+
+ //private List<String> photoUrls; // http://localhost:9000/room-media/rooms/sadfjafjsk.jpg
+    private List<String> photoObjectKeys; // room-media/rooms/sadfjafjsk.jpg
+
+
+Explain:
+
+- photoUrls : this we store as url 
+- photoObjectKeys : store in object ងាយស្រួលពេលយើងផ្លាស់ប្តូរ new implementation as S3 or something else 
+
+==> so we store object as the key (object key) : Ex:  room-media/rooms/sadfjafjsk.jpg ; we no need to store base url 
+
+Note:
+
+For the DTO we can keep the same as URL 
+
+* 6- បង្កើត interface for object storage 
+
+យើងបង្កើត កុងត្រាមួយដែលមានលក្ខណៈដូចខាងក្រោម
+
+- putObject : upload រូបភាពចូល
+- removeObjects : លុបរូបភាព (បើគេដក់ចេញ ហើយយើងត្រូវលុយវាចេញពី storage យើងកុំទុកនាំអោយ អស់ space) 
+- presignedGetUrl : រយៈពេលមើលបានប៉ុន្មាន 
+
+---------------------------------------------------------------------------------------------
+
+package com.piseth.java.school.roomownerservice.storage;
+
+import java.nio.file.Path;
+import java.time.Duration;
+
+import reactor.core.publisher.Mono;
+
+public interface ObjectStorage { // SOLID principle : "O" Open Extension, Closed modification
+
+	Mono<Void> putObject(String objectKey, String contentType, Path filePath);
+
+    Mono<Void> removeObject(String objectKey);
+
+    Mono<String> presignedGetUrl(String objectKey, Duration expiry);
+}
+
+
+----------------------------------------------------------------------------------------------
+
+Explain:  SOLID principle : single responsivity 
+
+We do as Open Close : open for extension, Close modification 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

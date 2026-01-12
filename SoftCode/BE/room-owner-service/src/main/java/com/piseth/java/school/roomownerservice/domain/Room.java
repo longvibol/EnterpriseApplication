@@ -79,7 +79,8 @@ public class Room {
     private String contactPhone;            // Visible to visitors
 
     // ----------- Media -------------------------
-    private List<String> photoUrls;
+    //private List<String> photoUrls; // http://localhost:9000/room-media/rooms/sadfjafjsk.jpg
+    private List<String> photoObjectKeys; // room-media/rooms/sadfjafjsk.jpg
     private String videoUrl;
     private Boolean verifiedListing;
 
