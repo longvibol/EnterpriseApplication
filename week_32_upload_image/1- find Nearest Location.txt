@@ -1,0 +1,467 @@
+- Want to find the nearest from our current location to the destination 
+
+- in the mongodb we store in the Point(lat,log)
+
+- ដើម្បី Search បានយើងត្រូវបង្កើត file : GeoJsonPoint for the Mongodb 
+
+1 - We put it in the Room.java (domain)
+---------------------------------
+  /**
+   * GeoJSON Point for geo queries.
+   * Mongo expects coordinates in order: [longitude, latitude].
+   */
+
+  @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+  private GeoJsonPoint geoPoint;
+
+---------------------------------
+
+- geoPoint : have two property : type and coordinate (it is object)
+
+Ex:  geoPoint: { type: "Point", coordinates: [104.9282, 11.5564] }
+
+2 - Create dto for output :
+
+----------------------------------------------------
+
+package com.piseth.java.school.roomservice.dto;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class NearbyRoomFilterDTO {
+
+    @NotNull
+    private Double lat;
+
+    @NotNull
+    private Double lon;
+
+    @Min(100)
+    @Max(50000)
+    private Integer radiusMeters = 3000;
+
+    @Min(0)
+    private Integer page = 0;
+
+    @Min(1)
+    @Max(100)
+    private Integer size = 20;
+
+    private RoomFilterDTO otherFilters;
+    
+    // merged filter:
+    
+    //private RoomType roomType;
+    //private PropertyType propertyType;
+    //private Boolean hasWiFi;
+}
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------
+
+
+
+
+1-Insert Room Visitor Data for lat and long
+
+db.visitor_rooms.insertMany([
+  {
+    _id: "room-pp-001",
+    ownerId: "owner-001",
+    name: "BKK1 Studio Central",
+    description: "Near Independence Monument",
+    price: 220,
+    currencyCode: "USD",
+    floor: 3,
+    roomSize: 28,
+    roomType: "STUDIO",
+    propertyType: "APARTMENT",
+
+    address: {
+      provinceCode: "12",
+      districtCode: "1207",
+      communeCode: "120701",
+      villageCode: "12070101",
+      provinceName: "Phnom Penh",
+      districtName: "Chamkar Mon",
+      communeName: "BKK1",
+      villageName: "BKK1",
+      line1: "Street 51",
+      nearbyLandmarks: ["Independence Monument"],
+      geo: { latitude: 11.5564, longitude: 104.9282 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9282, 11.5564] },
+
+    hasWiFi: true,
+    hasAirConditioner: true,
+    hasPrivateBathroom: true,
+    hasKitchen: true,
+
+    maxOccupants: 2,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: true,
+    depositAmount: 100,
+    minStayMonths: 1,
+    contactPhone: "012000001",
+
+    photoObjectKeys: ["room-pp-001/1.jpg"],
+    verifiedListing: true,
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-002",
+    ownerId: "owner-002",
+    name: "Russian Market Single Room",
+    price: 150,
+    currencyCode: "USD",
+    floor: 2,
+    roomSize: 22,
+    roomType: "SINGLE",
+    propertyType: "HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Chamkar Mon",
+      communeName: "Toul Tom Poung 1",
+      geo: { latitude: 11.5430, longitude: 104.9164 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9164, 11.5430] },
+
+    hasWiFi: true,
+    hasAirConditioner: true,
+    hasPrivateBathroom: true,
+
+    maxOccupants: 2,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: true,
+    depositAmount: 80,
+    minStayMonths: 1,
+    contactPhone: "012000002",
+
+    photoObjectKeys: ["room-pp-002/1.jpg"],
+    verifiedListing: false,
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-003",
+    ownerId: "owner-003",
+    name: "Riverside Budget Room",
+    price: 90,
+    currencyCode: "USD",
+    floor: 1,
+    roomSize: 18,
+    roomType: "SINGLE",
+    propertyType: "SHARED_HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Daun Penh",
+      geo: { latitude: 11.5740, longitude: 104.9260 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9260, 11.5740] },
+
+    hasWiFi: true,
+    hasPrivateBathroom: true,
+
+    maxOccupants: 1,
+    isSharedRoom: true,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: false,
+    minStayMonths: 0,
+    contactPhone: "012000003",
+
+    photoObjectKeys: ["room-pp-003/1.jpg"],
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-004",
+    ownerId: "owner-004",
+    name: "Olympic Stadium Apartment",
+    price: 130,
+    currencyCode: "USD",
+    floor: 5,
+    roomSize: 24,
+    roomType: "DOUBLE",
+    propertyType: "APARTMENT",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Prampi Makara",
+      geo: { latitude: 11.5637, longitude: 104.9139 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9139, 11.5637] },
+
+    hasWiFi: true,
+    hasAirConditioner: true,
+    hasKitchen: true,
+
+    maxOccupants: 2,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: true,
+    depositAmount: 100,
+    minStayMonths: 1,
+    contactPhone: "012000004",
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-005",
+    ownerId: "owner-005",
+    name: "Airport Area Room",
+    price: 110,
+    currencyCode: "USD",
+    floor: 1,
+    roomSize: 20,
+    roomType: "SINGLE",
+    propertyType: "HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Sen Sok",
+      geo: { latitude: 11.5466, longitude: 104.8440 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.8440, 11.5466] },
+
+    hasWiFi: true,
+    hasAirConditioner: true,
+
+    maxOccupants: 2,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: true,
+    depositAmount: 70,
+    minStayMonths: 1,
+    contactPhone: "012000005",
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-006",
+    ownerId: "owner-006",
+    name: "Chroy Changvar Condo",
+    price: 140,
+    currencyCode: "USD",
+    floor: 10,
+    roomSize: 26,
+    roomType: "STUDIO",
+    propertyType: "CONDO",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Chroy Changvar",
+      geo: { latitude: 11.5890, longitude: 104.9330 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9330, 11.5890] },
+
+    hasWiFi: true,
+    hasAirConditioner: true,
+    hasKitchen: true,
+
+    maxOccupants: 2,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: true,
+    depositAmount: 120,
+    minStayMonths: 1,
+    contactPhone: "012000006",
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-007",
+    ownerId: "owner-007",
+    name: "BKK3 Cheap Room",
+    price: 70,
+    currencyCode: "USD",
+    floor: 1,
+    roomSize: 16,
+    roomType: "SINGLE",
+    propertyType: "HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Chamkar Mon",
+      geo: { latitude: 11.5498, longitude: 104.9250 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9250, 11.5498] },
+
+    hasPrivateBathroom: true,
+
+    maxOccupants: 1,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    depositRequired: false,
+    minStayMonths: 1,
+    contactPhone: "012000007",
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-008",
+    ownerId: "owner-008",
+    name: "Hidden Listing",
+    price: 300,
+    currencyCode: "USD",
+    floor: 8,
+    roomSize: 40,
+    roomType: "SUITE",
+    propertyType: "CONDO",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Chamkar Mon",
+      geo: { latitude: 11.5560, longitude: 104.9290 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9290, 11.5560] },
+
+    maxOccupants: 3,
+    isSharedRoom: false,
+    genderPreference: "NO_PREFERENCE",
+
+    status: "HIDDEN",          
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    createdAt: ISODate("2026-01-10T00:00:00Z"),
+    updatedAt: ISODate("2026-01-10T00:00:00Z"),
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  },
+
+  {
+    _id: "room-pp-009",
+    ownerId: "owner-009",
+    name: "Deleted Room",
+    price: 50,
+    currencyCode: "USD",
+    roomType: "SINGLE",
+    propertyType: "HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Daun Penh",
+      geo: { latitude: 11.5770, longitude: 104.9220 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9220, 11.5770] },
+
+    status: "AVAILABLE",
+    deleted: true,             
+    lastEventAt: ISODate("2026-01-10T12:00:00Z")
+  },
+
+  {
+    _id: "room-pp-010",
+    ownerId: "owner-010",
+    name: "Far Away Room",
+    price: 100,
+    currencyCode: "USD",
+    roomType: "SINGLE",
+    propertyType: "HOUSE",
+
+    address: {
+      provinceName: "Phnom Penh",
+      districtName: "Meanchey",
+      geo: { latitude: 11.4800, longitude: 104.9800 }
+    },
+
+    geoPoint: { type: "Point", coordinates: [104.9800, 11.4800] },
+
+    maxOccupants: 2,
+    genderPreference: "NO_PREFERENCE",
+
+    status: "AVAILABLE",
+    availableFrom: ISODate("2026-01-01T00:00:00Z"),
+    availableTo: ISODate("2026-12-31T00:00:00Z"),
+
+    lastEventAt: ISODate("2026-01-10T12:00:00Z"),
+    deleted: false
+  }
+]);

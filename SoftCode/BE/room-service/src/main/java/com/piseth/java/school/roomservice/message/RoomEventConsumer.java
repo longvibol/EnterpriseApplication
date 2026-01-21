@@ -1,4 +1,4 @@
-package com.piseth.java.school.roomservice.message.event;
+package com.piseth.java.school.roomservice.message;
 
 
 
@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.piseth.java.school.roomservice.config.Topics;
+import com.piseth.java.school.roomservice.message.event.RoomEventEnvelope;
+import com.piseth.java.school.roomservice.message.event.RoomEventType;
+import com.piseth.java.school.roomservice.message.event.RoomFullPayload;
 import com.piseth.java.school.roomservice.service.RoomProjectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -57,7 +60,7 @@ public class RoomEventConsumer {
             return projectionService.apply(env);
         } catch (Exception e) {
             log.error("Failed to process record key={} offset={}: {}", record.key(), record.offset(), e.getMessage(), e);
-            // TODO: publish to error topic / DLQ (date letter quer if you maintain one
+            // TODO: publish to error topic / DLQ if you maintain one
             return Mono.empty();
         }
     }

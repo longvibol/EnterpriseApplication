@@ -2,6 +2,7 @@ package com.piseth.java.school.roomownerservice.service.impl;
 
 
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import com.piseth.java.school.roomownerservice.outbox.OutboxStatus;
 import com.piseth.java.school.roomownerservice.repository.RoomCustomRepository;
 import com.piseth.java.school.roomownerservice.repository.RoomRepository;
 import com.piseth.java.school.roomownerservice.service.RoomService;
+import com.piseth.java.school.roomownerservice.storage.ObjectStorage;
 import com.piseth.java.school.roomownerservice.util.RoomCriteriaBuilder;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,7 @@ public class RoomServiceImpl implements RoomService{
 	  private final OutboxProperties outboxProps;
 	  private final ObjectMapper objectMapper;
 	private final RoomCustomRepository roomCustomRepository;
+	private final ObjectStorage objectStorage;
 	
 	//@Transactional
 	@Override
@@ -144,7 +147,8 @@ public class RoomServiceImpl implements RoomService{
 	  public Mono<RoomResponse> getById(final String id, String ownerId) {
 	      return repository.findById(id)
 	              .switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
-	              .map(mapper::toResponse)
+//	              .map(mapper::toResponse)
+	              .flatMap(this::toRoomResponseWithUrls)
 	              .doOnSuccess(r -> log.info("Fetched room id={}", id))
 	              .doOnError(ex -> log.error("Get room failed: {}", ex.getMessage(), ex));
 	  }
@@ -177,6 +181,21 @@ public class RoomServiceImpl implements RoomService{
 	                  return new PageDTO<>(page, size, total, totalPages, content);
 	              });
 	  }
+	
+	private Mono<RoomResponse> toRoomResponseWithUrls(final Room room) {
+        RoomResponse resp = mapper.toResponse(room);
+
+        List<String> keys = room.getPhotoObjectKeys() == null ? List.of() : room.getPhotoObjectKeys();
+
+        return Flux.fromIterable(keys)
+                .flatMap(key -> objectStorage.presignedGetUrl(key, Duration.ofHours(6)), 5)
+                .collectList()
+                .map(urls -> {
+                    // Use RoomResponse.photoUrls to show actual viewable URLs
+                    resp.setPhotoUrls(urls);
+                    return resp;
+                });
+    }
 
 	
 	

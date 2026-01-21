@@ -1,0 +1,11 @@
+BE:
+
+- room-service : https://github.com/pisething/room-service/tree/week_32_upload_image
+
+- room-owner-service: https://github.com/pisething/room-owner-service/tree/week_32_upload_image_2
+
+FE:
+
+- room-server-fe: https://github.com/pisething/room-service-fe/tree/week_32_upload_image
+
+- 

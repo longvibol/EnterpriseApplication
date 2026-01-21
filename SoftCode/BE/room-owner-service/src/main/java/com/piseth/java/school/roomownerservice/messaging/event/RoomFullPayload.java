@@ -61,7 +61,8 @@ public class RoomFullPayload {
     private Integer minStayMonths;
     private String contactPhone;
 
-    private List<String> photoUrls;
+//    private List<String> photoUrls;
+    private List<String> photoObjectKeys;
     private String videoUrl;
     private Boolean verifiedListing;
 

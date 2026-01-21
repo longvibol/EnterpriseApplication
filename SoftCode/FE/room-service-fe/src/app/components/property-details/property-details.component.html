@@ -2,24 +2,29 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="row gy-4">
+        @if (loading()) {
+          <div class="text-center py-5">Loading...</div>
+        } @else if (error()) {
+          <div class="alert alert-danger">{{ error() }}</div>
+        } @else if (room()) {
+          <div class="row gy-4">
 
           <div class="col-lg-8">
 
             <!-- Property Gallery -->
-            <app-property-gallery [room]="room()!"></app-property-gallery>
+            <app-property-gallery [room] ="room()!"></app-property-gallery>
             <!-- End Property Gallery -->
 
             <!-- Property Description -->
-            <app-property-description [room]="room()!" ></app-property-description>
+            <app-property-description [room] ="room()!"></app-property-description>
             <!-- End Property Description -->
 
             <!-- Amenities -->
-            <app-property-amenities [room]="room()!"></app-property-amenities>
+            <app-property-amenities [room] ="room()!"></app-property-amenities>
             <!-- End Amenities -->
 
             <!-- Map Section -->
-            <app-property-map [room]="room()!"></app-property-map>
+            <app-property-map [room] ="room()!"></app-property-map>
             <!-- End Map Section -->
 
           </div>
@@ -27,12 +32,13 @@
           <div class="col-lg-4">
 
             <!-- Property Overview -->
-            <app-property-overview [room]="room()!"></app-property-overview>
+            <app-property-overview [room] ="room()!"></app-property-overview>
             <!-- End Property Overview -->
 
           </div>
 
         </div>
+        }
 
       </div>
 

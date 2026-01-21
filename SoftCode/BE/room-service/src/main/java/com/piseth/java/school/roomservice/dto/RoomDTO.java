@@ -68,4 +68,8 @@ public class RoomDTO {
     private String updatedBy;
 
     private Map<String, Object> extraAttributes;
+    /**
+     * Calculated by geo query ($geoNear). Nearest rooms will have smallest value.
+     */
+    private Double distanceMeters;
 }

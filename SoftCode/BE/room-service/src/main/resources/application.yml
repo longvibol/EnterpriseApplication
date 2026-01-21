@@ -6,14 +6,14 @@ spring:
     name: room-service    
   data:
     mongodb:
-      host: localhost
+      host: 10.172.9.189
       port: 27018
-      database: room
+      database: roomService
       username: root
       password: root
       authentication-database: admin
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 10.172.9.189:9092
     consumer:
       #group-id: visitor-room-projection
       group-id: visitor-room-projection-3
@@ -35,3 +35,6 @@ app:
   messaging:
     topics:
       roomEvents: room.events.v1
+
+storage:
+    publicBaseUrl: http://10.172.9.189:9000

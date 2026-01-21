@@ -1,17 +1,31 @@
 server:
   port: 8082
+
 spring:
   application:
-    name: address-service    
+    name: address-service
+
   data:
     mongodb:
-      host: localhost
+      host: 10.172.9.189
       port: 27020
-      database: address
+      database: addressService
       username: root
       password: root
-      authentication-database: admin        
+      authentication-database: admin
+
+# Local connection:
+# spring:
+#   data:
+#     mongodb:
+#       host: localhost
+#       port: 27020
+#       database: address
+#       username: root
+#       password: root
+#       authentication-database: admin
+
 logging:
   level:
     root: INFO
-    com.piseth.java.school: DEBUG   
+    com.piseth.java.school: DEBUG

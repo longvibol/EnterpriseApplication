@@ -2,10 +2,12 @@ package com.piseth.java.school.roomservice.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.piseth.java.school.roomservice.domain.Room;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
@@ -30,6 +32,10 @@ public class RoomServiceImpl implements RoomService{
 	private final RoomMapper roomMapper;
 	private final RoomCustomRepository roomCustomRepository;
 	
+	@Value("${storage.publicBaseUrl}")
+	private String publicBaseUrl;
+
+	
 
 	@Override
 	public Mono<RoomDTO> getRoomById(String id) {
@@ -37,7 +43,8 @@ public class RoomServiceImpl implements RoomService{
 		return roomRepository.findById(id)
 				.switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
 				.doOnNext(room -> log.info("Room received : {}", room))
-				.map(roomMapper::toRoomDTO);
+				//.map(roomMapper::toRoomDTO);
+				.flatMap(this::toResponseWithUrls);
 				
 	}
 
@@ -74,6 +81,20 @@ public class RoomServiceImpl implements RoomService{
 
 	    return roomRepository.findAllById(ids)
 	            .map(roomMapper::toRoomDTO);
+	}
+	
+	private Mono<RoomDTO> toResponseWithUrls(Room room) {
+		RoomDTO resp = roomMapper.toRoomDTO(room);
+	    List<String> keys = room.getPhotoObjectKeys() == null ? List.of() : room.getPhotoObjectKeys();
+
+	    return Flux.fromIterable(keys)
+	        .map(key -> publicBaseUrl + "/room-media/" + key) // if bucket is public
+	        // or presignedGetUrl if visitor service has MinIO creds
+	        .collectList()
+	        .map(urls -> {
+	            resp.setPhotoUrls(urls);
+	            return resp;
+	        });
 	}
 
 	

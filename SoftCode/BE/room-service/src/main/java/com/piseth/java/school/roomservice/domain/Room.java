@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -40,6 +43,14 @@ public class Room {
   private String propertyType;
 
   private Address address;
+  
+  /**
+   * GeoJSON Point for geo queries.
+   * Mongo expects coordinates in order: [longitude, latitude].
+   */
+
+  @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+  private GeoJsonPoint geoPoint;
 
   private Boolean hasFan;
   private Boolean hasAirConditioner;
@@ -67,7 +78,8 @@ public class Room {
   private Integer minStayMonths;
   private String contactPhone;
 
-  private List<String> photoUrls;
+  private List<String> photoObjectKeys;
+  //private List<String> photoUrls;
   private String videoUrl;
   private Boolean verifiedListing;
 
