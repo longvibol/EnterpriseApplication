@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.piseth.java.school.roomservice.dto.NearbyRoomFilterDTO;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
@@ -16,6 +17,7 @@ import com.piseth.java.school.roomservice.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,6 +46,12 @@ public class RoomController {
 	public Flux<RoomDTO> getRoomsByIds(@RequestParam List<String> ids) {
 	    return roomService.getRoomsByIds(ids);
 	}
+	
+	@GetMapping("/nearby")
+    public Mono<PageDTO<RoomDTO>> nearby(@Valid NearbyRoomFilterDTO filter) {
+        return roomService.getNearestRooms(filter);
+    }
+
 	
 
 }

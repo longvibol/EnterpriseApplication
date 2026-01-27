@@ -1,0 +1,20 @@
+កន្លែង ដែល Kafka ត្រូវធ្វើការផ្ញើរ PhotoURL ទៅ  in the controller :
+
+
+	@Override
+	public Mono<RoomResponse> update(String id, RoomUpdateRequest request, String ownerId) {
+		return repository.findById(id)
+	              .switchIfEmpty(Mono.error(new RoomNotFoundException(id)))
+	              .flatMap(existing -> {
+	                  mapper.updateEntity(existing, request);
+	                  return repository.save(existing)
+	                          .flatMap(saved -> enqueueEvent(saved, RoomEventType.ROOM_UPDATED, "update").thenReturn(saved));
+	              })
+	              .map(mapper::toResponse)
+	              .doOnSuccess(r -> log.info("Room updated id={}", r.getId()))
+	              .doOnError(ex -> log.error("Update room failed: {}", ex.getMessage(), ex));
+
+==> in the RoomFullPayload ដែលវាត្រូវផ្ញើរទៅ ចឹងយើងមើលថា វាមាន Photo object Key or not អ្វីដែលវាមិនបានផ្ញើរទៅនឹង
+
+
+

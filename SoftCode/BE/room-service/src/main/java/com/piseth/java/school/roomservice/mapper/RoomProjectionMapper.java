@@ -16,7 +16,7 @@ import com.piseth.java.school.roomservice.message.event.RoomFullPayload;
 @Mapper(componentModel = "spring")
 public interface RoomProjectionMapper {
 
-    @Mapping(target = "id", source = "id")
+	@Mapping(target = "id", source = "id")
     @Mapping(target = "lastEventAt", ignore = true)
     @Mapping(target = "deleted", constant = "false")
     @Mapping(target = "geoPoint", source = ".", qualifiedByName = "toGeoPoint")
@@ -45,7 +45,6 @@ public interface RoomProjectionMapper {
         }
         // GeoJSON order: [lon, lat]
         return new GeoJsonPoint(lon, lat);
-
 
     }
 }

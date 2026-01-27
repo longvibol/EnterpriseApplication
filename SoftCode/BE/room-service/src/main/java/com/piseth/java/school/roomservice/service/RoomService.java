@@ -2,6 +2,7 @@ package com.piseth.java.school.roomservice.service;
 
 import java.util.List;
 
+import com.piseth.java.school.roomservice.dto.NearbyRoomFilterDTO;
 import com.piseth.java.school.roomservice.dto.PageDTO;
 import com.piseth.java.school.roomservice.dto.RoomDTO;
 import com.piseth.java.school.roomservice.dto.RoomFilterDTO;
@@ -15,5 +16,7 @@ public interface RoomService {
 	
 	Mono<PageDTO<RoomDTO>> getRoomByFilterPagination(RoomFilterDTO filterDTO);
 	Flux<RoomDTO> getRoomsByIds(List<String> ids);
+	
+	Mono<PageDTO<RoomDTO>> getNearestRooms(NearbyRoomFilterDTO filter);
 	
 }

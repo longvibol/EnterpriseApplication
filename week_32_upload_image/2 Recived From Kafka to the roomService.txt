@@ -1,0 +1,27 @@
+1- Mapping from kafka to room-service
+
+In the room-owner-service for the location we have :
+
+public class GeoLocation {
+    private Double latitude;
+    private Double longitude;
+}
+
+
+2- in the room-service we consume from kafka so we need to convert from our lat, long to geoJson in Mongo 
+
+ @Named("toGeoPoint")
+    default GeoJsonPoint toGeoPoint(RoomFullPayload src) {
+        if (src == null || src.getAddress() == null || src.getAddress().getGeo() == null) {
+            return null;
+
+        }
+        Double lat = src.getAddress().getGeo().getLatitude();
+        Double lon = src.getAddress().getGeo().getLongitude();
+        if (lat == null || lon == null) {
+            return null;
+        }
+        // GeoJSON order: [lon, lat]
+        return new GeoJsonPoint(lon, lat);
+
+    }
