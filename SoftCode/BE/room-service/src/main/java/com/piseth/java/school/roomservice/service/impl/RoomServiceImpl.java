@@ -112,7 +112,7 @@ public class RoomServiceImpl implements RoomService{
         int radiusMeters = filter.getRadiusMeters() == null ? 3000 : filter.getRadiusMeters();
 
         
-
+        
         Criteria extraCriteria = null;
         if (filter.getOtherFilters() != null) {
             extraCriteria = RoomCriteriaBuilder.build(filter.getOtherFilters());
@@ -120,11 +120,11 @@ public class RoomServiceImpl implements RoomService{
 
         
 
-       // RoomFilterDTO merged = mergedFilter(filter);
+       //RoomFilterDTO merged = mergedFilter(filter);
 
      // build criteria only when there is at least 1 filter set
 //     Criteria extraCriteria = null;
-//     if (merged != null) {
+//    if (merged != null) {
 //         extraCriteria = RoomCriteriaBuilder.build(merged);
 //     }
 
@@ -213,12 +213,21 @@ public class RoomServiceImpl implements RoomService{
 
 
 
-
 /*
+
 	private RoomFilterDTO mergedFilter(NearbyRoomFilterDTO filter) {
 
 	    RoomFilterDTO f = filter.getOtherFilters() == null ? new RoomFilterDTO() : filter.getOtherFilters();
 
+	    if(filter.getPriceMin() != null) {
+	    	f.setPriceMin(filter.getPriceMin());
+	    }
+	    
+	    if(filter.getPriceMax() != null) {
+	    	f.setPriceMax(filter.getPriceMax());
+	    }
+	    
+	    
 	    if (filter.getRoomType() != null) {
 	        f.setRoomType(filter.getRoomType());
 
@@ -241,11 +250,12 @@ public class RoomServiceImpl implements RoomService{
 
 
 	    }
+	   
 
 	    return f;
 	}
-
 */
+
 	
 
 }

@@ -20,4 +20,8 @@ export interface RoomListParams {
     hasPrivateBathroom?: boolean | null;
     hasKitchen?: boolean | null;
     hasWashingMachine?: boolean | null;
+      nearBy?: boolean | null;
+  lat?: number | null;
+  lon?: number | null;
+  radiusMeters?: number | null;
 }

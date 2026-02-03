@@ -4,7 +4,24 @@
   
         <!-- Left: Quick filters -->
         <div class="d-flex flex-wrap gap-2 align-items-center">
-  
+                    <!-- Near me -->
+<button type="button"
+        class="btn btn-outline-primary btn-sm"
+        [class.active]="form.controls.nearBy.value === true"
+        (click)="toggleNearBy()">
+  <i class="bi bi-compass me-1"></i> Near me
+</button>
+
+<!-- Radius -->
+
+<select class="form-select form-select-sm w-auto"
+        [formControl]="form.controls.radiusMeters">
+  <option [ngValue]="1000">1 km</option>
+  <option [ngValue]="3000">3 km</option>
+  <option [ngValue]="5000">5 km</option>
+  <option [ngValue]="10000">10 km</option>
+  <option [ngValue]="20000">20 km</option>
+</select>
           <!-- Location -->
           <button type="button"
                   class="btn btn-outline-secondary btn-sm"

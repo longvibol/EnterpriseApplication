@@ -68,6 +68,7 @@ export interface Room {
 
   // ---- Extra ----
   extraAttributes?: Record<string, any>;
+  distanceMeters?: number | null;
 }
 
 

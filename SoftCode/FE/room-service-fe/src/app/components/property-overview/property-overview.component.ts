@@ -22,7 +22,6 @@ export class PropertyOverviewComponent {
     }
   });
 
-  // dired signle : called from another single 
   addressText = computed(() => {
     const a = this.room().address ?? {};
     const parts = [a.line1, a.villageName, a.communeName, a.districtName, a.provinceName]

@@ -22,5 +22,6 @@ export interface RoomVM {
   roomTypeText: string;
   propertyTypeText: string;
   isFavorite: boolean;
-  
+  distanceMeters?: number | null;
+  distanceText?: string | null;
 }

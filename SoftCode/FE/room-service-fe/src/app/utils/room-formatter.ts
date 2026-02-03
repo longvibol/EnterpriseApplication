@@ -85,7 +85,9 @@ export function toRoomVM(room: Room, isFavorite: boolean): RoomVM {
     amenities: amenityIcons(room as any),
     roomTypeText: capitalize(room.roomType),
     propertyTypeText: capitalize(room.propertyType),
-    isFavorite
+    isFavorite,
+    distanceMeters: room.distanceMeters ?? null,
+    distanceText: formatDistance(room.distanceMeters)
   };
 }
 
@@ -95,3 +97,24 @@ function capitalize(v?: string | null): string {
   }
   return v.charAt(0) + v.slice(1).toLowerCase();
 }
+
+function formatDistance(meters?: number | null) : string | null{
+  if(meters === null || meters === undefined){
+    return null;
+  }
+
+  if (!Number.isFinite(meters) || meters < 0) {
+    return null;
+  }
+
+  if( meters < 1000){
+    return `${Math.round(meters)} m`;
+  }
+
+  const km = meters / 1000;
+  if (km < 10) {
+    return `${km.toFixed(1)} km`;
+  }
+  return `${Math.round(km)} km`;
+}
+

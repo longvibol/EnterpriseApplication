@@ -13,6 +13,11 @@
       <span class="pcard-badge" [ngClass]="vm().statusClass">
         {{ vm().statusText }}
       </span>
+      @if (vm().distanceText) {
+        <span class="pcard-badge badge-distance">
+          <i class="bi bi-compass me-1"></i> {{ vm().distanceText }}
+        </span>
+      }
     </div>
 
     <!-- Overlay actions -->

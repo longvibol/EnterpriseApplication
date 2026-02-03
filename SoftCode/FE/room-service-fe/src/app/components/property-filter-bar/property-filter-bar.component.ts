@@ -27,24 +27,44 @@ form = this.fb.group({
   roomType: this.fb.control<RoomType | null>(null),
   priceMin: this.fb.control<number | null>(null, { validators: [Validators.min(0)] }),
   priceMax: this.fb.control<number | null>(null, { validators: [Validators.min(0)] }),
+
+  nearBy: this.fb.control<boolean>(false),
+    radiusMeters: this.fb.control<number>({ value: 3000, disabled: true }),
+    lat: this.fb.control<number | null>(null),
+    lon: this.fb.control<number | null>(null)
 });
 
 constructor() {
   // Sync incoming filter -> form (when parent changes)
   effect(() => {
-    // we use effect to make the filter auto
     const f = this.filter();
     this.form.patchValue(
-      //path is we waiting only the value change
       {
         propertyType: (f.propertyType ) ?? '',
         roomType: (f.roomType) ?? null,
         priceMin: f.priceMin ?? null,
-        priceMax: f.priceMax ?? null
+        priceMax: f.priceMax ?? null,
+        nearBy: f.nearBy === true,
+          radiusMeters: f.radiusMeters ?? 1000,
+          lat: f.lat ?? null,
+          lon: f.lon ?? null
       },
       { emitEvent: false }
     );
+      if (f.nearBy === true) {
+    this.form.controls.radiusMeters.enable({ emitEvent: false });
+  } else {
+    this.form.controls.radiusMeters.disable({ emitEvent: false });
+  }
   });
+
+  // this.form.controls.nearBy.valueChanges.subscribe(on => {
+  //   if (on) {
+  //     this.form.controls.radiusMeters.enable({ emitEvent: false });
+  //   } else {
+  //     this.form.controls.radiusMeters.disable({ emitEvent: false });
+  //   }
+  // });
 
    // Auto emit changes (quick filters feel “instant”)
    this.form.valueChanges
@@ -58,9 +78,21 @@ constructor() {
        propertyType: v.propertyType || null,
        roomType: v.roomType || null,
        priceMin: v.priceMin ?? null,
-       priceMax: v.priceMax ?? null
+       priceMax: v.priceMax ?? null,
+       nearBy: v.nearBy ? true : null,
+          radiusMeters: v.nearBy ? (v.radiusMeters ?? 3000) : null,
+          lat: v.nearBy ? (v.lat ?? null) : null,
+          lon: v.nearBy ? (v.lon ?? null) : null
      });
    });
+
+   this.form.controls.nearBy.valueChanges.subscribe(on => {
+  if (on) {
+    this.form.controls.radiusMeters.enable({ emitEvent: false });
+  } else {
+    this.form.controls.radiusMeters.disable({ emitEvent: false });
+  }
+});
 }
 
 setRoomType(type: RoomType | null) {
@@ -68,7 +100,15 @@ setRoomType(type: RoomType | null) {
 }
 clearAll() {
   this.form.reset(
-    { propertyType: null, roomType: null, priceMin: null, priceMax: null },
+    { propertyType: null, 
+      roomType: null, 
+      priceMin: null, 
+      priceMax: null,
+    nearBy: false,
+        radiusMeters: 3000,
+        lat: null,
+        lon: null
+    },
     { emitEvent: true }
   );
   this.filterChange.emit({
@@ -76,9 +116,48 @@ clearAll() {
     propertyType: null,
     roomType: null,
     priceMin: null,
-    priceMax: null
+    priceMax: null,
+    nearBy: false,
+        radiusMeters: null,
+        lat: null,
+        lon: null
   });
 }
+
+async toggleNearBy() {
+    const enabled = this.form.controls.nearBy.value === true;
+
+    if (enabled) {
+      // turn OFF
+      this.form.patchValue({ nearBy: false, lat: null, lon: null }, { emitEvent: true });
+      return;
+    }
+
+    // turn ON: request browser location
+    if (!navigator.geolocation) {
+      // fallback: keep off if not supported
+      this.form.patchValue({ nearBy: false }, { emitEvent: true });
+      return;
+    }
+navigator.geolocation.getCurrentPosition(
+      pos => {
+        this.form.patchValue(
+          {
+            nearBy: true,
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            radiusMeters: this.form.controls.radiusMeters.value ?? 3000
+          },
+          { emitEvent: true }
+        );
+      },
+      _err => {
+        // user denied / error => keep it OFF
+        this.form.patchValue({ nearBy: false, lat: null, lon: null }, { emitEvent: true });
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 }
+    );
+  }
 
 // Hook to open your existing location selector (sidebar or modal later)
 openLocationPicker() {

@@ -28,7 +28,6 @@ export class PropertyActiveFilterBarComponent {
     // --- Location (prefer names if available, fallback to codes) ---
     if (f.provinceCode) {
       chips.push({
-        // push add the element to array 
         key: 'provinceCode',
         label: `Province: ${f.provinceName ?? f.provinceCode}`,
         patch: { page: 0, provinceCode: null, districtCode: null, communeCode: null, villageCode: null }
@@ -72,6 +71,15 @@ if (f.roomType) {
     key: 'roomType',
     label: `Room: ${String(f.roomType).toLowerCase()}`,
     patch: { page: 0, roomType: null }
+  });
+}
+
+if (f.nearBy === true && f.lat != null && f.lon != null) {
+  const km = f.radiusMeters ? Math.round(f.radiusMeters / 1000) : 3;
+  chips.push({
+    key: 'nearBy',
+    label: `Near me: ${km} km`,
+    patch: { page: 0, nearBy: null, lat: null, lon: null, radiusMeters: null }
   });
 }
 

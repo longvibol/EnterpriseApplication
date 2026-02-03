@@ -53,16 +53,17 @@ public class RoomGeoRepositoryImpl implements RoomGeoRepository {
         // GeoJSON uses [lon, lat]
         Point nearPoint = new Point(lon, lat);
 
-        double radiusKm = radiusMeters / 1000.0;
+        final double EARTH_RADIUS_METERS = 6378137.0;
+        final double maxDistanceRadians = radiusMeters / EARTH_RADIUS_METERS;
 
         // IMPORTANT:
         // - Use metric-aware NearQuery so maxDistance is interpreted correctly
         // - distanceMultiplier(1000.0) converts km -> meters for returned "distanceMeters"
-        NearQuery nearQuery = NearQuery.near(nearPoint, Metrics.KILOMETERS)
-                .maxDistance(new Distance(radiusKm, Metrics.KILOMETERS))
+        NearQuery nearQuery = NearQuery.near(nearPoint)
+                .maxDistance(maxDistanceRadians)
                 .spherical(true)
                 .query(new Query(finalCriteria))
-                .distanceMultiplier(1000.0); // km -> meters
+                .distanceMultiplier(EARTH_RADIUS_METERS); 
 
         GeoNearOperation geoNear = geoNear(nearQuery, "distanceMeters");
 
@@ -95,12 +96,14 @@ public class RoomGeoRepositoryImpl implements RoomGeoRepository {
 
         Point nearPoint = new Point(lon, lat);
 
-        double radiusKm = radiusMeters / 1000.0;
+        final double EARTH_RADIUS_METERS = 6378137.0;
+        final double maxDistanceRadians = radiusMeters / EARTH_RADIUS_METERS;
 
-        NearQuery nearQuery = NearQuery.near(nearPoint, Metrics.KILOMETERS)
-                .maxDistance(new Distance(radiusKm, Metrics.KILOMETERS))
+        NearQuery nearQuery = NearQuery.near(nearPoint)
+                .maxDistance(maxDistanceRadians)
                 .spherical(true)
-                .query(new Query(finalCriteria));
+                .query(new Query(finalCriteria))
+                .distanceMultiplier(EARTH_RADIUS_METERS); 
 
         GeoNearOperation geoNear = geoNear(nearQuery, "distanceMeters");
 

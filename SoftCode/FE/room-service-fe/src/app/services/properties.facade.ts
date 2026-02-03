@@ -40,7 +40,11 @@ export const DEFAULT_FILTER: RoomListParams = {
   hasParking: false,
   hasPrivateBathroom: false,
   hasKitchen: false,
-  hasWashingMachine: false
+  hasWashingMachine: false,
+    nearBy: null,
+  lat: null,
+  lon: null,
+  radiusMeters: null
 };
 
 function shallowEqual(a: any, b: any): boolean {
@@ -85,8 +89,14 @@ export class PropertiesFacade {
           this.state.set('loading');
           this.errorMessage.set(null);
         }),
-        switchMap(f =>
-          this.roomService.list(f).pipe(
+        switchMap(f => {
+          const useNearby = f.nearBy === true && !!f.lat && !!f.lon;
+
+          const call$ = useNearby
+            ? this.roomService.nearby(f)
+            : this.roomService.list(f);
+
+          return call$.pipe(
             catchError(err => {
               const msg =
                 (err && (err.message ?? err.error?.message)) ?
@@ -101,8 +111,28 @@ export class PropertiesFacade {
                 this.state.set('success');
               }
             })
-          )
-        ),
+          );
+        }),
+        // switchMap(f =>
+        //   this.roomService.list(f)
+        //   .pipe(
+        //     catchError(err => {
+        //       const msg =
+        //         (err && (err.message ?? err.error?.message)) ?
+        //           (err.message ?? err.error?.message) :
+        //           'Failed to load properties';
+        //       this.errorMessage.set(msg);
+        //       this.state.set('error');
+        //       return of(null);
+        //     }),
+        //     finalize(() => {
+        //       if (this.state() === 'loading') {
+        //         this.state.set('success');
+        //       }
+        //     })
+        //   )
+          
+        // ),
         takeUntilDestroyed()
       )
       .subscribe(page => {
